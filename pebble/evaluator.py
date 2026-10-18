@@ -21,10 +21,8 @@ from typing import NoReturn
 from . import nodes
 from .errors import EvalError
 from .formatting import is_number, type_name
+from .limits import MAX_CALL_DEPTH, MAX_EXPONENT, MAX_INT_BITS, MAX_SEQUENCE_LENGTH
 from .stdlib import BUILTINS, Builtin
-
-MAX_CALL_DEPTH = 100
-MAX_EXPONENT = 10_000
 
 
 class _Return(Exception):
@@ -242,7 +240,7 @@ class Interpreter:
     def _add(self, expression, left, right) -> object:
         """Numbers add, strings join, lists join; nothing else mixes."""
         if is_number(left) and is_number(right):
-            return left + right
+            return self._check_int(expression, left + right)
         if isinstance(left, str) and isinstance(right, str):
             return left + right
         if isinstance(left, list) and isinstance(right, list):
@@ -254,7 +252,7 @@ class Interpreter:
     def _numeric(self, expression, left, right, word: str, operation):
         """A binary operation over two numbers, with a shared type error."""
         if is_number(left) and is_number(right):
-            return operation(left, right)
+            return self._check_int(expression, operation(left, right))
         self._fail(expression, f"cannot {word} {type_name(left)} and {type_name(right)}",
                    f"{word}ing needs two numbers",
                    "make both operands numbers")
@@ -262,26 +260,39 @@ class Interpreter:
     def _multiply(self, expression, left, right) -> object:
         """Numbers multiply; a string or list repeats by a whole count."""
         if is_number(left) and is_number(right):
-            return left * right
+            return self._check_int(expression, left * right)
         sequence, count = (left, right) if isinstance(left, (str, list)) else (right, left)
         if isinstance(sequence, (str, list)) and isinstance(count, int) and not isinstance(count, bool):
             if count < 0:
                 self._fail(expression, f"cannot repeat a {type_name(sequence)} {count} times",
                            "the repeat count must be zero or more",
                            "use a count of 0 or more")
+            length = len(sequence) * count
+            if length > MAX_SEQUENCE_LENGTH:
+                unit = "characters" if isinstance(sequence, str) else "elements"
+                self._fail(expression,
+                           f"repeating a {type_name(sequence)} {count} times is too large",
+                           f"the result would have {length} {unit}; v1 caps sequences at "
+                           f"{MAX_SEQUENCE_LENGTH}",
+                           "use a smaller count, or build the sequence with a loop")
             return sequence * count
         self._fail(expression, f"cannot multiply {type_name(left)} and {type_name(right)}",
                    "* multiplies two numbers, or repeats a string or list by a whole count",
                    "multiply two numbers, or multiply a string or list by an int")
 
     def _divide(self, expression, left, right) -> object:
-        """Always a float; a zero divisor is refused with its position."""
+        """Always a float; a zero divisor and an overflowing result are refused with a position."""
         if is_number(left) and is_number(right):
             if right == 0:
                 self._fail(expression, "division by zero",
                            "dividing by zero has no defined result",
                            "guard the divisor with an if, or change it")
-            return left / right
+            try:
+                return left / right
+            except OverflowError:
+                self._fail(expression, "the result is too large for a float",
+                           "dividing these ints needs a float beyond the largest float",
+                           "divide smaller numbers, or scale them down first")
         self._fail(expression, f"cannot divide {type_name(left)} and {type_name(right)}",
                    "dividing needs two numbers",
                    "make both operands numbers")
@@ -300,26 +311,45 @@ class Interpreter:
                    "make both operands numbers")
 
     def _power(self, expression, left, right) -> object:
-        """Right-associative `^`, with guards for huge exponents and unreal results."""
+        """Right-associative `^`, with guards for huge, unreal and undefined results."""
         if not (is_number(left) and is_number(right)):
             self._fail(expression, f"cannot raise the power of {type_name(left)} and "
                                    f"{type_name(right)}",
                        "power ( ^ ) needs two numbers",
                        "make both operands numbers")
+        if left == 0 and right < 0:
+            self._fail(expression, "zero cannot be raised to a negative power",
+                       "a negative exponent divides by the base, and zero has no reciprocal",
+                       "use an exponent of zero or more")
         if isinstance(right, int) and right > MAX_EXPONENT:
             self._fail(expression, f"exponent {right} is too large",
                        f"v1 caps integer exponents at {MAX_EXPONENT} so results stay small",
                        f"use an exponent of {MAX_EXPONENT} or less")
+        if isinstance(left, int) and isinstance(right, int) and right > 0 and abs(left) > 1:
+            lower_bound_bits = (abs(left).bit_length() - 1) * right + 1
+            if lower_bound_bits > MAX_INT_BITS:
+                self._fail(expression, "integer result is too large",
+                           "the result would exceed the v1 cap of about 4000 decimal digits",
+                           "use a smaller base or exponent, or a float for an approximation")
         if left < 0 and isinstance(right, float) and not right.is_integer():
             self._fail(expression, "the result is not a real number",
                        "a negative base with a fractional exponent has no real result",
                        "use an int exponent, or a non-negative base")
         try:
-            return left ** right
+            return self._check_int(expression, left ** right)
         except OverflowError:
             self._fail(expression, "the result is too large for a float",
                        "the exponent pushes the result past the largest float",
                        "use a smaller exponent")
+
+    def _check_int(self, expression, value) -> object:
+        """Refuse an int above the digit cap so arithmetic and printing stay bounded."""
+        if isinstance(value, int) and not isinstance(value, bool) \
+                and value.bit_length() > MAX_INT_BITS:
+            self._fail(expression, "integer result is too large",
+                       "the result would exceed the v1 cap of about 4000 decimal digits",
+                       "scale the values down, or use a float for an approximation")
+        return value
 
     def _order(self, expression, left, right) -> object:
         """`< <= > >=` on two numbers or two strings."""

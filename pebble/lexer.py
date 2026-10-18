@@ -4,9 +4,11 @@ Whitespace is insignificant (statements need no separators), comments run from `
 the line, and every failure is a LexError with a position, a reason and a fix.
 """
 
+import math
 from dataclasses import dataclass
 
 from .errors import LexError
+from .limits import MAX_INT_DIGITS
 
 KEYWORDS = frozenset({"let", "if", "else", "while", "for", "in", "fn", "return",
                       "true", "false", "none", "and", "or", "not"})
@@ -95,7 +97,20 @@ class _Scanner:
             while self.index < len(self.source) and "0" <= self.source[self.index] <= "9":
                 self._skip(1)
         text = self.source[start:self.index]
-        self.tokens.append(Token("NUMBER", float(text) if is_float else int(text), line, col))
+        if is_float:
+            value = float(text)
+            if not math.isfinite(value):
+                raise LexError("float literal is too large", line, col,
+                               "the literal is beyond the largest float",
+                               "use a smaller number")
+            self.tokens.append(Token("NUMBER", value, line, col))
+        else:
+            significant = text.lstrip("0") or "0"
+            if len(significant) > MAX_INT_DIGITS:
+                raise LexError("integer literal is too large", line, col,
+                               f"v1 caps an integer literal at {MAX_INT_DIGITS} digits",
+                               "use a shorter number, or build it with arithmetic")
+            self.tokens.append(Token("NUMBER", int(text), line, col))
         if self.index < len(self.source) and _is_name_start(self.source[self.index]):
             letter = self.source[self.index]
             raise LexError(f"a number cannot be followed directly by a letter '{letter}'",

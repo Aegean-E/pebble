@@ -30,7 +30,7 @@ Built as an AIKit evaluation project — the process is under test as much as th
 ```text
 pebble/
 ├── .aikit/
-│   ├── decisions.md          <- ADRs; ADR-001 freezes the surface, ADR-002 the builtins
+│   ├── decisions.md          <- ADRs: surface, builtins, and resource limits
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── project.json
 │   └── task_ledger.json      <- the task ledger: plan and milestone checkpoints
@@ -48,6 +48,7 @@ pebble/
 │   ├── evaluator.py          <- tree-walking runtime: scopes, control flow, functions
 │   ├── formatting.py         <- type names and the display form of values
 │   ├── lexer.py              <- source text to positioned tokens
+│   ├── limits.py             <- call, int, range and sequence caps
 │   ├── nodes.py              <- the AST: frozen nodes with source positions
 │   ├── parser.py             <- recursive-descent parser with positioned errors
 │   └── stdlib.py             <- the nine builtins and their arity rules
@@ -57,6 +58,7 @@ pebble/
     ├── test_builtins.py
     ├── test_cli.py
     ├── test_evaluator.py
+    ├── test_hardening.py
     ├── test_lexer.py
     └── test_parser.py
 ```
@@ -72,10 +74,13 @@ strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `f
 that list is a v1 non-goal and waits for a later task. ADR-002 fixes the builtin semantics and
 the display form that `print` and `str` share.
 
-Status: milestone [5/6] of `task-pebble-core-v1` — the lexer, parser, evaluator (scopes,
-control flow, functions, recursion), all nine builtins, and the file/`-e`/stdin/REPL interfaces
-are complete and tested (124 tests); hardening and the error-format meta test land in [6/6].
-The plan and its checkpoints live in `.aikit/task_ledger.json`.
+Status: milestone [6/6] of `task-pebble-core-v1` — the language, all nine builtins, the
+file/`-e`/stdin/REPL interfaces, hardening and the error-format meta test are complete and tested
+(142 tests). The plan and its checkpoints live in `.aikit/task_ledger.json`.
+
+v1 is deliberately bounded (ADR-003): calls nest at most 100 deep, integer exponents stop at
+10,000, integers stay near 4,000 digits, ranges and repeated sequences at 1,000,000 values, and
+an unexpected host failure still renders as a three-line Pebble report rather than a traceback.
 
 ## 🚀 Running a program
 

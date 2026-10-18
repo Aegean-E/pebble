@@ -3,9 +3,10 @@
   "active_task": {
     "task_id": "task-pebble-core-v1",
     "last_phase": "phase 3",
-    "active_phase": 3,
-    "status": "in_progress",
-    "updated_at": 1792360364.4887378
+    "active_phase": 5,
+    "status": "completed",
+    "updated_at": 1792361107.5057325,
+    "completed_at": 1792361107.646149
   },
   "checkpoints": [
     {
@@ -73,6 +74,25 @@
       "status": "in_progress",
       "timestamp": 1792360364.4887378,
       "timestamp_str": "2026-10-19 00:52:44"
+    },
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[6/6] complete: hardening (v1 caps for int size, exponents, ranges and sequences; finite float literals; zero-to-negative-power and float-overflow division become positioned errors; CLI internal-error shield so no host traceback escapes), the error-format meta test over lexer/parser/runtime corpora, CRLF and unicode platform tests, and 50k-loop/10k-statement perf guards. ADR-003 records the limits. 18 new tests; 142 tests green. aikit check pebble: 4/4 gates; checklists: passed. Task complete.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792361107.5057325,
+      "timestamp_str": "2026-10-19 01:05:07"
+    },
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-core-v1' completed successfully.",
+      "status": "completed",
+      "timestamp": 1792361107.6461508,
+      "timestamp_str": "2026-10-19 01:05:07"
     }
   ]
 }

@@ -10,6 +10,7 @@ from typing import NoReturn
 
 from .errors import EvalError
 from .formatting import format_value, is_number, type_name
+from .limits import MAX_INT_DIGITS, MAX_RANGE_LENGTH
 
 
 class Builtin:
@@ -55,8 +56,15 @@ def _range(interpreter, call, args) -> list:
                   "range counts whole numbers",
                   "pass int values, for example range(5) or range(1, 5)")
     if len(args) == 1:
-        return list(range(args[0]))
-    return list(range(args[0], args[1]))
+        start, stop = 0, args[0]
+    else:
+        start, stop = args[0], args[1]
+    length = stop - start
+    if length > MAX_RANGE_LENGTH:
+        _fail(call, f"range would produce {length} values",
+              f"v1 holds a range in memory and caps it at {MAX_RANGE_LENGTH} values",
+              "use a smaller range, or count with a while loop")
+    return list(range(start, stop))
 
 
 def _str(interpreter, call, args) -> str:
@@ -93,6 +101,11 @@ def _parse_int(call, text: str) -> int:
         _fail(call, f"cannot convert string {text!r} to int",
               "int(...) on a string accepts an optional sign and digits only",
               'pass a whole number such as "42", or convert a float value with int(3.9)')
+    significant = digits.lstrip("0") or "0"
+    if len(significant) > MAX_INT_DIGITS:
+        _fail(call, f"cannot convert a {len(significant)}-digit string to int",
+              f"v1 caps an int at about {MAX_INT_DIGITS} digits",
+              "use a shorter number, or build it with arithmetic")
     return int(text)
 
 

@@ -55,6 +55,16 @@ def main(argv=None, stdin=None, stdout=None, stderr=None) -> int:
                      f"  Why: {error.why}\n"
                      f"  Fix: {error.fix}\n")
         return 2
+    except Exception as error:
+        _report_internal(error, stderr)
+        return 1
+
+
+def _report_internal(error: Exception, stderr) -> None:
+    """Last-resort report: a host failure is still explained, and never shown as a traceback."""
+    stderr.write("pebble: internal error: the interpreter failed unexpectedly\n"
+                 f"  Why: {type(error).__name__}: {error}\n"
+                 "  Fix: this is a Pebble bug; report the program and this message\n")
 
 
 def _dispatch(arguments: list, stdin, stdout, stderr) -> int:
