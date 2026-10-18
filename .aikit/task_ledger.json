@@ -5,7 +5,7 @@
     "last_phase": "phase 3",
     "active_phase": 3,
     "status": "in_progress",
-    "updated_at": 1792359943.044705
+    "updated_at": 1792360364.4887378
   },
   "checkpoints": [
     {
@@ -63,6 +63,16 @@
       "status": "in_progress",
       "timestamp": 1792359943.044705,
       "timestamp_str": "2026-10-19 00:45:43"
+    },
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[5/6] complete: the CLI (file runner, -e/--eval, piped stdin, --help, --version), exit codes 0/1/2, UTF-8 BOM/CRLF file reads and Why/Fix usage reports; the stateful REPL with multi-line continuation, non-none value echo, error recovery and end-of-file reporting; python -m pebble plus a console-script entry point; three runnable examples (hello, fizzbuzz, fibonacci) and a sub-10-second README demo. 15 new failing-first CLI/REPL tests; 124 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [6/6] hardening, error-format meta test, platform and perf guards, Phase 4.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792360364.4887378,
+      "timestamp_str": "2026-10-19 00:52:44"
     }
   ]
 }
