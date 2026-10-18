@@ -1,0 +1,193 @@
+"""Builtin tests: the nine v1 builtins, their errors and the display form of values."""
+
+import unittest
+from io import StringIO
+
+from pebble.errors import EvalError
+from pebble.evaluator import Interpreter
+from pebble.lexer import tokenize
+from pebble.parser import parse
+
+
+def evaluate(source: str, out=None):
+    """Evaluate `source` with a fresh interpreter; the last statement's value comes back."""
+    return Interpreter(out=out if out is not None else StringIO()).run(parse(tokenize(source)))
+
+
+def printed(source: str) -> str:
+    """Everything `source` writes through print."""
+    stream = StringIO()
+    evaluate(source, out=stream)
+    return stream.getvalue()
+
+
+class BuiltinTests(unittest.TestCase):
+    """One behaviour per test; messages, positions and return values are asserted."""
+
+    def eval_error(self, source: str) -> EvalError:
+        """The EvalError `source` raises."""
+        with self.assertRaises(EvalError) as caught:
+            evaluate(source)
+        return caught.exception
+
+    # print and display form
+
+    def test_print_writes_the_display_form_and_a_newline(self) -> None:
+        self.assertEqual(printed("print(42)"), "42\n")
+        self.assertEqual(printed('print("hi")'), "hi\n")
+        self.assertEqual(printed("print(true)"), "true\n")
+        self.assertEqual(printed("print(none)"), "none\n")
+        self.assertEqual(printed("print(2.0)"), "2.0\n")
+
+    def test_print_returns_none_and_handles_a_string_escape(self) -> None:
+        self.assertIsNone(evaluate('print("a\\nb")'))
+        self.assertEqual(printed('print("a\\nb")'), "a\nb\n")
+
+    def test_lists_display_with_quoted_strings_and_nested_values(self) -> None:
+        self.assertEqual(printed('print([1, "a", true, none, [2]])'),
+                         '[1, "a", true, none, [2]]\n')
+        self.assertEqual(printed('print(["a\\nb", "q\\"q"])'),
+                         '["a\\nb", "q\\"q"]\n')
+
+    def test_functions_and_builtins_display_by_name(self) -> None:
+        self.assertEqual(printed("fn f() { }\nprint(f)\nprint(len)"),
+                         "<fn f>\n<builtin len>\n")
+
+    def test_print_has_a_fixed_arity(self) -> None:
+        error = self.eval_error("print(1, 2)")
+        self.assertIn("print expects 1 argument, got 2", error.message)
+        self.assertEqual((error.line, error.col), (1, 6))
+
+    # len
+
+    def test_len_counts_lists_and_strings(self) -> None:
+        self.assertEqual(evaluate("len([1, 2, 3])"), 3)
+        self.assertEqual(evaluate('len("abc")'), 3)
+        self.assertEqual(evaluate("len([])"), 0)
+
+    def test_len_rejects_other_types(self) -> None:
+        error = self.eval_error("len(5)")
+        self.assertIn("cannot take the length of int", error.message)
+        self.assertIn("string or a list", error.why)
+        self.assertIn("len([1, 2])", error.fix)
+
+    # range
+
+    def test_range_builds_half_open_lists(self) -> None:
+        self.assertEqual(evaluate("range(4)"), [0, 1, 2, 3])
+        self.assertEqual(evaluate("range(2, 5)"), [2, 3, 4])
+        self.assertEqual(evaluate("range(3, 3)"), [])
+        self.assertEqual(evaluate("range(-2)"), [])
+
+    def test_range_needs_int_arguments(self) -> None:
+        error = self.eval_error("range(2.5)")
+        self.assertIn("range needs int arguments, got float", error.message)
+        self.assertIn("whole numbers", error.why)
+        self.assertIn("range needs int arguments, got bool",
+                      self.eval_error("range(true)").message)
+
+    def test_range_arity_is_one_or_two(self) -> None:
+        self.assertIn("range expects 1 or 2 arguments, got 0",
+                      self.eval_error("range()").message)
+        self.assertIn("range expects 1 or 2 arguments, got 3",
+                      self.eval_error("range(1, 2, 3)").message)
+
+    # str
+
+    def test_str_returns_the_display_form(self) -> None:
+        self.assertEqual(evaluate("str(42)"), "42")
+        self.assertEqual(evaluate("str(2.5)"), "2.5")
+        self.assertEqual(evaluate("str(true)"), "true")
+        self.assertEqual(evaluate("str(none)"), "none")
+        self.assertEqual(evaluate('str("abc")'), "abc")
+        self.assertEqual(evaluate('str([1, "a"])'), '[1, "a"]')
+
+    # int
+
+    def test_int_truncates_floats_toward_zero(self) -> None:
+        self.assertEqual(evaluate("int(3.9)"), 3)
+        self.assertEqual(evaluate("int(-3.9)"), -3)
+        self.assertEqual(evaluate("int(7)"), 7)
+        self.assertIs(type(evaluate("int(7.0)")), int)
+
+    def test_int_parses_signed_decimal_strings(self) -> None:
+        self.assertEqual(evaluate('int("42")'), 42)
+        self.assertEqual(evaluate('int("-7")'), -7)
+        self.assertEqual(evaluate('int("+7")'), 7)
+
+    def test_int_rejects_bad_strings_and_other_types(self) -> None:
+        error = self.eval_error('int("3.5")')
+        self.assertIn("cannot convert string '3.5' to int", error.message)
+        self.assertIn("optional sign and digits only", error.why)
+        self.assertIn("cannot convert string ' 4' to int", self.eval_error('int(" 4")').message)
+        self.assertIn("cannot convert bool to int", self.eval_error("int(true)").message)
+        self.assertIn("cannot convert none to int", self.eval_error("int(none)").message)
+
+    def test_int_rejects_non_finite_floats(self) -> None:
+        error = self.eval_error("int((10.0 ^ 308) * 10)")
+        self.assertIn("cannot convert a non-finite float to int", error.message)
+
+    # floor
+
+    def test_floor_rounds_down_to_an_int(self) -> None:
+        self.assertEqual(evaluate("floor(3.9)"), 3)
+        self.assertEqual(evaluate("floor(-3.1)"), -4)
+        self.assertEqual(evaluate("floor(4)"), 4)
+        self.assertIs(type(evaluate("floor(4.0)")), int)
+
+    def test_floor_rejects_non_numbers_and_non_finite_floats(self) -> None:
+        error = self.eval_error('floor("3")')
+        self.assertIn("cannot take the floor of string", error.message)
+        self.assertIn("floor needs a number", error.why)
+        self.assertIn("cannot take the floor of a non-finite float",
+                      self.eval_error("floor((10.0 ^ 308) * 10)").message)
+
+    # min and max
+
+    def test_min_and_max_compare_numbers_and_strings(self) -> None:
+        self.assertEqual(evaluate("min(3, 1, 2)"), 1)
+        self.assertEqual(evaluate("max(3, 1, 2)"), 3)
+        self.assertEqual(evaluate("min(2, 1.5)"), 1.5)
+        self.assertEqual(evaluate('max("a", "c", "b")'), "c")
+        self.assertEqual(evaluate("min(7)"), 7)
+
+    def test_min_and_max_accept_a_single_list(self) -> None:
+        self.assertEqual(evaluate("min([3, 1, 2])"), 1)
+        self.assertEqual(evaluate("max([3, 1, 2])"), 3)
+        error = self.eval_error("min([])")
+        self.assertIn("min needs at least one value", error.message)
+        self.assertIn("empty", error.why)
+
+    def test_min_and_max_reject_mixed_or_unorderable_types(self) -> None:
+        error = self.eval_error('min(1, "a")')
+        self.assertIn("cannot compare int and string", error.message)
+        self.assertIn("same kind", error.fix)
+        self.assertIn("cannot compare bool with max", self.eval_error("max(true)").message)
+
+    def test_min_and_max_need_at_least_one_argument(self) -> None:
+        self.assertIn("min expects at least 1 argument, got 0",
+                      self.eval_error("min()").message)
+        self.assertIn("max expects at least 1 argument, got 0",
+                      self.eval_error("max()").message)
+
+    # abs
+
+    def test_abs_returns_the_magnitude(self) -> None:
+        self.assertEqual(evaluate("abs(-3)"), 3)
+        self.assertEqual(evaluate("abs(3)"), 3)
+        self.assertEqual(evaluate("abs(-2.5)"), 2.5)
+
+    def test_abs_rejects_non_numbers(self) -> None:
+        error = self.eval_error('abs("x")')
+        self.assertIn("cannot take the absolute value of string", error.message)
+        self.assertIn("abs needs a number", error.why)
+
+    # discovery
+
+    def test_a_misspelled_builtin_is_suggested(self) -> None:
+        error = self.eval_error("lenn([1])")
+        self.assertIn("did you mean 'len'", error.fix)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -5,7 +5,7 @@
     "last_phase": "phase 3",
     "active_phase": 3,
     "status": "in_progress",
-    "updated_at": 1792356931.1153536
+    "updated_at": 1792359943.044705
   },
   "checkpoints": [
     {
@@ -43,6 +43,26 @@
       "status": "in_progress",
       "timestamp": 1792356931.1153536,
       "timestamp_str": "2026-10-18 23:55:31"
+    },
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/6] complete: the evaluator (scopes and scope rules, full operator set with typed error messages, truthiness, short-circuit and/or, if/else, while, for-in, functions, recursion capped at 100 calls, return unwinding, list/string indexing with negative offsets, unknown-name suggestions via difflib, division/power guards, and a deep-chain RecursionError converted into a positioned Pebble error). 85 tests green (40 new evaluator tests). aikit check pebble: 4/4 gates; checklists: passed. Next: [4/6] the nine builtins and value formatting.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792357110.2535586,
+      "timestamp_str": "2026-10-18 23:58:30"
+    },
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/6] complete: the nine builtins (print, len, range, str, int, floor, min, max, abs) in stdlib.py with arity metadata, strict argument rules and positioned EvalErrors; shared value formatting (true/false, none, escaped quoted strings inside lists, <fn>/<builtin> names, float display) in formatting.py; builtins seeded into the global scope and suggested by the unknown-name fixer. ADR-002 fixes builtin semantics and the display form. 24 new failing-first builtin tests; 109 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [5/6] CLI, REPL, examples and README demo.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792359943.044705,
+      "timestamp_str": "2026-10-19 00:45:43"
     }
   ]
 }

@@ -33,12 +33,17 @@ pebble/
 ├── pebble/
 │   ├── __init__.py
 │   ├── errors.py             <- every failure renders file:line:col plus Why and Fix
+│   ├── evaluator.py          <- tree-walking runtime: scopes, control flow, functions
+│   ├── formatting.py         <- type names and the display form of values
 │   ├── lexer.py              <- source text to positioned tokens
 │   ├── nodes.py              <- the AST: frozen nodes with source positions
-│   └── parser.py             <- recursive-descent parser with positioned errors
+│   ├── parser.py             <- recursive-descent parser with positioned errors
+│   └── stdlib.py             <- the nine builtins and their arity rules
 ├── pyproject.toml
 └── tests/
     ├── __init__.py
+    ├── test_builtins.py
+    ├── test_evaluator.py
     ├── test_lexer.py
     └── test_parser.py
 ```
@@ -53,9 +58,10 @@ strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `f
 `return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. Everything not in
 that list is a v1 non-goal and waits for a later task.
 
-Status: milestone [2/6] of `task-pebble-core-v1` — the lexer and the parser/AST are complete and
-tested (45 tests); the evaluator, builtins, CLI and REPL land in later milestones. The plan and
-its checkpoints live in `.aikit/task_ledger.json`.
+Status: milestone [4/6] of `task-pebble-core-v1` — the lexer, parser, evaluator (scopes,
+control flow, functions, recursion) and all nine builtins are complete and tested (109 tests);
+the CLI, REPL and examples land in later milestones. The plan and its checkpoints live in
+`.aikit/task_ledger.json`.
 
 ## 🧪 Running the tests
 
