@@ -1,5 +1,38 @@
 {
   "version": 1,
-  "active_task": null,
-  "checkpoints": []
+  "active_task": {
+    "task_id": "task-pebble-core-v1",
+    "last_phase": "phase 3",
+    "active_phase": 3,
+    "status": "in_progress",
+    "updated_at": 1792356824.3897712
+  },
+  "checkpoints": [
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/6] Plan: zero-dependency Pebble language v1. Frozen surface (recorded in ADR-001 with milestone 1): values int/float/bool/string/list plus none as the absence of a value; statements let, assignment, if/else, while, for-in, fn, return, blocks; operators + - * / % ^, comparisons, and/or/not, calls, indexing, list literals; builtins print, len, range, str, int, floor, min, max, abs; interfaces: file runner, -e, REPL; exit codes 0/1/2; every lexer, parser and runtime error renders file:line:col with Why and Fix. Non-goals: classes, modules, closures, exceptions, unicode identifiers, break/continue, slices, script arguments. Slice boundaries adjusted from the draft so each slice is complete in itself, never a stub: [1] plan, scaffold, ADR-001 and lexer; [2] parser and AST; [3] evaluator core with control flow, functions and return; [4] the nine builtins and value formatting; [5] CLI, REPL, examples and README demo; [6] hardening, error-format meta test, platform and perf guards, Phase 4. Executing milestone 1 now: failing-first lexer tests written; implementation next.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792356749.5148711,
+      "timestamp_str": "2026-10-18 23:52:29",
+      "impact_assessment": {
+        "why": "The hardest-to-fake test of AIKit's governance available: hundreds of objective semantics tests, dozens of error paths that must obey the Why/Fix contract, and maximal scope-creep temptation, so the plan, checkpoint and gate discipline itself is on trial. The result is also a small interpreter later projects can embed as a rules engine.",
+        "benefits": "A green run demonstrates the gates catch semantics, error-quality and platform defects, and that feature-freeze plus M<=6 discipline holds. The user gains a fully owned, dependency-free mini-language with a REPL, examples and a sub-10-second demo.",
+        "risks": "contract: the v1 surface must be frozen by ADR-001 or it grows without bound; grammar and truthiness choices are contracts pinned by tests. dependency: none, standard library only (pathlib, dataclasses, sys, difflib). concurrency: none, single-threaded, no state files, no locks. state: nothing persisted; the interpreter is stateless. platform: explicit UTF-8 reads with BOM tolerance, CRLF tolerance, pathlib only.",
+        "mitigation": "ADR-001 written before semantics; failing-first tests per slice; an error-format meta test in [6/6] proving every error carries file:line:col plus Why and Fix; a perf sanity test; aikit check pebble as Phase 4 before every commit; recursion, type and division failures surface as Pebble errors, never Python tracebacks."
+      }
+    },
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[1/6] complete: scaffold (pyproject, package, tests package), ADR-001 language-surface freeze, and the lexer with 18 green tests (token streams, positions, CRLF, escapes, comments, error paths). ADR-001 records none as the absence of a value; README filled truthfully so the guidelines gate passes. aikit check pebble: 4/4 gates; checklists: passed. Next: [2/6] parser and AST.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792356824.3897712,
+      "timestamp_str": "2026-10-18 23:53:44"
+    }
+  ]
 }

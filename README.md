@@ -1,8 +1,11 @@
 # pebble
 
+A tiny, dependency-free scripting language: lexer, parser, tree-walking evaluator and REPL.
+Built as an AIKit evaluation project — the process is under test as much as the code.
+
 ## ⚡ 30-Second Cold-Start Quick Reference
 
-- **Runtime Prerequisites**: <FILL: each runtime this project needs and its minimum version>
+- **Runtime Prerequisites**: Python 3.10 or newer (developed and tested on Python 3.14); nothing else, standard library only
 - **Canonical Regression Shield Gate**:
   ```bash
   python -m unittest discover
@@ -20,7 +23,45 @@
 
 ```text
 pebble/
-├── .gitignore                <- transient AIKit state excluded
+├── .aikit/
+│   ├── decisions.md          <- ADRs; ADR-001 freezes the v1 language surface
+│   ├── guidelines.md         <- project rules (none yet)
+│   ├── project.json
+│   └── task_ledger.json      <- the task ledger: plan and milestone checkpoints
+├── .gitignore
 ├── README.md
-└── .aikit/                   <- this project's memory: record, ledger, decisions
+├── pebble/
+│   ├── __init__.py
+│   ├── errors.py             <- every failure renders file:line:col plus Why and Fix
+│   └── lexer.py              <- source text to positioned tokens
+├── pyproject.toml
+└── tests/
+    ├── __init__.py
+    └── test_lexer.py
+```
+
+## 🪨 What Pebble is
+
+Pebble is a small scripting language whose errors explain themselves: every failure shows the
+file, line and column, why it happened, and how to fix it.
+
+The v1 surface is frozen in [.aikit/decisions.md](.aikit/decisions.md) (ADR-001): numbers,
+strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `for-in`, `fn`,
+`return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. Everything not in
+that list is a v1 non-goal and waits for a later task.
+
+Status: milestone [1/6] of `task-pebble-core-v1` — the lexer is complete and tested; the parser,
+evaluator, builtins, CLI and REPL land in later milestones. The plan and its checkpoints live in
+`.aikit/task_ledger.json`.
+
+## 🧪 Running the tests
+
+```bash
+python -m unittest discover
+```
+
+Single module, from the project root:
+
+```bash
+python -m unittest tests.test_lexer
 ```
