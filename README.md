@@ -33,11 +33,14 @@ pebble/
 ├── pebble/
 │   ├── __init__.py
 │   ├── errors.py             <- every failure renders file:line:col plus Why and Fix
-│   └── lexer.py              <- source text to positioned tokens
+│   ├── lexer.py              <- source text to positioned tokens
+│   ├── nodes.py              <- the AST: frozen nodes with source positions
+│   └── parser.py             <- recursive-descent parser with positioned errors
 ├── pyproject.toml
 └── tests/
     ├── __init__.py
-    └── test_lexer.py
+    ├── test_lexer.py
+    └── test_parser.py
 ```
 
 ## 🪨 What Pebble is
@@ -50,9 +53,9 @@ strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `f
 `return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. Everything not in
 that list is a v1 non-goal and waits for a later task.
 
-Status: milestone [1/6] of `task-pebble-core-v1` — the lexer is complete and tested; the parser,
-evaluator, builtins, CLI and REPL land in later milestones. The plan and its checkpoints live in
-`.aikit/task_ledger.json`.
+Status: milestone [2/6] of `task-pebble-core-v1` — the lexer and the parser/AST are complete and
+tested (45 tests); the evaluator, builtins, CLI and REPL land in later milestones. The plan and
+its checkpoints live in `.aikit/task_ledger.json`.
 
 ## 🧪 Running the tests
 

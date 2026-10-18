@@ -5,7 +5,7 @@
     "last_phase": "phase 3",
     "active_phase": 3,
     "status": "in_progress",
-    "updated_at": 1792356824.3897712
+    "updated_at": 1792356931.1153536
   },
   "checkpoints": [
     {
@@ -33,6 +33,16 @@
       "status": "in_progress",
       "timestamp": 1792356824.3897712,
       "timestamp_str": "2026-10-18 23:53:44"
+    },
+    {
+      "task_id": "task-pebble-core-v1",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/6] complete: the AST (nodes.py, frozen, every node positioned) and the recursive-descent parser (precedence chain, right-associative power, else-if chains, single-comparison rule, trailing-comma hints, parse-depth guard). 45 tests green; the failing-first run caught one real defect (expression-leading keywords not/true/false/none rejected as statements) which was fixed before green. aikit check pebble: 4/4 gates; checklists: passed. Next: [3/6] evaluator core with control flow, functions and return.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792356931.1153536,
+      "timestamp_str": "2026-10-18 23:55:31"
     }
   ]
 }
