@@ -9,8 +9,8 @@
 - **Total Python Modules**: `18`
 - **Total Classes**: `44`
 - **Total Top-Level Functions**: `49`
-- **Total Class Methods**: `256`
-- **Total Source Lines**: `3112`
+- **Total Class Methods**: `260`
+- **Total Source Lines**: `3137`
 
 ---
 
@@ -75,7 +75,7 @@
 ### [`pebble/evaluator.py`](pebble/evaluator.py)
 > *Tree-walking evaluator: the runtime semantics of Pebble.*
 
-**Size**: `514` lines (`25449` bytes)
+**Size**: `518` lines (`25766` bytes)
 
 **Classes:**
 - `class _Return` - *Internal signal carrying a `return` value out of nested blocks; never escapes run().*
@@ -85,7 +85,7 @@
 - `class PebbleFunction` - *A function defined with `fn`: a name, parameters and a body; no closures in v1.*
   - Method `.__init__(name, params, body)`
 - `class Interpreter` - *Runs a parsed program; `out` is the stream the builtins write to.*
-  - Method `.__init__(out)`
+  - Method `.__init__(out, args)`
   - Method `.run(program)` - *Execute a whole program; returns the last statement's value (none for most).*
   - Method `.execute(statement)` - *One statement; only expression statements carry a value.*
   - Method `.evaluate(expression)` - *One expression, recursively; every failure is an EvalError with the node's position.*
@@ -359,7 +359,7 @@
 ### [`tests/test_evaluator.py`](tests/test_evaluator.py)
 > *Evaluator tests: semantics, scoping, control flow, functions and runtime errors.*
 
-**Size**: `279` lines (`12488` bytes)
+**Size**: `300` lines (`13505` bytes)
 
 **Classes:**
 - `class EvaluatorTests` - *One behaviour per test; messages, positions and types are asserted, not just raised.*
@@ -414,9 +414,13 @@
   - Method `.test_slice_bounds_must_be_ints_and_bools_are_refused()`
   - Method `.test_only_lists_and_strings_can_be_sliced()`
   - Method `.test_a_very_deep_expression_chain_is_a_pebble_error()`
+  - Method `.test_args_defaults_to_empty_list()`
+  - Method `.test_args_passed_to_interpreter_are_accessible_as_strings()`
+  - Method `.test_args_can_be_iterated_in_for_loop()`
+  - Method `.test_calling_args_gives_a_helpful_fix()`
 
 **Functions:**
-- `def run(source, out)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
+- `def run(source, out, args)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
 
 ---
 

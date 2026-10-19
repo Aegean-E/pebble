@@ -14,11 +14,11 @@ FIBONACCI = (
 )
 
 
-def run(source: str, out=None):
+def run(source: str, out=None, args=None):
     """Evaluate `source` with a fresh interpreter; the last statement's value comes back."""
     if out is None:
         out = StringIO()
-    return Interpreter(out=out).run(parse(tokenize(source)))
+    return Interpreter(out=out, args=args).run(parse(tokenize(source)))
 
 
 class EvaluatorTests(unittest.TestCase):
@@ -273,6 +273,27 @@ class EvaluatorTests(unittest.TestCase):
     def test_a_very_deep_expression_chain_is_a_pebble_error(self) -> None:
         error = self.eval_error("1" + " + 1" * 20000)
         self.assertIn("nests too deeply", error.message)
+
+    # script arguments ('args')
+
+    def test_args_defaults_to_empty_list(self) -> None:
+        self.assertEqual(run("args"), [])
+        self.assertEqual(run("len(args)"), 0)
+
+    def test_args_passed_to_interpreter_are_accessible_as_strings(self) -> None:
+        self.assertEqual(run("args[0]", args=["first", "second"]), "first")
+        self.assertEqual(run("args[1]", args=["first", "second"]), "second")
+        self.assertEqual(run("len(args)", args=["a", "b", "c"]), 3)
+        self.assertEqual(run("args[1:]", args=["a", "b", "c"]), ["b", "c"])
+
+    def test_args_can_be_iterated_in_for_loop(self) -> None:
+        code = 'let res = ""\nfor a in args { res = res + a + "," }\nres'
+        self.assertEqual(run(code, args=["one", "two"]), "one,two,")
+
+    def test_calling_args_gives_a_helpful_fix(self) -> None:
+        error = self.eval_error("args()")
+        self.assertIn("cannot call list", error.message)
+        self.assertIn("'args' is already a list of strings", error.fix)
 
 
 if __name__ == "__main__":

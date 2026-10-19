@@ -62,9 +62,10 @@ def _equal(left, right) -> bool:
 class Interpreter:
     """Runs a parsed program; `out` is the stream the builtins write to."""
 
-    def __init__(self, out=None) -> None:
+    def __init__(self, out=None, args=None) -> None:
         self.out = out if out is not None else sys.stdout
         self.globals: dict[str, object] = dict(BUILTINS)
+        self.globals["args"] = [str(a) for a in args] if args is not None else []
         self.frames: list[dict[str, object]] = []
         self.call_depth = 0
         self._at = None
@@ -453,9 +454,12 @@ class Interpreter:
             return self._call_builtin(expression, callee)
         if isinstance(callee, PebbleFunction):
             return self._call_function(expression, callee)
+        fix = "call a function, or remove the parentheses"
+        if isinstance(expression.callee, nodes.Name) and expression.callee.identifier == "args":
+            fix = "'args' is already a list of strings; index it with args[0] or iterate with for a in args"
         self._fail(expression, f"cannot call {type_name(callee)}",
                    "only a function or builtin can be called",
-                   "call a function, or remove the parentheses")
+                   fix)
 
     def _call_builtin(self, expression, builtin: Builtin) -> object:
         """Check the builtin's arity, evaluate its arguments, then run it."""

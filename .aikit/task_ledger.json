@@ -1,12 +1,11 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v2-conveniences",
+    "task_id": "task-pebble-v3-script-args",
     "last_phase": "phase 3",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1792433115.9866502,
-    "completed_at": 1792433126.9890707
+    "active_phase": 3,
+    "status": "in_progress",
+    "updated_at": 1792439798.5892973
   },
   "checkpoints": [
     {
@@ -158,6 +157,32 @@
       "status": "completed",
       "timestamp": 1792433126.989072,
       "timestamp_str": "2026-10-19 21:05:26"
+    },
+    {
+      "task_id": "task-pebble-v3-script-args",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] ADR-005 and evaluator core: Interpreter(out=None, args=None) seeds global 'args' list of strings (defaults to []), friendly fix when attempting to call args(), failing-first evaluator tests; [2/3] CLI and runner integration: parse arguments after FILE, -e SOURCE, stdin -, and -- option terminator, passing string args to Interpreter; update test_cli.py with failing-first CLI argument tests; [3/3] demo script in examples/, test_hardening corpora check, README updates, regenerated codebase map, full aikit check pebble, delivery",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792439705.1385448,
+      "timestamp_str": "2026-10-19 22:55:05",
+      "impact_assessment": {
+        "why": "Pebble scripts currently cannot access command-line arguments, limiting automation and scripting utility; adding script arguments via a global 'args' string list provides idiomatic CLI parameterization while keeping the language surface minimal and dependency-free",
+        "benefits": "Scripts can read arguments via 'args[0]', 'len(args)', slices, and for-in loops; CLI runner supports passing arguments after script path, -e code, and via stdin or '--' option delimiter; preserves the three-line positioned error contract",
+        "risks": "contract: language surface and CLI option parsing change, requiring ADR-005; dependency: standard library only; concurrency: none, single-threaded execution; state: no persistent state",
+        "mitigation": "ADR-005 recorded before code; backward-compatible Interpreter signature; failing-first tests per milestone; 100% test pass and full aikit check pebble gate before each commit"
+      }
+    },
+    {
+      "task_id": "task-pebble-v3-script-args",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[1/3] complete: ADR-005 records script arguments contract; Interpreter(out=None, args=None) seeds global 'args' list with string args; calling args() provides helpful positioned error fix; 4 new failing-first evaluator tests (170 tests green). aikit check pebble: 4/4 gates; checklists: passed. Next: [2/3] CLI and runner integration.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792439798.5892973,
+      "timestamp_str": "2026-10-19 22:56:38"
     }
   ]
 }
