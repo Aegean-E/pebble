@@ -10,7 +10,7 @@
 - **Total Classes**: `44`
 - **Total Top-Level Functions**: `49`
 - **Total Class Methods**: `264`
-- **Total Source Lines**: `3167`
+- **Total Source Lines**: `3168`
 
 ---
 
@@ -431,7 +431,7 @@
 ### [`tests/test_hardening.py`](tests/test_hardening.py)
 > *Hardening tests: error-format contract, resource guards, platform parity and performance.*
 
-**Size**: `214` lines (`8179` bytes)
+**Size**: `215` lines (`8193` bytes)
 
 **Classes:**
 - `class ErrorFormatTests` - *Every error kind carries a position, a reason and a fix, and renders as three lines.*

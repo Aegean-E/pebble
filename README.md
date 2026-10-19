@@ -39,6 +39,7 @@ pebble/
 ├── README.md
 ├── examples/
 │   ├── hello.peb
+│   ├── greet.peb
 │   ├── fizzbuzz.peb
 │   └── fibonacci.peb
 ├── pebble/
@@ -74,13 +75,15 @@ strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `f
 `return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. ADR-002 fixes the
 builtin semantics and the display form that `print` and `str` share. The v2 increment (ADR-004)
 adds `break`/`continue`, list and string slices, `range` with a step, and `float()` as the tenth
-builtin; everything else outside those lists waits for a later task.
+builtin. ADR-005 adds command-line script arguments accessible through the global `args` list of
+strings; everything else outside those lists waits for a later task.
 
-Status: `task-pebble-core-v1` and `task-pebble-v2-conveniences` are complete (166 tests):
-`break`/`continue`, slices, `range` with a step and `float()` extend the frozen v1 surface as
-ADR-004 records. The plan and its checkpoints live in `.aikit/task_ledger.json`.
+Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, and `task-pebble-v3-script-args`
+are complete (174 tests): script arguments via `args`, `break`/`continue`, slices, `range` with
+a step and `float()` extend the frozen v1 surface as ADR-004 and ADR-005 record. The plan and its
+checkpoints live in `.aikit/task_ledger.json`.
 
-Pebble stays deliberately bounded (ADR-003, in force for v2): calls nest at most 100 deep, integer
+Pebble stays deliberately bounded (ADR-003, in force for v2 and v3): calls nest at most 100 deep, integer
 exponents stop at 10,000, integers stay near 4,000 digits, ranges and repeated sequences at
 1,000,000 values, and an unexpected host failure still renders as a three-line Pebble report
 rather than a traceback.
@@ -89,9 +92,11 @@ rather than a traceback.
 
 ```bash
 python -m pebble examples/fizzbuzz.peb   # run a file
-python -m pebble -e "print(2 ^ 10)"      # run a command-line program
+python -m pebble examples/greet.peb Alice Bob # pass arguments into 'args'
+python -m pebble -e "print(args[0])" hi  # run a command-line program with arguments
 python -m pebble                         # REPL on a terminal; piped input runs as a program
 ```
+
 
 Exit codes are part of the contract: `0` success, `1` a lexer, parser or runtime error, `2` a
 usage or file error. On a terminal the REPL keeps one interpreter alive between inputs, waits for

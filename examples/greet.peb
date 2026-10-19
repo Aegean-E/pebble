@@ -1,0 +1,8 @@
+# Greet a name passed as a script argument, or fall back to a default.
+if len(args) == 0 {
+    print("Hello, world! (pass names as arguments: pebble examples/greet.peb Alice Bob)")
+} else {
+    for name in args {
+        print("Hello, " + name + "!")
+    }
+}

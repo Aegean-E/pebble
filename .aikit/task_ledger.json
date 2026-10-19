@@ -3,9 +3,10 @@
   "active_task": {
     "task_id": "task-pebble-v3-script-args",
     "last_phase": "phase 3",
-    "active_phase": 3,
-    "status": "in_progress",
-    "updated_at": 1792439909.132291
+    "active_phase": 5,
+    "status": "completed",
+    "updated_at": 1792439984.6140451,
+    "completed_at": 1792439994.0217245
   },
   "checkpoints": [
     {
@@ -193,6 +194,25 @@
       "status": "in_progress",
       "timestamp": 1792439909.132291,
       "timestamp_str": "2026-10-19 22:58:29"
+    },
+    {
+      "task_id": "task-pebble-v3-script-args",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/3] complete: added greet.peb example, added args() to test_hardening runtime error corpus, updated README.md, regenerated codebase map; 174 tests green; aikit check pebble: 4/4 gates; checklists: passed. Task complete.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792439984.6140451,
+      "timestamp_str": "2026-10-19 22:59:44"
+    },
+    {
+      "task_id": "task-pebble-v3-script-args",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v3-script-args' completed successfully.",
+      "status": "completed",
+      "timestamp": 1792439994.0217266,
+      "timestamp_str": "2026-10-19 22:59:54"
     }
   ]
 }
