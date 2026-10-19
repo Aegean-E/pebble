@@ -86,6 +86,18 @@ class Index:
 
 
 @dataclass(frozen=True)
+class Slice:
+    """A `target[start:stop:step]` subsequence; None marks an omitted part."""
+
+    target: Expr
+    start: Optional[Expr]
+    stop: Optional[Expr]
+    step: Optional[Expr]
+    line: int
+    col: int
+
+
+@dataclass(frozen=True)
 class Let:
     """`let name = value`, declaring or rebinding in the current scope."""
 
@@ -182,6 +194,6 @@ class ContinueStmt:
     col: int
 
 
-Expr = Union[Literal, ListLiteral, Name, Unary, Binary, Logical, Call, Index]
+Expr = Union[Literal, ListLiteral, Name, Unary, Binary, Logical, Call, Index, Slice]
 Statement = Union[Let, Assign, ExprStmt, IfStmt, WhileStmt, ForStmt, FnStmt, ReturnStmt,
                   BreakStmt, ContinueStmt]

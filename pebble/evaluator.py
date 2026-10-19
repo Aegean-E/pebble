@@ -140,6 +140,8 @@ class Interpreter:
             return self._evaluate_call(expression)
         if isinstance(expression, nodes.Index):
             return self._evaluate_index(expression)
+        if isinstance(expression, nodes.Slice):
+            return self._evaluate_slice(expression)
         raise AssertionError(f"unhandled expression: {type(expression).__name__}")
 
     # statements
@@ -416,6 +418,33 @@ class Interpreter:
                        f"-{length} to {length - 1}",
                        "check the index, or the length with len(...)")
         return target[index]
+
+    def _evaluate_slice(self, expression) -> object:
+        """`target[start:stop:step]` on lists and strings, with Python-style bounds."""
+        target = self.evaluate(expression.target)
+        if not isinstance(target, (list, str)):
+            self._fail(expression, f"cannot slice {type_name(target)}",
+                       "only lists and strings have subsequences",
+                       "slice a list or a string")
+        start = self._slice_part(expression.start, "start")
+        stop = self._slice_part(expression.stop, "stop")
+        step = self._slice_part(expression.step, "step")
+        if step == 0:
+            self._fail(expression.step, "slice step cannot be zero",
+                       "a step of zero would never advance through the sequence",
+                       "use a step of 1, or a negative step to walk backwards")
+        return target[start:stop:step]
+
+    def _slice_part(self, node, role: str):
+        """One optional slice part: an int, evaluated only when it is present."""
+        if node is None:
+            return None
+        value = self.evaluate(node)
+        if isinstance(value, bool) or not isinstance(value, int):
+            self._fail(node, f"slice {role} must be an int, got {type_name(value)}",
+                       "start, stop and step are whole-number positions",
+                       "use int bounds, for example xs[1:3]")
+        return value
 
     def _evaluate_call(self, expression) -> object:
         """A builtin or a defined function can be called."""

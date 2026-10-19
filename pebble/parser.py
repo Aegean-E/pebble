@@ -14,7 +14,9 @@ The grammar, loosest binding first:
     multiplicative := unary (("*" | "/" | "%") unary)*
     unary          := "-" unary | power
     power          := postfix ("^" unary)?                -- right-associative
-    postfix        := primary ("(" arguments ")" | "[" expression "]")*
+    postfix        := primary ("(" arguments ")" | "[" subscript "]")*
+    subscript      := expression | slice
+    slice          := [expression] ":" [expression] [":" [expression]]
     primary        := NUMBER | STRING | "true" | "false" | "none" | NAME | list | "(" expression ")"
 """
 
@@ -286,12 +288,35 @@ class _Parser:
                 expression = nodes.Call(expression, tuple(args), opening.line, opening.col)
             elif self.match("OP", "["):
                 opening = self.previous()
-                index = self.parse_expression()
-                self.expect("OP", "']' to close the index", "close the index with a ]",
-                            value="]")
-                expression = nodes.Index(expression, index, opening.line, opening.col)
+                expression = self._parse_subscript(expression, opening)
             else:
                 return expression
+
+    def _parse_subscript(self, target, opening):
+        """One subscript: an index, or a `start:stop[:step]` slice."""
+        if self.match("OP", ":"):
+            return self._finish_slice(target, opening, None)
+        first = self.parse_expression()
+        if self.match("OP", ":"):
+            return self._finish_slice(target, opening, first)
+        self.expect("OP", "']' to close the index", "close the index with a ]", value="]")
+        return nodes.Index(target, first, opening.line, opening.col)
+
+    def _finish_slice(self, target, opening, start):
+        """The stop and step after the first colon, then the closing bracket."""
+        if self.check("OP", "]") or self.check("OP", ":"):
+            stop = None
+        else:
+            stop = self.parse_expression()
+        step = None
+        if self.match("OP", ":"):
+            if not self.check("OP", "]"):
+                step = self.parse_expression()
+            self.expect("OP", "']' to close the slice",
+                        "a slice has at most three parts: start:stop:step", value="]")
+        else:
+            self.expect("OP", "']' to close the slice", "close the slice with a ]", value="]")
+        return nodes.Slice(target, start, stop, step, opening.line, opening.col)
 
     def parse_primary(self):
         """Literals, names, calls' heads, groups and list constructors."""

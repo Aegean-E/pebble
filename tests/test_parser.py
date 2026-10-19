@@ -25,6 +25,9 @@ def render(node) -> str:
         return f"(call {render(node.callee)}{args})"
     if isinstance(node, nodes.Index):
         return f"(index {render(node.target)} {render(node.index)})"
+    if isinstance(node, nodes.Slice):
+        return (f"(slice {render(node.target)} {_optional(node.start)} "
+                f"{_optional(node.stop)} {_optional(node.step)})")
     if isinstance(node, nodes.Let):
         return f"(let {node.name} {render(node.value)})"
     if isinstance(node, nodes.Assign):
@@ -57,6 +60,11 @@ def _literal(value) -> str:
     if value is False:
         return "false"
     return repr(value)
+
+
+def _optional(node) -> str:
+    """A slice part that may be omitted renders as `_`."""
+    return "_" if node is None else render(node)
 
 
 def _body(statements: tuple) -> str:
@@ -112,6 +120,24 @@ class ParserTests(unittest.TestCase):
 
     def test_calls_chain(self) -> None:
         self.assertEqual(render_all("f(1)(2)[3]"), ["(index (call (call f 1) 2) 3)"])
+
+    def test_slices_parse_with_omitted_parts(self) -> None:
+        self.assertEqual(render_all("xs[:]"), ["(slice xs _ _ _)"])
+        self.assertEqual(render_all("xs[1:]"), ["(slice xs 1 _ _)"])
+        self.assertEqual(render_all("xs[:2]"), ["(slice xs _ 2 _)"])
+        self.assertEqual(render_all("xs[1:2]"), ["(slice xs 1 2 _)"])
+        self.assertEqual(render_all("xs[1:2:3]"), ["(slice xs 1 2 3)"])
+        self.assertEqual(render_all("xs[::2]"), ["(slice xs _ _ 2)"])
+        self.assertEqual(render_all("xs[1::2]"), ["(slice xs 1 _ 2)"])
+
+    def test_a_subscript_without_a_colon_stays_an_index(self) -> None:
+        self.assertEqual(render_all("xs[1]"), ["(index xs 1)"])
+        self.assertEqual(render_all("xs[1:2][0]"), ["(index (slice xs 1 2 _) 0)"])
+
+    def test_a_slice_has_at_most_three_parts(self) -> None:
+        error = self.parse_error("xs[1:2:3:4]")
+        self.assertIn("at most three", error.fix)
+        self.assertEqual((error.line, error.col), (1, 9))
 
     def test_if_else_and_else_if(self) -> None:
         self.assertEqual(render_all("if a { 1 } else if b { 2 } else { 3 }"),

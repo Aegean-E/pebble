@@ -13,11 +13,10 @@ from .limits import MAX_INT_DIGITS
 KEYWORDS = frozenset({"let", "if", "else", "while", "for", "in", "fn", "return",
                       "break", "continue", "true", "false", "none", "and", "or", "not"})
 TWO_CHAR_OPERATORS = frozenset({"==", "!=", "<=", ">="})
-ONE_CHAR_OPERATORS = frozenset("+-*/%^<>=(){}[],")
+ONE_CHAR_OPERATORS = frozenset("+-*/%^<>=(){}[],:")
 ESCAPES = {"n": "\n", "t": "\t", "r": "\r", "\\": "\\", '"': '"', "'": "'"}
 CHARACTER_HINTS = {
     ";": "Pebble statements need no separator; remove the ';'",
-    ":": "v1 has no type annotations or dict literals; remove the ':'",
     "&": "write 'and' for logical and",
     "|": "write 'or' for logical or",
     "!": "write 'not' for logical not, or '!=' for not-equal",

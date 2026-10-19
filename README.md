@@ -30,6 +30,7 @@ Built as an AIKit evaluation project — the process is under test as much as th
 ```text
 pebble/
 ├── .aikit/
+│   ├── codebase_map.md       <- generated symbol map, checked on every gate run
 │   ├── decisions.md          <- ADRs: surface, builtins, and resource limits
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── project.json
@@ -76,7 +77,7 @@ adds `break`/`continue`, list and string slices, `range` with a step, and `float
 else outside those lists waits for a later task.
 
 Status: `task-pebble-core-v1` is complete (142 tests) and `task-pebble-v2-conveniences` is at
-milestone [1/4]: `break`/`continue` are done, and slices, `range` with a step and `float()`
+milestone [2/4]: `break`/`continue` and slices are done, and `range` with a step and `float()`
 follow. The plan and its checkpoints live in `.aikit/task_ledger.json`.
 
 v1 is deliberately bounded (ADR-003): calls nest at most 100 deep, integer exponents stop at

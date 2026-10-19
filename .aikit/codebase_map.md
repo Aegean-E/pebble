@@ -7,10 +7,10 @@
 
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `18`
-- **Total Classes**: `43`
-- **Total Top-Level Functions**: `46`
-- **Total Class Methods**: `237`
-- **Total Source Lines**: `2888`
+- **Total Classes**: `44`
+- **Total Top-Level Functions**: `47`
+- **Total Class Methods**: `250`
+- **Total Source Lines**: `3018`
 
 ---
 
@@ -75,7 +75,7 @@
 ### [`pebble/evaluator.py`](pebble/evaluator.py)
 > *Tree-walking evaluator: the runtime semantics of Pebble.*
 
-**Size**: `485` lines (`23933` bytes)
+**Size**: `514` lines (`25449` bytes)
 
 **Classes:**
 - `class _Return` - *Internal signal carrying a `return` value out of nested blocks; never escapes run().*
@@ -109,6 +109,8 @@
   - Method `._check_int(expression, value)` - *Refuse an int above the digit cap so arithmetic and printing stay bounded.*
   - Method `._order(expression, left, right)` - *`< <= > >=` on two numbers or two strings.*
   - Method `._evaluate_index(expression)` - *`target[index]` on lists and strings, with negative offsets and length in errors.*
+  - Method `._evaluate_slice(expression)` - *`target[start:stop:step]` on lists and strings, with Python-style bounds.*
+  - Method `._slice_part(node, role)` - *One optional slice part: an int, evaluated only when it is present.*
   - Method `._evaluate_call(expression)` - *A builtin or a defined function can be called.*
   - Method `._call_builtin(expression, builtin)` - *Check the builtin's arity, evaluate its arguments, then run it.*
   - Method `._call_function(expression, function)` - *Arity check, depth check, a fresh frame for the parameters, then the body.*
@@ -136,7 +138,7 @@
 ### [`pebble/lexer.py`](pebble/lexer.py)
 > *Pebble lexer: source text to tokens carrying 1-based line and column positions.*
 
-**Size**: `202` lines (`8711` bytes)
+**Size**: `201` lines (`8640` bytes)
 
 **Classes:**
 - `class Token` - *One lexical unit; `value` is the payload for numbers and strings, else the token text.*
@@ -169,7 +171,7 @@
 ### [`pebble/nodes.py`](pebble/nodes.py)
 > *Pebble's abstract syntax tree: frozen nodes, each carrying the position it started at.*
 
-**Size**: `187` lines (`3567` bytes)
+**Size**: `199` lines (`3813` bytes)
 
 **Classes:**
 - `class Literal` - *A constant: int, float, bool, string, or none (stored as None).*
@@ -180,6 +182,7 @@
 - `class Logical` - *`and` / `or`, kept apart from Binary so the evaluator can short-circuit.*
 - `class Call` - *Calling a function or builtin; the position is the opening parenthesis.*
 - `class Index` - *Indexing a list or string; the position is the opening bracket.*
+- `class Slice` - *A `target[start:stop:step]` subsequence; None marks an omitted part.*
 - `class Let` - *`let name = value`, declaring or rebinding in the current scope.*
 - `class Assign` - *`name = value`, rebinding a name that already exists.*
 - `class ExprStmt` - *An expression used as a statement; its value is the REPL's echo.*
@@ -196,7 +199,7 @@
 ### [`pebble/parser.py`](pebble/parser.py)
 > *Pebble's recursive-descent parser: tokens in, AST out, positioned errors throughout.*
 
-**Size**: `386` lines (`17569` bytes)
+**Size**: `411` lines (`18753` bytes)
 
 **Classes:**
 - `class _Parser` - *One parse of one token stream; every error carries the offending token's position.*
@@ -224,6 +227,8 @@
   - Method `.parse_unary()` - *A single unary minus; `--x` via recursion, `-2 ^ 2` reads as `-(2 ^ 2)`.*
   - Method `.parse_power()` - *`^`, right-associative: `2 ^ 3 ^ 2` is `2 ^ (3 ^ 2)`.*
   - Method `.parse_postfix()` - *Calls and indexing chain left-to-right: `f(1)(2)[3]`.*
+  - Method `._parse_subscript(target, opening)` - *One subscript: an index, or a `start:stop[:step]` slice.*
+  - Method `._finish_slice(target, opening, start)` - *The stop and step after the first colon, then the closing bracket.*
   - Method `.parse_primary()` - *Literals, names, calls' heads, groups and list constructors.*
   - Method `.peek()` - *The token at the cursor without consuming it.*
   - Method `.previous()` - *The most recently consumed token.*
@@ -346,7 +351,7 @@
 ### [`tests/test_evaluator.py`](tests/test_evaluator.py)
 > *Evaluator tests: semantics, scoping, control flow, functions and runtime errors.*
 
-**Size**: `244` lines (`10719` bytes)
+**Size**: `279` lines (`12488` bytes)
 
 **Classes:**
 - `class EvaluatorTests` - *One behaviour per test; messages, positions and types are asserted, not just raised.*
@@ -394,6 +399,12 @@
   - Method `.test_indexing_lists_and_strings_with_negative_offsets()`
   - Method `.test_index_out_of_range_shows_the_length()`
   - Method `.test_index_must_be_an_integer_and_a_sequence()`
+  - Method `.test_slicing_lists_and_strings()`
+  - Method `.test_slice_bounds_may_be_negative_and_are_clamped()`
+  - Method `.test_slice_step_walks_and_can_reverse()`
+  - Method `.test_slice_step_zero_is_an_error()`
+  - Method `.test_slice_bounds_must_be_ints_and_bools_are_refused()`
+  - Method `.test_only_lists_and_strings_can_be_sliced()`
   - Method `.test_a_very_deep_expression_chain_is_a_pebble_error()`
 
 **Functions:**
@@ -404,7 +415,7 @@
 ### [`tests/test_hardening.py`](tests/test_hardening.py)
 > *Hardening tests: error-format contract, resource guards, platform parity and performance.*
 
-**Size**: `208` lines (`8070` bytes)
+**Size**: `212` lines (`8139` bytes)
 
 **Classes:**
 - `class ErrorFormatTests` - *Every error kind carries a position, a reason and a fix, and renders as three lines.*
@@ -475,7 +486,7 @@
 ### [`tests/test_parser.py`](tests/test_parser.py)
 > *Parser tests: AST shapes for precedence and statements, and every parse-error path.*
 
-**Size**: `208` lines (`8756` bytes)
+**Size**: `234` lines (`10058` bytes)
 
 **Classes:**
 - `class ParserTests` - *AST shape and error position, one behaviour per test.*
@@ -490,6 +501,9 @@
   - Method `.test_let_and_assignment()`
   - Method `.test_list_literals_and_indexing()`
   - Method `.test_calls_chain()`
+  - Method `.test_slices_parse_with_omitted_parts()`
+  - Method `.test_a_subscript_without_a_colon_stays_an_index()`
+  - Method `.test_a_slice_has_at_most_three_parts()`
   - Method `.test_if_else_and_else_if()`
   - Method `.test_if_without_else()`
   - Method `.test_while_loop()`
@@ -515,6 +529,7 @@
 **Functions:**
 - `def render(node)` - *A compact parenthesised form of one AST node, for readable assertions.*
 - `def _literal(value)` - *How a literal renders in the sexpr form.*
+- `def _optional(node)` - *A slice part that may be omitted renders as `_`.*
 - `def _body(statements)` - *A block renders as { statement statement }.*
 - `def render_all(source)` - *Every statement of `source` in sexpr form.*
 

@@ -235,6 +235,41 @@ class EvaluatorTests(unittest.TestCase):
         self.assertIn("cannot index with string", self.eval_error('"abc"["1"]').message)
         self.assertIn("cannot index int", self.eval_error("5[0]").message)
 
+    def test_slicing_lists_and_strings(self) -> None:
+        self.assertEqual(run("[10, 20, 30, 40][1:3]"), [20, 30])
+        self.assertEqual(run('"abcd"[1:3]'), "bc")
+        self.assertEqual(run("[1, 2, 3][:]"), [1, 2, 3])
+        self.assertEqual(run('"abc"[:]'), "abc")
+
+    def test_slice_bounds_may_be_negative_and_are_clamped(self) -> None:
+        self.assertEqual(run("[1, 2, 3, 4][-2:]"), [3, 4])
+        self.assertEqual(run("[1, 2, 3, 4][:3]"), [1, 2, 3])
+        self.assertEqual(run("[1, 2, 3][5:9]"), [])
+        self.assertEqual(run('"abcd"[-2:]'), "cd")
+        self.assertEqual(run('"abcd"[2:99]'), "cd")
+
+    def test_slice_step_walks_and_can_reverse(self) -> None:
+        self.assertEqual(run("[0, 1, 2, 3, 4][::2]"), [0, 2, 4])
+        self.assertEqual(run("[0, 1, 2, 3, 4][::-1]"), [4, 3, 2, 1, 0])
+        self.assertEqual(run('"abcd"[1:4:2]'), "bd")
+
+    def test_slice_step_zero_is_an_error(self) -> None:
+        error = self.eval_error("[1, 2][0:2:0]")
+        self.assertIn("slice step cannot be zero", error.message)
+        self.assertIn("never advance", error.why)
+
+    def test_slice_bounds_must_be_ints_and_bools_are_refused(self) -> None:
+        self.assertIn("slice start must be an int, got float",
+                      self.eval_error('"abc"[1.5:]').message)
+        self.assertIn("slice stop must be an int, got bool",
+                      self.eval_error("[1][:true]").message)
+        self.assertIn("slice step must be an int, got float",
+                      self.eval_error("[1][::1.5]").message)
+
+    def test_only_lists_and_strings_can_be_sliced(self) -> None:
+        self.assertIn("cannot slice none", self.eval_error("none[1:]").message)
+        self.assertIn("cannot slice int", self.eval_error("5[1:]").message)
+
     def test_a_very_deep_expression_chain_is_a_pebble_error(self) -> None:
         error = self.eval_error("1" + " + 1" * 20000)
         self.assertIn("nests too deeply", error.message)
