@@ -3,9 +3,10 @@
   "active_task": {
     "task_id": "task-pebble-v2-conveniences",
     "last_phase": "phase 3",
-    "active_phase": 3,
-    "status": "in_progress",
-    "updated_at": 1792433021.7921283
+    "active_phase": 5,
+    "status": "completed",
+    "updated_at": 1792433115.9866502,
+    "completed_at": 1792433126.9890707
   },
   "checkpoints": [
     {
@@ -138,6 +139,25 @@
       "status": "in_progress",
       "timestamp": 1792433021.7921283,
       "timestamp_str": "2026-10-19 21:03:41"
+    },
+    {
+      "task_id": "task-pebble-v2-conveniences",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/4] complete: README tree, status and v2 wording align with the code; codebase map regenerated; full aikit check pebble run: 4/4 gates (test 166 green, hygiene, guidelines, secrets); checklists: passed. Task complete.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792433115.9866502,
+      "timestamp_str": "2026-10-19 21:05:15"
+    },
+    {
+      "task_id": "task-pebble-v2-conveniences",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v2-conveniences' completed successfully.",
+      "status": "completed",
+      "timestamp": 1792433126.989072,
+      "timestamp_str": "2026-10-19 21:05:26"
     }
   ]
 }

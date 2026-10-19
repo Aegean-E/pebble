@@ -31,7 +31,7 @@ Built as an AIKit evaluation project — the process is under test as much as th
 pebble/
 ├── .aikit/
 │   ├── codebase_map.md       <- generated symbol map, checked on every gate run
-│   ├── decisions.md          <- ADRs: surface, builtins, and resource limits
+│   ├── decisions.md          <- ADRs: surface, builtins, limits and v2 additions
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── project.json
 │   └── task_ledger.json      <- the task ledger: plan and milestone checkpoints
@@ -71,15 +71,14 @@ file, line and column, why it happened, and how to fix it.
 
 The v1 surface is frozen in [.aikit/decisions.md](.aikit/decisions.md) (ADR-001): numbers,
 strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `for-in`, `fn`,
-`return`; a small operator set; ten builtins; a file runner, `-e` and a REPL. ADR-002 fixes the
+`return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. ADR-002 fixes the
 builtin semantics and the display form that `print` and `str` share. The v2 increment (ADR-004)
-adds `break`/`continue`, list and string slices, `range` with a step, and `float()`; everything
-else outside those lists waits for a later task.
+adds `break`/`continue`, list and string slices, `range` with a step, and `float()` as the tenth
+builtin; everything else outside those lists waits for a later task.
 
-Status: `task-pebble-core-v1` is complete (142 tests) and `task-pebble-v2-conveniences` is at
-milestone [3/4]: `break`/`continue`, slices, `range` with a step and `float()` are done; only the
-final docs, map and verification pass remain. The plan and its checkpoints live in
-`.aikit/task_ledger.json`.
+Status: `task-pebble-core-v1` and `task-pebble-v2-conveniences` are complete (166 tests):
+`break`/`continue`, slices, `range` with a step and `float()` extend the frozen v1 surface as
+ADR-004 records. The plan and its checkpoints live in `.aikit/task_ledger.json`.
 
 Pebble stays deliberately bounded (ADR-003, in force for v2): calls nest at most 100 deep, integer
 exponents stop at 10,000, integers stay near 4,000 digits, ranges and repeated sequences at
