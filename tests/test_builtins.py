@@ -1,4 +1,4 @@
-"""Builtin tests: the nine v1 builtins, their errors and the display form of values."""
+"""Builtin tests: the ten builtins, their errors and the display form of values."""
 
 import unittest
 from io import StringIO
@@ -86,11 +86,29 @@ class BuiltinTests(unittest.TestCase):
         self.assertIn("range needs int arguments, got bool",
                       self.eval_error("range(true)").message)
 
-    def test_range_arity_is_one_or_two(self) -> None:
-        self.assertIn("range expects 1 or 2 arguments, got 0",
+    def test_range_accepts_a_step(self) -> None:
+        self.assertEqual(evaluate("range(0, 10, 3)"), [0, 3, 6, 9])
+        self.assertEqual(evaluate("range(3, 0, -1)"), [3, 2, 1])
+        self.assertEqual(evaluate("range(0, 5, -1)"), [])
+        self.assertEqual(evaluate("range(5, 0, 2)"), [])
+        self.assertEqual(evaluate("range(0, 10, 100)"), [0])
+
+    def test_range_step_must_not_be_zero(self) -> None:
+        error = self.eval_error("range(0, 5, 0)")
+        self.assertIn("range step cannot be zero", error.message)
+        self.assertIn("never advance", error.why)
+
+    def test_a_stepped_range_is_still_length_capped(self) -> None:
+        error = self.eval_error("range(0, 2000001)")
+        self.assertIn("range would produce 2000001 values", error.message)
+        error = self.eval_error("range(2000001, 0, -1)")
+        self.assertIn("range would produce 2000001 values", error.message)
+
+    def test_range_arity_is_one_to_three(self) -> None:
+        self.assertIn("range expects 1 to 3 arguments, got 0",
                       self.eval_error("range()").message)
-        self.assertIn("range expects 1 or 2 arguments, got 3",
-                      self.eval_error("range(1, 2, 3)").message)
+        self.assertIn("range expects 1 to 3 arguments, got 4",
+                      self.eval_error("range(1, 2, 3, 4)").message)
 
     # str
 
@@ -126,6 +144,31 @@ class BuiltinTests(unittest.TestCase):
     def test_int_rejects_non_finite_floats(self) -> None:
         error = self.eval_error("int((10.0 ^ 308) * 10)")
         self.assertIn("cannot convert a non-finite float to int", error.message)
+
+    # float
+
+    def test_float_converts_ints_floats_and_decimal_strings(self) -> None:
+        self.assertEqual(evaluate("float(3)"), 3.0)
+        self.assertIs(type(evaluate("float(3)")), float)
+        self.assertEqual(evaluate("float(2.5)"), 2.5)
+        self.assertEqual(evaluate('float("2.5")'), 2.5)
+        self.assertEqual(evaluate('float("-7")'), -7.0)
+        self.assertEqual(evaluate('float("+3.0e2")'), 300.0)
+
+    def test_float_rejects_bad_strings_and_bools(self) -> None:
+        error = self.eval_error('float("3.5.1")')
+        self.assertIn("cannot convert string '3.5.1' to float", error.message)
+        self.assertIn("cannot convert string 'nan' to float", self.eval_error('float("nan")').message)
+        self.assertIn("cannot convert string ' 4' to float", self.eval_error('float(" 4")').message)
+        self.assertIn("cannot convert bool to float", self.eval_error("float(true)").message)
+        self.assertIn("cannot convert none to float", self.eval_error("float(none)").message)
+
+    def test_float_refuses_a_result_that_is_not_finite(self) -> None:
+        error = self.eval_error('float("1e999")')
+        self.assertIn("cannot convert a non-finite float", error.message)
+        error = self.eval_error("float(10 ^ 309)")
+        self.assertIn("cannot convert int to float", error.message)
+        self.assertIn("largest float", error.why)
 
     # floor
 

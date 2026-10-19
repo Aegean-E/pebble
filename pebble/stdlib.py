@@ -1,11 +1,12 @@
-"""Pebble's nine v1 builtins and their shared argument rules.
+"""Pebble's ten builtins and their shared argument rules.
 
 Each builtin is a `Builtin` record: a name, an implementation and the arity it advertises. The
 evaluator checks the arity before evaluating arguments and passes the call node, so every builtin
-failure is a positioned EvalError with a Why and a Fix.
+failure is a positioned EvalError with a Why and a Fix. v2 added `float()` and the `range` step.
 """
 
 import math
+import re
 from typing import NoReturn
 
 from .errors import EvalError
@@ -49,22 +50,28 @@ def _len(interpreter, call, args) -> int:
 
 
 def _range(interpreter, call, args) -> list:
-    """A half-open list of ints: range(stop) or range(start, stop)."""
+    """A half-open list of ints: range(stop), range(start, stop) or range(start, stop, step)."""
     for value in args:
         if isinstance(value, bool) or not isinstance(value, int):
             _fail(call, f"range needs int arguments, got {type_name(value)}",
                   "range counts whole numbers",
                   "pass int values, for example range(5) or range(1, 5)")
     if len(args) == 1:
-        start, stop = 0, args[0]
+        start, stop, step = 0, args[0], 1
+    elif len(args) == 2:
+        start, stop, step = args[0], args[1], 1
     else:
-        start, stop = args[0], args[1]
-    length = stop - start
+        start, stop, step = args
+    if step == 0:
+        _fail(call, "range step cannot be zero",
+              "a step of zero would never advance through the range",
+              "use a step of 1, or a negative step to count down")
+    length = len(range(start, stop, step))
     if length > MAX_RANGE_LENGTH:
         _fail(call, f"range would produce {length} values",
               f"v1 holds a range in memory and caps it at {MAX_RANGE_LENGTH} values",
               "use a smaller range, or count with a while loop")
-    return list(range(start, stop))
+    return list(range(start, stop, step))
 
 
 def _str(interpreter, call, args) -> str:
@@ -107,6 +114,47 @@ def _parse_int(call, text: str) -> int:
               f"v1 caps an int at about {MAX_INT_DIGITS} digits",
               "use a shorter number, or build it with arithmetic")
     return int(text)
+
+
+_DECIMAL = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?")
+
+
+def _float(interpreter, call, args) -> float:
+    """A float from an int, a float or a decimal string; booleans are refused."""
+    value = args[0]
+    if isinstance(value, bool):
+        _fail(call, "cannot convert bool to float",
+              "Pebble keeps booleans out of arithmetic",
+              'convert a number or a numeric string, for example float(3) or float("2.5")')
+    if isinstance(value, float):
+        return value
+    if isinstance(value, int):
+        try:
+            return float(value)
+        except OverflowError:
+            _fail(call, "cannot convert int to float",
+                  "the int is beyond the largest float",
+                  "use a smaller number, or scale it down first")
+    if isinstance(value, str):
+        return _parse_float(call, value)
+    _fail(call, f"cannot convert {type_name(value)} to float",
+          "float accepts a number or a numeric string",
+          'convert a number or a numeric string, for example float(3) or float("2.5")')
+
+
+def _parse_float(call, text: str) -> float:
+    """A strict decimal number with an optional fraction and exponent."""
+    if _DECIMAL.fullmatch(text) is None:
+        _fail(call, f"cannot convert string {text!r} to float",
+              "float(...) on a string accepts a decimal number such as "
+              '"2.5" or "-1e3"',
+              'pass a decimal number such as "2.5"')
+    value = float(text)
+    if not math.isfinite(value):
+        _fail(call, "cannot convert a non-finite float",
+              "the text denotes a value beyond the largest float",
+              "use a smaller number")
+    return value
 
 
 def _floor(interpreter, call, args) -> int:
@@ -187,9 +235,10 @@ def _abs(interpreter, call, args):
 BUILTINS = {
     "print": Builtin("print", _print, "1 argument", 1, 1),
     "len": Builtin("len", _len, "1 argument", 1, 1),
-    "range": Builtin("range", _range, "1 or 2 arguments", 1, 2),
+    "range": Builtin("range", _range, "1 to 3 arguments", 1, 3),
     "str": Builtin("str", _str, "1 argument", 1, 1),
     "int": Builtin("int", _int, "1 argument", 1, 1),
+    "float": Builtin("float", _float, "1 argument", 1, 1),
     "floor": Builtin("floor", _floor, "1 argument", 1, 1),
     "min": Builtin("min", _min, "at least 1 argument", 1),
     "max": Builtin("max", _max, "at least 1 argument", 1),

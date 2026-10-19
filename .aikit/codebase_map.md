@@ -8,9 +8,9 @@
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `18`
 - **Total Classes**: `44`
-- **Total Top-Level Functions**: `47`
-- **Total Class Methods**: `250`
-- **Total Source Lines**: `3018`
+- **Total Top-Level Functions**: `49`
+- **Total Class Methods**: `256`
+- **Total Source Lines**: `3112`
 
 ---
 
@@ -244,9 +244,9 @@
 ---
 
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
-> *Pebble's nine v1 builtins and their shared argument rules.*
+> *Pebble's ten builtins and their shared argument rules.*
 
-**Size**: `197` lines (`7830` bytes)
+**Size**: `246` lines (`9958` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -256,10 +256,12 @@
 - `def _fail(node, message, why, fix)` - *Raise the positioned EvalError shared by every builtin failure.*
 - `def _print(interpreter, call, args)` - *Write one value in display form, then a newline; returns none.*
 - `def _len(interpreter, call, args)` - *The number of characters in a string or elements in a list.*
-- `def _range(interpreter, call, args)` - *A half-open list of ints: range(stop) or range(start, stop).*
+- `def _range(interpreter, call, args)` - *A half-open list of ints: range(stop), range(start, stop) or range(start, stop, step).*
 - `def _str(interpreter, call, args)` - *The display form of any value, as a string.*
 - `def _int(interpreter, call, args)` - *An int from an int, a float truncated toward zero, or a signed decimal string.*
 - `def _parse_int(call, text)` - *A strict decimal integer: optional sign, ASCII digits, nothing else.*
+- `def _float(interpreter, call, args)` - *A float from an int, a float or a decimal string; booleans are refused.*
+- `def _parse_float(call, text)` - *A strict decimal number with an optional fraction and exponent.*
 - `def _floor(interpreter, call, args)` - *The greatest int not greater than a number.*
 - `def _extreme(call, args, want_max, name)` - *The smallest or largest value, from the arguments or from one list argument.*
 - `def _orderable(value)` - *Whether min and max may order this value in isolation.*
@@ -278,9 +280,9 @@
 ---
 
 ### [`tests/test_builtins.py`](tests/test_builtins.py)
-> *Builtin tests: the nine v1 builtins, their errors and the display form of values.*
+> *Builtin tests: the ten builtins, their errors and the display form of values.*
 
-**Size**: `193` lines (`8098` bytes)
+**Size**: `236` lines (`10384` bytes)
 
 **Classes:**
 - `class BuiltinTests` - *One behaviour per test; messages, positions and return values are asserted.*
@@ -294,12 +296,18 @@
   - Method `.test_len_rejects_other_types()`
   - Method `.test_range_builds_half_open_lists()`
   - Method `.test_range_needs_int_arguments()`
-  - Method `.test_range_arity_is_one_or_two()`
+  - Method `.test_range_accepts_a_step()`
+  - Method `.test_range_step_must_not_be_zero()`
+  - Method `.test_a_stepped_range_is_still_length_capped()`
+  - Method `.test_range_arity_is_one_to_three()`
   - Method `.test_str_returns_the_display_form()`
   - Method `.test_int_truncates_floats_toward_zero()`
   - Method `.test_int_parses_signed_decimal_strings()`
   - Method `.test_int_rejects_bad_strings_and_other_types()`
   - Method `.test_int_rejects_non_finite_floats()`
+  - Method `.test_float_converts_ints_floats_and_decimal_strings()`
+  - Method `.test_float_rejects_bad_strings_and_bools()`
+  - Method `.test_float_refuses_a_result_that_is_not_finite()`
   - Method `.test_floor_rounds_down_to_an_int()`
   - Method `.test_floor_rejects_non_numbers_and_non_finite_floats()`
   - Method `.test_min_and_max_compare_numbers_and_strings()`
@@ -415,7 +423,7 @@
 ### [`tests/test_hardening.py`](tests/test_hardening.py)
 > *Hardening tests: error-format contract, resource guards, platform parity and performance.*
 
-**Size**: `212` lines (`8139` bytes)
+**Size**: `214` lines (`8179` bytes)
 
 **Classes:**
 - `class ErrorFormatTests` - *Every error kind carries a position, a reason and a fix, and renders as three lines.*

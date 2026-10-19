@@ -52,7 +52,7 @@ pebble/
 │   ├── limits.py             <- call, int, range and sequence caps
 │   ├── nodes.py              <- the AST: frozen nodes with source positions
 │   ├── parser.py             <- recursive-descent parser with positioned errors
-│   └── stdlib.py             <- the nine builtins and their arity rules
+│   └── stdlib.py             <- the ten builtins and their arity rules
 ├── pyproject.toml
 └── tests/
     ├── __init__.py
@@ -71,18 +71,20 @@ file, line and column, why it happened, and how to fix it.
 
 The v1 surface is frozen in [.aikit/decisions.md](.aikit/decisions.md) (ADR-001): numbers,
 strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `for-in`, `fn`,
-`return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. ADR-002 fixes the
+`return`; a small operator set; ten builtins; a file runner, `-e` and a REPL. ADR-002 fixes the
 builtin semantics and the display form that `print` and `str` share. The v2 increment (ADR-004)
 adds `break`/`continue`, list and string slices, `range` with a step, and `float()`; everything
 else outside those lists waits for a later task.
 
 Status: `task-pebble-core-v1` is complete (142 tests) and `task-pebble-v2-conveniences` is at
-milestone [2/4]: `break`/`continue` and slices are done, and `range` with a step and `float()`
-follow. The plan and its checkpoints live in `.aikit/task_ledger.json`.
+milestone [3/4]: `break`/`continue`, slices, `range` with a step and `float()` are done; only the
+final docs, map and verification pass remain. The plan and its checkpoints live in
+`.aikit/task_ledger.json`.
 
-v1 is deliberately bounded (ADR-003): calls nest at most 100 deep, integer exponents stop at
-10,000, integers stay near 4,000 digits, ranges and repeated sequences at 1,000,000 values, and
-an unexpected host failure still renders as a three-line Pebble report rather than a traceback.
+Pebble stays deliberately bounded (ADR-003, in force for v2): calls nest at most 100 deep, integer
+exponents stop at 10,000, integers stay near 4,000 digits, ranges and repeated sequences at
+1,000,000 values, and an unexpected host failure still renders as a three-line Pebble report
+rather than a traceback.
 
 ## 🚀 Running a program
 
