@@ -33,6 +33,14 @@ class _Return(Exception):
         self.value = value
 
 
+class _Break(Exception):
+    """Internal signal carrying `break` out of nested blocks to the innermost loop."""
+
+
+class _Continue(Exception):
+    """Internal signal carrying `continue` out of nested blocks to the innermost loop."""
+
+
 class PebbleFunction:
     """A function defined with `fn`: a name, parameters and a body; no closures in v1."""
 
@@ -93,8 +101,7 @@ class Interpreter:
             self._execute_block(branch)
             return None
         if isinstance(statement, nodes.WhileStmt):
-            while self._truth(self.evaluate(statement.condition)):
-                self._execute_block(statement.body)
+            self._execute_while(statement)
             return None
         if isinstance(statement, nodes.ForStmt):
             self._execute_for(statement)
@@ -108,6 +115,10 @@ class Interpreter:
                            "return ends the current fn, but no function is running",
                            "move it inside a fn body, or delete it")
             raise _Return(self.evaluate(statement.value) if statement.value is not None else None)
+        if isinstance(statement, nodes.BreakStmt):
+            raise _Break()
+        if isinstance(statement, nodes.ContinueStmt):
+            raise _Continue()
         raise AssertionError(f"unhandled statement: {type(statement).__name__}")
 
     def evaluate(self, expression) -> object:
@@ -138,6 +149,16 @@ class Interpreter:
         for statement in body:
             self.execute(statement)
 
+    def _execute_while(self, statement) -> None:
+        """A while loop; break and continue affect this innermost loop only."""
+        while self._truth(self.evaluate(statement.condition)):
+            try:
+                self._execute_block(statement.body)
+            except _Continue:
+                continue
+            except _Break:
+                break
+
     def _execute_for(self, statement) -> None:
         """`for name in ...`, walking a list or the characters of a string."""
         iterable = self.evaluate(statement.iterable)
@@ -147,7 +168,12 @@ class Interpreter:
                        "pass a list or a string, for example [1, 2, 3] or \"abc\"")
         for item in iterable:
             self._define(statement.name, item)
-            self._execute_block(statement.body)
+            try:
+                self._execute_block(statement.body)
+            except _Continue:
+                continue
+            except _Break:
+                break
 
     def _define_function(self, statement) -> None:
         """A function definition; nested definitions are refused because v1 has no closures."""

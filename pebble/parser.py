@@ -3,7 +3,8 @@
 The grammar, loosest binding first:
 
     program        := statement*
-    statement      := let | assign | if | while | for | fn | return | expression
+    statement      := let | assign | if | while | for | fn | return | break | continue
+                    | expression
     expression     := or
     or             := and ("or" and)*
     and            := not ("and" not)*
@@ -32,6 +33,7 @@ class _Parser:
     def __init__(self, tokens: list[Token]) -> None:
         self.tokens = tokens
         self.position = 0
+        self.loop_depth = 0
 
     def parse_program(self) -> tuple:
         """Every statement up to the EOF token."""
@@ -45,7 +47,8 @@ class _Parser:
         token = self.peek()
         if token.kind == "KEYWORD":
             builders = {"let": self.parse_let, "if": self.parse_if, "while": self.parse_while,
-                        "for": self.parse_for, "fn": self.parse_fn, "return": self.parse_return}
+                        "for": self.parse_for, "fn": self.parse_fn, "return": self.parse_return,
+                        "break": self.parse_break, "continue": self.parse_continue}
             builder = builders.get(token.value)
             if builder is not None:
                 return builder()
@@ -94,7 +97,7 @@ class _Parser:
         """`while condition { ... }`."""
         keyword = self.advance()
         condition = self.parse_expression()
-        body = self.parse_block()
+        body = self._parse_loop_body()
         return nodes.WhileStmt(condition, body, keyword.line, keyword.col)
 
     def parse_for(self):
@@ -107,7 +110,7 @@ class _Parser:
                       "a for loop reads: for item in collection { ... }",
                       "add 'in' before the collection")
         iterable = self.parse_expression()
-        body = self.parse_block()
+        body = self._parse_loop_body()
         return nodes.ForStmt(name.value, iterable, body, keyword.line, keyword.col)
 
     def parse_fn(self):
@@ -132,7 +135,12 @@ class _Parser:
                     break
         self.expect("OP", "')' after the parameters", "close the parameter list with a )",
                     value=")")
-        body = self.parse_block()
+        outer_depth = self.loop_depth
+        self.loop_depth = 0
+        try:
+            body = self.parse_block()
+        finally:
+            self.loop_depth = outer_depth
         return nodes.FnStmt(name.value, tuple(params), body, keyword.line, keyword.col)
 
     def parse_return(self):
@@ -142,6 +150,32 @@ class _Parser:
             return nodes.ReturnStmt(None, keyword.line, keyword.col)
         value = self.parse_expression()
         return nodes.ReturnStmt(value, keyword.line, keyword.col)
+
+    def parse_break(self):
+        """`break` leaves the innermost loop, so it is only valid inside one."""
+        keyword = self.advance()
+        if self.loop_depth == 0:
+            self.fail(keyword, "break outside a loop",
+                      "break leaves the innermost while or for loop, but no loop is open here",
+                      "move it inside a while or for body, or delete it")
+        return nodes.BreakStmt(keyword.line, keyword.col)
+
+    def parse_continue(self):
+        """`continue` starts the innermost loop's next iteration, so it needs a loop."""
+        keyword = self.advance()
+        if self.loop_depth == 0:
+            self.fail(keyword, "continue outside a loop",
+                      "continue skips to the next iteration, but no loop is open here",
+                      "move it inside a while or for body, or delete it")
+        return nodes.ContinueStmt(keyword.line, keyword.col)
+
+    def _parse_loop_body(self) -> tuple:
+        """A loop body, where break and continue are allowed."""
+        self.loop_depth += 1
+        try:
+            return self.parse_block()
+        finally:
+            self.loop_depth -= 1
 
     def parse_block(self) -> tuple:
         """A braced statement list; a missing brace at EOF is what the REPL waits on."""
@@ -291,6 +325,8 @@ class _Parser:
         fix = "start with a number, string, name, list or parenthesised expression"
         if token.kind == "OP" and token.value in (")", "]", "}"):
             fix = "remove the trailing comma, or add the missing element"
+        if token.kind == "KEYWORD" and token.value in ("break", "continue"):
+            fix = f"{token.value} is a statement; put it on its own line inside a loop"
         self.fail(token, f"expected an expression, found {found}",
                   "this position needs a value, a name or a call", fix)
 

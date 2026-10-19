@@ -85,6 +85,10 @@ class LexerTests(unittest.TestCase):
                          [("KEYWORD", "let"), ("NAME", "letter"), ("NAME", "_x"),
                           ("KEYWORD", "true"), ("NAME", "trueish")])
 
+    def test_break_and_continue_are_keywords(self) -> None:
+        self.assertEqual(pairs("break continue breaker"),
+                         [("KEYWORD", "break"), ("KEYWORD", "continue"), ("NAME", "breaker")])
+
     def test_positions_track_lines_and_columns(self) -> None:
         tokens = tokenize("1\n 2")
         self.assertEqual(tokens[1], Token("NUMBER", 2, 2, 2))

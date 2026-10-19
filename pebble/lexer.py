@@ -11,7 +11,7 @@ from .errors import LexError
 from .limits import MAX_INT_DIGITS
 
 KEYWORDS = frozenset({"let", "if", "else", "while", "for", "in", "fn", "return",
-                      "true", "false", "none", "and", "or", "not"})
+                      "break", "continue", "true", "false", "none", "and", "or", "not"})
 TWO_CHAR_OPERATORS = frozenset({"==", "!=", "<=", ">="})
 ONE_CHAR_OPERATORS = frozenset("+-*/%^<>=(){}[],")
 ESCAPES = {"n": "\n", "t": "\t", "r": "\r", "\\": "\\", '"': '"', "'": "'"}

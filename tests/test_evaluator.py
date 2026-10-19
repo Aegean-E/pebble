@@ -140,6 +140,29 @@ class EvaluatorTests(unittest.TestCase):
         error = self.eval_error("for x in 5 { x }")
         self.assertIn("cannot iterate over int", error.message)
 
+    def test_break_exits_the_innermost_loop(self) -> None:
+        self.assertEqual(run("let i = 0\nwhile true { i = i + 1\nif i == 3 { break } }\ni"), 3)
+        source = ("let count = 0\n"
+                  "for outer in [1, 2, 3] { for inner in [1, 2, 3] { count = count + 1\n"
+                  "if inner == 2 { break } } }\ncount")
+        self.assertEqual(run(source), 6)
+
+    def test_continue_skips_to_the_next_iteration(self) -> None:
+        source = ("let total = 0\nfor n in [1, 2, 3, 4] { if n % 2 == 0 { continue }\n"
+                  "total = total + n }\ntotal")
+        self.assertEqual(run(source), 4)
+
+    def test_continue_in_a_while_reaches_the_condition(self) -> None:
+        source = ("let i = 0\nlet seen = 0\nwhile i < 5 { i = i + 1\n"
+                  "if i == 3 { continue }\nseen = seen + 1 }\nseen")
+        self.assertEqual(run(source), 4)
+
+    def test_loop_control_inside_a_function_stays_in_its_loop(self) -> None:
+        source = ("fn count_until(values) { let n = 0\nfor v in values { if v == 3 { break }\n"
+                  "n = n + 1 }\nreturn n }\n"
+                  "count_until([1, 2, 3, 4])")
+        self.assertEqual(run(source), 2)
+
     def test_let_and_assignment_scope_rules(self) -> None:
         self.assertEqual(run("let x = 1\nx = x + 1\nx"), 2)
         self.assertEqual(run("let x = 1\nlet x = 2\nx"), 2)

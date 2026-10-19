@@ -1,12 +1,11 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-core-v1",
+    "task_id": "task-pebble-v2-conveniences",
     "last_phase": "phase 3",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1792361107.5057325,
-    "completed_at": 1792361107.646149
+    "active_phase": 3,
+    "status": "in_progress",
+    "updated_at": 1792432855.529745
   },
   "checkpoints": [
     {
@@ -93,6 +92,32 @@
       "status": "completed",
       "timestamp": 1792361107.6461508,
       "timestamp_str": "2026-10-19 01:05:07"
+    },
+    {
+      "task_id": "task-pebble-v2-conveniences",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/4] break and continue end-to-end: ADR-004, lexer keywords, AST nodes, parser loop-context validation (a fn body is not a loop context), evaluator signals caught by the innermost while or for, failing-first tests; [2/4] slices end-to-end: Slice AST, parser start:stop[:step], evaluator with int bounds, bool refusal, zero-step refusal and Python-style negative/clamped bounds, tests; [3/4] range(start, stop, step) and the float() builtin, with arity, type, zero-step and non-finite guards, tests; [4/4] README and decisions cross-check, regenerated codebase map, full aikit check pebble, delivery",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792432746.8915408,
+      "timestamp_str": "2026-10-19 20:59:06",
+      "impact_assessment": {
+        "why": "v1 is complete and green (142 tests, 4/4 gates), and ADR-001 names break/continue, slices and float() as deferred conveniences while ADR-002 records the missing range step as a cost; the next bounded increment makes early-exit loops, subsequences and text-to-float conversion possible without reopening the rest of the frozen surface",
+        "benefits": "scripts can stop a loop early, skip an iteration, take a list or string subsequence, count with a step and convert numeric text to a float; each addition is pinned by failing-first tests and keeps the existing positioned Why/Fix error contract",
+        "risks": "contract: a v2 surface change, so ADR-004 must amend ADR-001 and ADR-002 and every new failure must keep the three-line error format; dependency: standard library only (re for the float string grammar); concurrency: none, the interpreter is single-threaded and persists no state; state: no files, locks or schemas change",
+        "mitigation": "failing-first tests per feature; parser rejects break/continue outside a loop and resets loop context inside fn bodies; slices delegate to Python semantics and pin them; the hardening error corpora gain the new parse and runtime paths; run aikit check pebble and record checklists before every commit; README updated in the same commit as each user-visible feature"
+      }
+    },
+    {
+      "task_id": "task-pebble-v2-conveniences",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[1/4] complete: ADR-004 records the whole v2 surface; break/continue keywords, AST nodes, parser loop-context rules (fn body resets the context, errors point at the keyword) and evaluator signals caught by the innermost while or for; 9 failing-first tests (1 lexer, 4 parser, 4 evaluator); 151 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [2/4] slices.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792432855.529745,
+      "timestamp_str": "2026-10-19 21:00:55"
     }
   ]
 }

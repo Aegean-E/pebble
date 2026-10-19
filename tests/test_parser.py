@@ -41,6 +41,10 @@ def render(node) -> str:
         return f"(fn {node.name} ({' '.join(node.params)}) {_body(node.body)})"
     if isinstance(node, nodes.ReturnStmt):
         return "(return)" if node.value is None else f"(return {render(node.value)})"
+    if isinstance(node, nodes.BreakStmt):
+        return "break"
+    if isinstance(node, nodes.ContinueStmt):
+        return "continue"
     raise AssertionError(f"unhandled node type: {type(node).__name__}")
 
 
@@ -122,6 +126,28 @@ class ParserTests(unittest.TestCase):
 
     def test_for_in_loop(self) -> None:
         self.assertEqual(render_all('for c in "ab" { c }'), ["(for c 'ab' { c })"])
+
+    def test_break_and_continue_inside_loops(self) -> None:
+        self.assertEqual(render_all("while true { break }"), ["(while true { break })"])
+        self.assertEqual(render_all("for x in [1] { continue }"), ["(for x [1] { continue })"])
+        self.assertEqual(render_all("while true { if a { break } else { continue } }"),
+                         ["(while true { (if a { break } { continue }) })"])
+
+    def test_break_and_continue_outside_a_loop_are_rejected(self) -> None:
+        error = self.parse_error("break")
+        self.assertIn("break outside a loop", error.message)
+        self.assertEqual((error.line, error.col), (1, 1))
+        error = self.parse_error("if true { continue }")
+        self.assertIn("continue outside a loop", error.message)
+        self.assertEqual((error.line, error.col), (1, 11))
+
+    def test_a_function_body_is_not_inside_the_enclosing_loop(self) -> None:
+        error = self.parse_error("while true { fn f() { break } }")
+        self.assertIn("break outside a loop", error.message)
+
+    def test_break_in_a_nested_loop_is_allowed(self) -> None:
+        self.assertEqual(render_all("while a { for x in xs { break } }"),
+                         ["(while a { (for x xs { break }) })"])
 
     def test_function_definition_and_return(self) -> None:
         self.assertEqual(render_all("fn add(a, b) { return a + b }"),

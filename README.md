@@ -70,13 +70,14 @@ file, line and column, why it happened, and how to fix it.
 
 The v1 surface is frozen in [.aikit/decisions.md](.aikit/decisions.md) (ADR-001): numbers,
 strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `for-in`, `fn`,
-`return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. Everything not in
-that list is a v1 non-goal and waits for a later task. ADR-002 fixes the builtin semantics and
-the display form that `print` and `str` share.
+`return`; a small operator set; nine builtins; a file runner, `-e` and a REPL. ADR-002 fixes the
+builtin semantics and the display form that `print` and `str` share. The v2 increment (ADR-004)
+adds `break`/`continue`, list and string slices, `range` with a step, and `float()`; everything
+else outside those lists waits for a later task.
 
-Status: milestone [6/6] of `task-pebble-core-v1` — the language, all nine builtins, the
-file/`-e`/stdin/REPL interfaces, hardening and the error-format meta test are complete and tested
-(142 tests). The plan and its checkpoints live in `.aikit/task_ledger.json`.
+Status: `task-pebble-core-v1` is complete (142 tests) and `task-pebble-v2-conveniences` is at
+milestone [1/4]: `break`/`continue` are done, and slices, `range` with a step and `float()`
+follow. The plan and its checkpoints live in `.aikit/task_ledger.json`.
 
 v1 is deliberately bounded (ADR-003): calls nest at most 100 deep, integer exponents stop at
 10,000, integers stay near 4,000 digits, ranges and repeated sequences at 1,000,000 values, and

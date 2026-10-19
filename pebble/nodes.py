@@ -166,5 +166,22 @@ class ReturnStmt:
     col: int
 
 
+@dataclass(frozen=True)
+class BreakStmt:
+    """`break`, leaving the innermost while or for loop."""
+
+    line: int
+    col: int
+
+
+@dataclass(frozen=True)
+class ContinueStmt:
+    """`continue`, starting the innermost while or for loop's next iteration."""
+
+    line: int
+    col: int
+
+
 Expr = Union[Literal, ListLiteral, Name, Unary, Binary, Logical, Call, Index]
-Statement = Union[Let, Assign, ExprStmt, IfStmt, WhileStmt, ForStmt, FnStmt, ReturnStmt]
+Statement = Union[Let, Assign, ExprStmt, IfStmt, WhileStmt, ForStmt, FnStmt, ReturnStmt,
+                  BreakStmt, ContinueStmt]
