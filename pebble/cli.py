@@ -14,22 +14,26 @@ from .formatting import format_value
 from .lexer import tokenize
 from .parser import parse
 
-HELP = """usage: pebble [--version] [-h] [-e SOURCE] [FILE]
+HELP = """usage: pebble [--version] [-h] [-e SOURCE] [FILE] [ARGS...]
 
 Run a Pebble program from a file, evaluate one program from the command line,
 or start the REPL. With no arguments, a terminal starts the REPL and piped
-input runs as a program.
+input runs as a program. Arguments following FILE, -e SOURCE, or - are passed
+to the program as strings in the 'args' list.
 
 positional arguments:
   FILE               run the program in FILE
+  ARGS               arguments passed to the program in 'args'
 
 options:
   -e, --eval SOURCE  run SOURCE as a program
   -h, --help         show this help and exit
   --version          show the version and exit
+  --                 stop option processing; following arguments are FILE and ARGS
 
 exit codes: 0 success, 1 program error, 2 usage or file error
 """
+
 
 
 class CliError(Exception):
@@ -72,7 +76,7 @@ def _dispatch(arguments: list, stdin, stdout, stderr) -> int:
     if not arguments:
         if _is_terminal(stdin):
             return run_repl(stdin, stdout, stderr)
-        return _run_source(stdin.read(), "<stdin>", stdout, stderr)
+        return _run_source(stdin.read(), "<stdin>", stdout, stderr, args=[])
     first = arguments[0]
     if first in ("-h", "--help"):
         stdout.write(HELP)
@@ -80,27 +84,28 @@ def _dispatch(arguments: list, stdin, stdout, stderr) -> int:
     if first == "--version":
         stdout.write(f"pebble {__version__}\n")
         return 0
+    if first == "--":
+        rest = arguments[1:]
+        if not rest:
+            if _is_terminal(stdin):
+                return run_repl(stdin, stdout, stderr)
+            return _run_source(stdin.read(), "<stdin>", stdout, stderr, args=[])
+        if rest[0] == "-":
+            return _run_source(stdin.read(), "<stdin>", stdout, stderr, args=rest[1:])
+        return _run_file(rest[0], stdout, stderr, args=rest[1:])
     if first in ("-e", "--eval"):
         if len(arguments) < 2:
             raise CliError("option '-e' needs a source string",
                            "-e runs the program given after it, but nothing follows",
                            'write pebble -e "print(1)"')
-        if len(arguments) > 2:
-            raise CliError("unexpected arguments after the -e source",
-                           "-e takes exactly one source string and no file",
-                           "quote the whole program, and drop the extra arguments")
-        return _run_source(arguments[1], "<command>", stdout, stderr)
+        return _run_source(arguments[1], "<command>", stdout, stderr, args=arguments[2:])
     if first.startswith("-") and first != "-":
         raise CliError(f"unknown option '{first}'",
                        "this option is not part of the pebble command line",
                        "run pebble --help to see the available options")
-    if len(arguments) > 1:
-        raise CliError("expected one file, got several arguments",
-                       "the file runner takes a single path; -e takes a single source",
-                       "quote the program for -e, or run one file at a time")
     if first == "-":
-        return _run_source(stdin.read(), "<stdin>", stdout, stderr)
-    return _run_file(first, stdout, stderr)
+        return _run_source(stdin.read(), "<stdin>", stdout, stderr, args=arguments[1:])
+    return _run_file(first, stdout, stderr, args=arguments[1:])
 
 
 def _is_terminal(stream) -> bool:
@@ -109,7 +114,7 @@ def _is_terminal(stream) -> bool:
     return bool(isatty and isatty())
 
 
-def _run_file(name: str, stdout, stderr) -> int:
+def _run_file(name: str, stdout, stderr, args=None) -> int:
     """Read a UTF-8 file (a BOM is tolerated) and run it."""
     try:
         source = Path(name).read_text(encoding="utf-8-sig")
@@ -129,23 +134,24 @@ def _run_file(name: str, stdout, stderr) -> int:
         raise CliError(f"cannot read file '{name}'",
                        f"the operating system refused the read: {error.strerror}",
                        "check the path and its permissions") from None
-    return _run_source(source, name, stdout, stderr)
+    return _run_source(source, name, stdout, stderr, args=args)
 
 
-def _run_source(source: str, filename: str, stdout, stderr) -> int:
+def _run_source(source: str, filename: str, stdout, stderr, args=None) -> int:
     """Tokenize, parse and run one program; program errors exit 1 after the report."""
     try:
         program = parse(tokenize(source))
-        Interpreter(out=stdout).run(program)
+        Interpreter(out=stdout, args=args).run(program)
     except PebbleError as error:
         stderr.write(format_error(error, filename) + "\n")
         return 1
     return 0
 
 
-def run_repl(stdin, stdout, stderr, prompt: bool = True) -> int:
+def run_repl(stdin, stdout, stderr, prompt: bool = True, args=None) -> int:
     """Read programs line by line, sharing one interpreter; prompt only when interactive."""
-    interpreter = Interpreter(out=stdout)
+    interpreter = Interpreter(out=stdout, args=args)
+
     if prompt:
         _write(stdout, f"Pebble {__version__} (Ctrl-D to exit)\n")
     buffer = ""

@@ -9,8 +9,8 @@
 - **Total Python Modules**: `18`
 - **Total Classes**: `44`
 - **Total Top-Level Functions**: `49`
-- **Total Class Methods**: `260`
-- **Total Source Lines**: `3137`
+- **Total Class Methods**: `264`
+- **Total Source Lines**: `3167`
 
 ---
 
@@ -33,7 +33,7 @@
 ### [`pebble/cli.py`](pebble/cli.py)
 > *Pebble's command line: a file runner, `-e`, a batch stdin mode and an interactive REPL.*
 
-**Size**: `211` lines (`8201` bytes)
+**Size**: `217` lines (`8493` bytes)
 
 **Classes:**
 - `class CliError` - *A usage or file failure, rendered with the same Why/Fix shape as Pebble errors.*
@@ -44,9 +44,9 @@
 - `def _report_internal(error, stderr)` - *Last-resort report: a host failure is still explained, and never shown as a traceback.*
 - `def _dispatch(arguments, stdin, stdout, stderr)` - *Route the arguments to one of the four interfaces.*
 - `def _is_terminal(stream)` - *Whether the stream is an interactive terminal.*
-- `def _run_file(name, stdout, stderr)` - *Read a UTF-8 file (a BOM is tolerated) and run it.*
-- `def _run_source(source, filename, stdout, stderr)` - *Tokenize, parse and run one program; program errors exit 1 after the report.*
-- `def run_repl(stdin, stdout, stderr, prompt)` - *Read programs line by line, sharing one interpreter; prompt only when interactive.*
+- `def _run_file(name, stdout, stderr, args)` - *Read a UTF-8 file (a BOM is tolerated) and run it.*
+- `def _run_source(source, filename, stdout, stderr, args)` - *Tokenize, parse and run one program; program errors exit 1 after the report.*
+- `def run_repl(stdin, stdout, stderr, prompt, args)` - *Read programs line by line, sharing one interpreter; prompt only when interactive.*
 - `def _execute_repl(source, interpreter, stdout, stderr)` - *Run the buffered input at end of file, reporting rather than discarding a failure.*
 - `def _run_repl_program(program, interpreter, stdout, stderr)` - *Execute one REPL input and echo the last expression's value when it is not none.*
 - `def _report_repl(error, stderr)` - *A REPL error keeps the session alive, so it is reported and forgotten.*
@@ -327,7 +327,7 @@
 ### [`tests/test_cli.py`](tests/test_cli.py)
 > *CLI and REPL tests: argument handling, file and stdin runners, exit codes and error reports.*
 
-**Size**: `135` lines (`5631` bytes)
+**Size**: `159` lines (`6884` bytes)
 
 **Classes:**
 - `class TtyInput` - *A stdin stand-in that claims to be a terminal, so main() starts the REPL.*
@@ -341,6 +341,10 @@
   - Method `.test_a_missing_file_is_a_usage_error_with_a_fix()`
   - Method `.test_piped_stdin_runs_as_a_program()`
   - Method `.test_usage_errors_exit_2()`
+  - Method `.test_eval_receives_script_arguments()`
+  - Method `.test_file_runner_receives_script_arguments()`
+  - Method `.test_piped_stdin_receives_script_arguments()`
+  - Method `.test_double_dash_terminates_options()`
   - Method `.test_help_and_version_exit_0()`
   - Method `.test_a_terminal_stdin_starts_the_repl()`
 - `class ReplTests` - *The REPL keeps one interpreter alive, echoes expression values and survives errors.*

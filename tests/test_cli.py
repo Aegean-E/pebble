@@ -74,13 +74,37 @@ class CliTests(unittest.TestCase):
         self.assertEqual((code, out, err), (0, "5\n", ""))
 
     def test_usage_errors_exit_2(self) -> None:
-        for argv in (["--nope"], ["-e"], ["one.peb", "two.peb"], ["-e", "1", "extra.peb"]):
+        for argv in (["--nope"], ["-e"], ["--bad-flag"]):
             with self.subTest(argv=argv):
                 code, out, err = run_cli(argv)
                 self.assertEqual((code, out), (2, ""))
                 self.assertIn("pebble: error:", err)
                 self.assertIn("Why:", err)
                 self.assertIn("Fix:", err)
+
+    def test_eval_receives_script_arguments(self) -> None:
+        code, out, err = run_cli(["-e", "print(args)", "hello", "world"])
+        self.assertEqual((code, out, err), (0, '["hello", "world"]\n', ""))
+
+    def test_file_runner_receives_script_arguments(self) -> None:
+        handle = tempfile.NamedTemporaryFile("w", suffix=".peb", delete=False, encoding="utf-8")
+        self.addCleanup(Path(handle.name).unlink)
+        with handle:
+            handle.write('print(args[0])\nprint(len(args))\n')
+        code, out, err = run_cli([handle.name, "alpha", "beta"])
+        self.assertEqual((code, out, err), (0, "alpha\n2\n", ""))
+
+    def test_piped_stdin_receives_script_arguments(self) -> None:
+        code, out, err = run_cli(["-", "first", "second"], stdin_text="print(args[0] + args[1])\n")
+        self.assertEqual((code, out, err), (0, "firstsecond\n", ""))
+
+    def test_double_dash_terminates_options(self) -> None:
+        handle = tempfile.NamedTemporaryFile("w", suffix=".peb", delete=False, encoding="utf-8")
+        self.addCleanup(Path(handle.name).unlink)
+        with handle:
+            handle.write('print(args)\n')
+        code, out, err = run_cli(["--", handle.name, "-x", "--opt"])
+        self.assertEqual((code, out, err), (0, '["-x", "--opt"]\n', ""))
 
     def test_help_and_version_exit_0(self) -> None:
         code, out, err = run_cli(["--help"])
