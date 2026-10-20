@@ -36,6 +36,7 @@ pebble/
 │   ├── project.json
 │   └── task_ledger.json      <- the task ledger: plan and milestone checkpoints
 ├── .gitignore
+├── LICENSE
 ├── README.md
 ├── examples/
 │   ├── hello.peb
