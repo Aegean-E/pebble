@@ -140,6 +140,11 @@ class EvaluatorTests(unittest.TestCase):
         error = self.eval_error("for x in 5 { x }")
         self.assertIn("cannot iterate over int", error.message)
 
+    def test_loop_variables_live_in_the_enclosing_scope(self) -> None:
+        self.assertEqual(run("for v in [10, 20] { }\nv"), 20)
+        self.assertEqual(run("for v in [1] { let seen = v }\nseen"), 1)
+        self.assertEqual(run("let v = 0\nfor v in [1, 2] { }\nv"), 2)
+
     def test_break_exits_the_innermost_loop(self) -> None:
         self.assertEqual(run("let i = 0\nwhile true { i = i + 1\nif i == 3 { break } }\ni"), 3)
         source = ("let count = 0\n"

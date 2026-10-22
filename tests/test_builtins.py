@@ -2,16 +2,25 @@
 
 import unittest
 from io import StringIO
+from types import SimpleNamespace
 
 from pebble.errors import EvalError
 from pebble.evaluator import Interpreter
 from pebble.lexer import tokenize
 from pebble.parser import parse
+from pebble.stdlib import BUILTINS
+
+BUILTIN_CALL = SimpleNamespace(line=1, col=1)
 
 
 def evaluate(source: str, out=None):
     """Evaluate `source` with a fresh interpreter; the last statement's value comes back."""
     return Interpreter(out=out if out is not None else StringIO()).run(parse(tokenize(source)))
+
+
+def call_builtin(name: str, *args):
+    """Call one builtin directly, for guards that user source can no longer reach."""
+    return BUILTINS[name].impl(None, BUILTIN_CALL, list(args))
 
 
 def printed(source: str) -> str:
@@ -142,8 +151,12 @@ class BuiltinTests(unittest.TestCase):
         self.assertIn("cannot convert none to int", self.eval_error("int(none)").message)
 
     def test_int_rejects_non_finite_floats(self) -> None:
-        error = self.eval_error("int((10.0 ^ 308) * 10)")
-        self.assertIn("cannot convert a non-finite float to int", error.message)
+        for value in (float("inf"), float("-inf"), float("nan")):
+            with self.subTest(value=value):
+                with self.assertRaises(EvalError) as caught:
+                    call_builtin("int", value)
+                self.assertIn("cannot convert a non-finite float to int",
+                              caught.exception.message)
 
     # float
 
@@ -169,6 +182,12 @@ class BuiltinTests(unittest.TestCase):
         error = self.eval_error("float(10 ^ 309)")
         self.assertIn("cannot convert int to float", error.message)
         self.assertIn("largest float", error.why)
+        for value in (float("inf"), float("-inf"), float("nan")):
+            with self.subTest(value=value):
+                with self.assertRaises(EvalError) as caught:
+                    call_builtin("float", value)
+                self.assertIn("cannot convert a non-finite float",
+                              caught.exception.message)
 
     # floor
 
@@ -182,8 +201,12 @@ class BuiltinTests(unittest.TestCase):
         error = self.eval_error('floor("3")')
         self.assertIn("cannot take the floor of string", error.message)
         self.assertIn("floor needs a number", error.why)
-        self.assertIn("cannot take the floor of a non-finite float",
-                      self.eval_error("floor((10.0 ^ 308) * 10)").message)
+        for value in (float("inf"), float("-inf"), float("nan")):
+            with self.subTest(value=value):
+                with self.assertRaises(EvalError) as caught:
+                    call_builtin("floor", value)
+                self.assertIn("cannot take the floor of a non-finite float",
+                              caught.exception.message)
 
     # min and max
 

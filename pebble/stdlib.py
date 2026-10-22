@@ -49,6 +49,17 @@ def _len(interpreter, call, args) -> int:
           'pass a string or a list, for example len("abc") or len([1, 2])')
 
 
+def _range_length(start: int, stop: int, step: int) -> int:
+    """How many values range(start, stop, step) yields, computed without len()."""
+    if step > 0:
+        if start >= stop:
+            return 0
+        return (stop - start + step - 1) // step
+    if start <= stop:
+        return 0
+    return (start - stop - step - 1) // (-step)
+
+
 def _range(interpreter, call, args) -> list:
     """A half-open list of ints: range(stop), range(start, stop) or range(start, stop, step)."""
     for value in args:
@@ -66,7 +77,7 @@ def _range(interpreter, call, args) -> list:
         _fail(call, "range step cannot be zero",
               "a step of zero would never advance through the range",
               "use a step of 1, or a negative step to count down")
-    length = len(range(start, stop, step))
+    length = _range_length(start, stop, step)
     if length > MAX_RANGE_LENGTH:
         _fail(call, f"range would produce {length} values",
               f"v1 holds a range in memory and caps it at {MAX_RANGE_LENGTH} values",
@@ -127,6 +138,10 @@ def _float(interpreter, call, args) -> float:
               "Pebble keeps booleans out of arithmetic",
               'convert a number or a numeric string, for example float(3) or float("2.5")')
     if isinstance(value, float):
+        if not math.isfinite(value):
+            _fail(call, "cannot convert a non-finite float",
+                  "infinity and nan are not finite values",
+                  "check the value, or convert a finite number")
         return value
     if isinstance(value, int):
         try:

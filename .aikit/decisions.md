@@ -39,4 +39,32 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Expose script arguments via a predefined global variable named `args`, containing a list of strings (`list[str]`). The `Interpreter` constructor accepts an optional `args` sequence (defaulting to empty list `[]`). When running in the REPL or without CLI arguments, `args` defaults to an empty list `[]`. In the CLI runner, any positional arguments following `FILE`, `-e SOURCE`, or `-` (or following the `--` option terminator) are collected as strings and passed to the interpreter as `args`. Attempting to call `args()` as a function raises a positioned `EvalError` whose fix explains that `args` is a list of strings and suggests indexing `args[0]` or iterating `for arg in args`. This amends ADR-001's and ADR-004's non-goal regarding script arguments.
 - **Consequences**: Pebble programs can inspect `len(args)`, index elements with `args[i]`, iterate with `for a in args`, and slice arguments with `args[start:stop]`. The language surface gains no new keywords or syntax; `args` is simply a predefined list in the global scope that behaves according to standard list semantics and may be shadowed by `let args = ...` if desired. Costs: `args` is a reserved initial global variable name; calling `args()` is refused with an explanatory positioned error; classes, modules, closures, exceptions, and unicode identifiers remain non-goals.
 
+### ADR-006: Arithmetic never produces a non-finite float
+- **Date**: 2026-10-22
+- **Status**: Accepted
+- **Context**: ADR-003 already required a finite float literal and refused a non-finite `float()` conversion, and `int()`/`floor()` refused non-finite inputs. A review found the gap between those guards: `+`, `-`, `*`, `/`, `%` and `^` let a finite result overflow to `inf` or produce `nan`, for example `float(10 ^ 308) * 10`. Pebble has no literal spelling for either value, so a program could reach a state it cannot express in source and carry it into comparisons and remainder.
+- **Decision**: Every float arithmetic result must be finite. `+`, `-`, `*`, `/`, `%` and `^` check their result; an overflowing float is a positioned EvalError with the message "the result is too large for a float", and `nan` is refused with "the result is not a number". A finite result at the edge of the float range is still allowed. The existing `int()` and `floor()` non-finite guards remain as defensive builtin contracts for embedders, but ordinary Pebble source can no longer reach them.
+- **Consequences**: Every user-reachable float is finite and spellable, and overflow fails loudly instead of propagating a value with no source form. Costs: an accidental IEEE-style workflow that expected `inf` must guard its magnitudes; the finite-float guards are duplicated by design in the evaluator and in `int()`/`floor()`.
+
+### ADR-007: Loops do not introduce a scope
+- **Date**: 2026-10-22
+- **Status**: Accepted
+- **Context**: The evaluator has one global scope plus one frame per call, and no block scope: `if`, `while` and `for` bodies execute in the current scope. `_execute_for` binds the loop variable with the same `_define` used by `let`, so the last item stays visible after the loop. That follows the documented scope model, but neither an ADR nor a test stated it, leaving the behaviour easy to mistake for a defect or to change silently.
+- **Decision**: A `for` loop does not create a scope. Its loop variable is an ordinary binding in the enclosing scope, as are `let` declarations written inside a loop or an `if`/`while` body, and it remains after the loop finishes. Tests pin all three cases: a loop-only variable is visible afterwards, a `let` inside a loop body survives, and a loop reuses and overwrites an existing name. Changing this rule requires a new ADR.
+- **Consequences**: Scoping stays uniform and cheap to reason about: one global scope plus call frames, no hidden block frames. Costs: loop variables behave unlike Python's, and a second loop in the same function intentionally reuses the same binding rather than shadowing it.
+
+### ADR-008: Range length is computed with integer arithmetic, so huge bounds stay a Pebble error
+- **Date**: 2026-10-22
+- **Status**: Accepted
+- **Context**: ADR-003 caps a range at 1,000,000 values before building it, and ADR-001 promises that user failures are positioned Pebble errors rather than host errors. `_range` checked the cap with `len(range(start, stop, step))`, and Python raises `OverflowError` when the count does not fit its C index type. A legal program such as `range(10 ^ 100)` therefore reached the CLI's internal-error shield, which reported a Pebble bug instead of the documented range-cap error.
+- **Decision**: Compute the number of values with Python integer arithmetic in `_range_length`, for positive and negative steps, and compare that count to the cap before constructing the list. A range too large to allocate now raises the same positioned "range would produce N values" EvalError as any other oversized range, with N printed exactly. The language surface and the cap itself are unchanged.
+- **Consequences**: Huge but legal integer bounds fail through the normal error contract, and the message can contain a count up to the integer-digit cap. Costs: one arithmetic helper must stay in step with Python's range semantics; tests cover huge positive, stepped and negative ranges plus the formatted-error corpus.
+
+### ADR-009: String and list concatenation share the sequence length cap
+- **Date**: 2026-10-22
+- **Status**: Accepted
+- **Context**: ADR-003 caps ranges and repeated sequences at 1,000,000 values so memory stays predictable, but `+` joined two strings or two lists without checking their combined length. `len("x" * 1000000 + "y")` returned 1,000,001, and a loop can double a sequence until the host runs out of memory. Concatenation was the remaining unbounded sequence constructor.
+- **Decision**: `+` on two strings or two lists computes the combined length first and refuses a result over `MAX_SEQUENCE_LENGTH` with a positioned EvalError ("joining these strings/lists is too large") that names the exact length and the cap. A result exactly at the cap is allowed. Repetition and range keep their existing checks.
+- **Consequences**: Every user-visible sequence constructor now respects one memory bound. Costs: a program that built a larger sequence by joining two pieces now gets an error; the check adds one length addition per string or list `+`.
+
 

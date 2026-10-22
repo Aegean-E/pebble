@@ -8,9 +8,9 @@
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `18`
 - **Total Classes**: `44`
-- **Total Top-Level Functions**: `49`
-- **Total Class Methods**: `264`
-- **Total Source Lines**: `3168`
+- **Total Top-Level Functions**: `51`
+- **Total Class Methods**: `272`
+- **Total Source Lines**: `3279`
 
 ---
 
@@ -75,7 +75,7 @@
 ### [`pebble/evaluator.py`](pebble/evaluator.py)
 > *Tree-walking evaluator: the runtime semantics of Pebble.*
 
-**Size**: `518` lines (`25766` bytes)
+**Size**: `545` lines (`27479` bytes)
 
 **Classes:**
 - `class _Return` - *Internal signal carrying a `return` value out of nested blocks; never escapes run().*
@@ -101,11 +101,14 @@
   - Method `._evaluate_logical(expression)` - *`and` / `or` short-circuit and return an operand, so `x or fallback` works.*
   - Method `._evaluate_binary(expression)` - *Arithmetic, power, comparison and equality, each with its own message.*
   - Method `._add(expression, left, right)` - *Numbers add, strings join, lists join; nothing else mixes.*
+  - Method `._concatenate(expression, left, right, kind, unit)` - *Join two sequences within the shared length cap (ADR-009).*
   - Method `._numeric(expression, left, right, word, operation)` - *A binary operation over two numbers, with a shared type error.*
   - Method `._multiply(expression, left, right)` - *Numbers multiply; a string or list repeats by a whole count.*
   - Method `._divide(expression, left, right)` - *Always a float; a zero divisor and an overflowing result are refused with a position.*
   - Method `._remainder(expression, left, right)` - *The Python remainder: its sign follows the divisor.*
   - Method `._power(expression, left, right)` - *Right-associative `^`, with guards for huge, unreal and undefined results.*
+  - Method `._check_result(expression, value)` - *Refuse a result outside Pebble's representable values: a huge int or a non-finite float.*
+  - Method `._check_float(expression, value)` - *Refuse inf and nan, which have no literal form in Pebble (ADR-006).*
   - Method `._check_int(expression, value)` - *Refuse an int above the digit cap so arithmetic and printing stay bounded.*
   - Method `._order(expression, left, right)` - *`< <= > >=` on two numbers or two strings.*
   - Method `._evaluate_index(expression)` - *`target[index]` on lists and strings, with negative offsets and length in errors.*
@@ -246,7 +249,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's ten builtins and their shared argument rules.*
 
-**Size**: `246` lines (`9958` bytes)
+**Size**: `261` lines (`10529` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -256,6 +259,7 @@
 - `def _fail(node, message, why, fix)` - *Raise the positioned EvalError shared by every builtin failure.*
 - `def _print(interpreter, call, args)` - *Write one value in display form, then a newline; returns none.*
 - `def _len(interpreter, call, args)` - *The number of characters in a string or elements in a list.*
+- `def _range_length(start, stop, step)` - *How many values range(start, stop, step) yields, computed without len().*
 - `def _range(interpreter, call, args)` - *A half-open list of ints: range(stop), range(start, stop) or range(start, stop, step).*
 - `def _str(interpreter, call, args)` - *The display form of any value, as a string.*
 - `def _int(interpreter, call, args)` - *An int from an int, a float truncated toward zero, or a signed decimal string.*
@@ -282,7 +286,7 @@
 ### [`tests/test_builtins.py`](tests/test_builtins.py)
 > *Builtin tests: the ten builtins, their errors and the display form of values.*
 
-**Size**: `236` lines (`10384` bytes)
+**Size**: `259` lines (`11448` bytes)
 
 **Classes:**
 - `class BuiltinTests` - *One behaviour per test; messages, positions and return values are asserted.*
@@ -320,6 +324,7 @@
 
 **Functions:**
 - `def evaluate(source, out)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
+- `def call_builtin(name, *args)` - *Call one builtin directly, for guards that user source can no longer reach.*
 - `def printed(source)` - *Everything `source` writes through print.*
 
 ---
@@ -363,7 +368,7 @@
 ### [`tests/test_evaluator.py`](tests/test_evaluator.py)
 > *Evaluator tests: semantics, scoping, control flow, functions and runtime errors.*
 
-**Size**: `300` lines (`13505` bytes)
+**Size**: `305` lines (`13781` bytes)
 
 **Classes:**
 - `class EvaluatorTests` - *One behaviour per test; messages, positions and types are asserted, not just raised.*
@@ -391,6 +396,7 @@
   - Method `.test_while_loop_accumulates()`
   - Method `.test_for_loop_walks_lists_and_strings()`
   - Method `.test_for_over_a_number_is_an_error()`
+  - Method `.test_loop_variables_live_in_the_enclosing_scope()`
   - Method `.test_break_exits_the_innermost_loop()`
   - Method `.test_continue_skips_to_the_next_iteration()`
   - Method `.test_continue_in_a_while_reaches_the_condition()`
@@ -431,7 +437,7 @@
 ### [`tests/test_hardening.py`](tests/test_hardening.py)
 > *Hardening tests: error-format contract, resource guards, platform parity and performance.*
 
-**Size**: `215` lines (`8193` bytes)
+**Size**: `256` lines (`10127` bytes)
 
 **Classes:**
 - `class ErrorFormatTests` - *Every error kind carries a position, a reason and a fix, and renders as three lines.*
@@ -445,13 +451,17 @@
   - Method `.lex_error(source)`
   - Method `.test_zero_to_a_negative_power_is_refused()`
   - Method `.test_a_division_result_too_large_for_a_float_is_refused()`
+  - Method `.test_a_non_finite_float_result_is_refused()`
+  - Method `.test_finite_extremes_still_compute()`
   - Method `.test_an_int_result_over_the_digit_cap_is_refused()`
   - Method `.test_a_power_within_the_cap_still_works()`
   - Method `.test_an_oversized_integer_literal_is_a_lex_error()`
   - Method `.test_an_oversized_float_literal_is_a_lex_error()`
   - Method `.test_an_oversized_numeric_string_cannot_become_an_int()`
   - Method `.test_range_length_is_capped()`
+  - Method `.test_huge_range_bounds_are_capped_not_a_host_overflow()`
   - Method `.test_sequence_repetition_length_is_capped()`
+  - Method `.test_sequence_concatenation_is_capped()`
 - `class PlatformTests` - *Positions and string lengths use characters and tolerate CRLF sources.*
   - Method `.test_crlf_source_keeps_line_and_column_positions()`
   - Method `.test_unicode_strings_count_characters_not_bytes()`

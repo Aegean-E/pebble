@@ -1,135 +1,14 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v3-script-args",
-    "last_phase": "phase 3",
+    "task_id": "task-pebble-v4-residual-guards",
+    "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1792439984.6140451,
-    "completed_at": 1792439994.0217245
+    "updated_at": 1792648726.525024,
+    "completed_at": 1792648726.7178957
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/6] Plan: zero-dependency Pebble language v1. Frozen surface (recorded in ADR-001 with milestone 1): values int/float/bool/string/list plus none as the absence of a value; statements let, assignment, if/else, while, for-in, fn, return, blocks; operators + - * / % ^, comparisons, and/or/not, calls, indexing, list literals; builtins print, len, range, str, int, floor, min, max, abs; interfaces: file runner, -e, REPL; exit codes 0/1/2; every lexer, parser and runtime error renders file:line:col with Why and Fix. Non-goals: classes, modules, closures, exceptions, unicode identifiers, break/continue, slices, script arguments. Slice boundaries adjusted from the draft so each slice is complete in itself, never a stub: [1] plan, scaffold, ADR-001 and lexer; [2] parser and AST; [3] evaluator core with control flow, functions and return; [4] the nine builtins and value formatting; [5] CLI, REPL, examples and README demo; [6] hardening, error-format meta test, platform and perf guards, Phase 4. Executing milestone 1 now: failing-first lexer tests written; implementation next.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792356749.5148711,
-      "timestamp_str": "2026-10-18 23:52:29",
-      "impact_assessment": {
-        "why": "The hardest-to-fake test of AIKit's governance available: hundreds of objective semantics tests, dozens of error paths that must obey the Why/Fix contract, and maximal scope-creep temptation, so the plan, checkpoint and gate discipline itself is on trial. The result is also a small interpreter later projects can embed as a rules engine.",
-        "benefits": "A green run demonstrates the gates catch semantics, error-quality and platform defects, and that feature-freeze plus M<=6 discipline holds. The user gains a fully owned, dependency-free mini-language with a REPL, examples and a sub-10-second demo.",
-        "risks": "contract: the v1 surface must be frozen by ADR-001 or it grows without bound; grammar and truthiness choices are contracts pinned by tests. dependency: none, standard library only (pathlib, dataclasses, sys, difflib). concurrency: none, single-threaded, no state files, no locks. state: nothing persisted; the interpreter is stateless. platform: explicit UTF-8 reads with BOM tolerance, CRLF tolerance, pathlib only.",
-        "mitigation": "ADR-001 written before semantics; failing-first tests per slice; an error-format meta test in [6/6] proving every error carries file:line:col plus Why and Fix; a perf sanity test; aikit check pebble as Phase 4 before every commit; recursion, type and division failures surface as Pebble errors, never Python tracebacks."
-      }
-    },
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[1/6] complete: scaffold (pyproject, package, tests package), ADR-001 language-surface freeze, and the lexer with 18 green tests (token streams, positions, CRLF, escapes, comments, error paths). ADR-001 records none as the absence of a value; README filled truthfully so the guidelines gate passes. aikit check pebble: 4/4 gates; checklists: passed. Next: [2/6] parser and AST.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792356824.3897712,
-      "timestamp_str": "2026-10-18 23:53:44"
-    },
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/6] complete: the AST (nodes.py, frozen, every node positioned) and the recursive-descent parser (precedence chain, right-associative power, else-if chains, single-comparison rule, trailing-comma hints, parse-depth guard). 45 tests green; the failing-first run caught one real defect (expression-leading keywords not/true/false/none rejected as statements) which was fixed before green. aikit check pebble: 4/4 gates; checklists: passed. Next: [3/6] evaluator core with control flow, functions and return.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792356931.1153536,
-      "timestamp_str": "2026-10-18 23:55:31"
-    },
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/6] complete: the evaluator (scopes and scope rules, full operator set with typed error messages, truthiness, short-circuit and/or, if/else, while, for-in, functions, recursion capped at 100 calls, return unwinding, list/string indexing with negative offsets, unknown-name suggestions via difflib, division/power guards, and a deep-chain RecursionError converted into a positioned Pebble error). 85 tests green (40 new evaluator tests). aikit check pebble: 4/4 gates; checklists: passed. Next: [4/6] the nine builtins and value formatting.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792357110.2535586,
-      "timestamp_str": "2026-10-18 23:58:30"
-    },
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/6] complete: the nine builtins (print, len, range, str, int, floor, min, max, abs) in stdlib.py with arity metadata, strict argument rules and positioned EvalErrors; shared value formatting (true/false, none, escaped quoted strings inside lists, <fn>/<builtin> names, float display) in formatting.py; builtins seeded into the global scope and suggested by the unknown-name fixer. ADR-002 fixes builtin semantics and the display form. 24 new failing-first builtin tests; 109 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [5/6] CLI, REPL, examples and README demo.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792359943.044705,
-      "timestamp_str": "2026-10-19 00:45:43"
-    },
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[5/6] complete: the CLI (file runner, -e/--eval, piped stdin, --help, --version), exit codes 0/1/2, UTF-8 BOM/CRLF file reads and Why/Fix usage reports; the stateful REPL with multi-line continuation, non-none value echo, error recovery and end-of-file reporting; python -m pebble plus a console-script entry point; three runnable examples (hello, fizzbuzz, fibonacci) and a sub-10-second README demo. 15 new failing-first CLI/REPL tests; 124 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [6/6] hardening, error-format meta test, platform and perf guards, Phase 4.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792360364.4887378,
-      "timestamp_str": "2026-10-19 00:52:44"
-    },
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[6/6] complete: hardening (v1 caps for int size, exponents, ranges and sequences; finite float literals; zero-to-negative-power and float-overflow division become positioned errors; CLI internal-error shield so no host traceback escapes), the error-format meta test over lexer/parser/runtime corpora, CRLF and unicode platform tests, and 50k-loop/10k-statement perf guards. ADR-003 records the limits. 18 new tests; 142 tests green. aikit check pebble: 4/4 gates; checklists: passed. Task complete.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792361107.5057325,
-      "timestamp_str": "2026-10-19 01:05:07"
-    },
-    {
-      "task_id": "task-pebble-core-v1",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-core-v1' completed successfully.",
-      "status": "completed",
-      "timestamp": 1792361107.6461508,
-      "timestamp_str": "2026-10-19 01:05:07"
-    },
-    {
-      "task_id": "task-pebble-v2-conveniences",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/4] break and continue end-to-end: ADR-004, lexer keywords, AST nodes, parser loop-context validation (a fn body is not a loop context), evaluator signals caught by the innermost while or for, failing-first tests; [2/4] slices end-to-end: Slice AST, parser start:stop[:step], evaluator with int bounds, bool refusal, zero-step refusal and Python-style negative/clamped bounds, tests; [3/4] range(start, stop, step) and the float() builtin, with arity, type, zero-step and non-finite guards, tests; [4/4] README and decisions cross-check, regenerated codebase map, full aikit check pebble, delivery",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792432746.8915408,
-      "timestamp_str": "2026-10-19 20:59:06",
-      "impact_assessment": {
-        "why": "v1 is complete and green (142 tests, 4/4 gates), and ADR-001 names break/continue, slices and float() as deferred conveniences while ADR-002 records the missing range step as a cost; the next bounded increment makes early-exit loops, subsequences and text-to-float conversion possible without reopening the rest of the frozen surface",
-        "benefits": "scripts can stop a loop early, skip an iteration, take a list or string subsequence, count with a step and convert numeric text to a float; each addition is pinned by failing-first tests and keeps the existing positioned Why/Fix error contract",
-        "risks": "contract: a v2 surface change, so ADR-004 must amend ADR-001 and ADR-002 and every new failure must keep the three-line error format; dependency: standard library only (re for the float string grammar); concurrency: none, the interpreter is single-threaded and persists no state; state: no files, locks or schemas change",
-        "mitigation": "failing-first tests per feature; parser rejects break/continue outside a loop and resets loop context inside fn bodies; slices delegate to Python semantics and pin them; the hardening error corpora gain the new parse and runtime paths; run aikit check pebble and record checklists before every commit; README updated in the same commit as each user-visible feature"
-      }
-    },
-    {
-      "task_id": "task-pebble-v2-conveniences",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[1/4] complete: ADR-004 records the whole v2 surface; break/continue keywords, AST nodes, parser loop-context rules (fn body resets the context, errors point at the keyword) and evaluator signals caught by the innermost while or for; 9 failing-first tests (1 lexer, 4 parser, 4 evaluator); 151 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [2/4] slices.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792432855.529745,
-      "timestamp_str": "2026-10-19 21:00:55"
-    },
-    {
-      "task_id": "task-pebble-v2-conveniences",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/4] complete: ':' token; Slice AST node and the start:stop[:step] subscript parser with a three-part error; evaluator slices lists and strings with int-only bounds (bools refused), a zero-step refusal and Python-style negative/clamped parts; hardening corpora gain the new parse and runtime paths; 9 failing-first tests (3 parser, 6 evaluator) plus 4 corpus entries; 160 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [3/4] range with a step and float().",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792432919.3259423,
-      "timestamp_str": "2026-10-19 21:01:59"
-    },
     {
       "task_id": "task-pebble-v2-conveniences",
       "phase": "phase 3",
@@ -213,6 +92,141 @@
       "status": "completed",
       "timestamp": 1792439994.0217266,
       "timestamp_str": "2026-10-19 22:59:54"
+    },
+    {
+      "task_id": "task-pebble-v4-finite-floats",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add failing-first regression tests and a finite-float result guard so no arithmetic can produce inf or nan; update the two builtin guards that built non-finite values through arithmetic; pin loop-variable scoping and record ADR-006/007. [2/3] Update README and regenerate the codebase map. [3/3] Run the full pebble test suite and aikit check, then complete the task.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792624538.6767948,
+      "timestamp_str": "2026-10-22 02:15:38",
+      "impact_assessment": {
+        "why": "The analysis found that float arithmetic can produce inf and nan (for example float(10 ^ 308) * 10), values Pebble cannot spell in source, and that loop variables leaking into the enclosing scope is unpinned and undocumented.",
+        "benefits": "Every user-reachable float stays finite, matching the existing float-literal, float() and int()/floor() contracts; loop scoping becomes a tested contract rather than an accidental side effect.",
+        "risks": "contract: arithmetic overflow now raises a positioned EvalError and loops keep their documented non-scoping; dependency: none, standard-library math only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "Failing-first tests for addition, subtraction, multiplication, division, remainder and power overflow; direct-call tests keep the defensive int()/floor() non-finite guards covered; ADRs and tests pin loop scoping before README updates; full aikit check pebble before any delivery."
+      }
+    },
+    {
+      "task_id": "task-pebble-v4-finite-floats",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/3] complete: finite float guard in evaluator (_check_result/_check_float on + - * / % ^), failing-first overflow tests, direct-call int()/floor() guard coverage, loop-scope contract test, ADR-006/007, README and regenerated map; 177 tests green.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792647600.8141298,
+      "timestamp_str": "2026-10-22 08:40:00"
+    },
+    {
+      "task_id": "task-pebble-v4-finite-floats",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[3/3] complete: aikit check pebble --no-push 4/4 gates (test 177 green, hygiene, guidelines, secrets); checklists: passed. Delivery is uncommitted and unpushed.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792647606.1291184,
+      "timestamp_str": "2026-10-22 08:40:06"
+    },
+    {
+      "task_id": "task-pebble-v4-finite-floats",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v4-finite-floats' completed successfully.",
+      "status": "completed",
+      "timestamp": 1792647616.7992935,
+      "timestamp_str": "2026-10-22 08:40:16"
+    },
+    {
+      "task_id": "task-pebble-v4-range-bounds",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Failing-first tests and a safe range-length computation: huge bounds must be a positioned range-cap EvalError instead of a host OverflowError. [2/3] Record ADR-008 and verify the codebase map. [3/3] Run the full pebble suite and aikit check, then complete the task.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792647751.7240653,
+      "timestamp_str": "2026-10-22 08:42:31",
+      "impact_assessment": {
+        "why": "range(start, stop, step) computes len(range(...)) before applying its cap; with a huge but legal int bound Python raises OverflowError, so the CLI reports an internal error instead of the documented positioned What/Why/Fix error (ADR-003, ADR-001).",
+        "benefits": "Every range is capped before allocation and huge bounds produce the same explanatory EvalError as other oversized ranges, so no user program reaches the internal-error path.",
+        "risks": "contract: the range cap is computed with integer arithmetic instead of len(); dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "Failing-first tests for huge positive, stepped and negative ranges, a formatted-error corpus entry, and the full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v4-range-bounds",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/3] complete: _range_length computes the count with big-int arithmetic for both step signs, the cap is checked before allocation, failing-first huge-bound tests and a formatted-error corpus entry were added, ADR-008 records the rule, and README/map are synchronized; 178 tests green.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792647866.724383,
+      "timestamp_str": "2026-10-22 08:44:26"
+    },
+    {
+      "task_id": "task-pebble-v4-range-bounds",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[3/3] complete: aikit check pebble --no-push 4/4 gates (test 178 green, hygiene, guidelines, secrets); checklists: passed. Delivery is uncommitted and unpushed.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792647870.4160588,
+      "timestamp_str": "2026-10-22 08:44:30"
+    },
+    {
+      "task_id": "task-pebble-v4-range-bounds",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v4-range-bounds' completed successfully.",
+      "status": "completed",
+      "timestamp": 1792647870.6649868,
+      "timestamp_str": "2026-10-22 08:44:30"
+    },
+    {
+      "task_id": "task-pebble-v4-residual-guards",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/3] Add failing-first tests for a non-finite float argument to float() and for sequence concatenation over the cap, then guard both. [2/3] Record ADR-009, update README and the codebase map. [3/3] Run the full pebble suite and aikit check, then complete the task.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792648585.94391,
+      "timestamp_str": "2026-10-22 08:56:25",
+      "impact_assessment": {
+        "why": "The analysis found two residual contract gaps: float() returns an already non-finite float unchanged even though ADR-004 says non-finite results are refused, and string/list + bypasses MAX_SEQUENCE_LENGTH so concatenation can grow without bound while repetition and ranges are capped.",
+        "benefits": "The conversion builtins share one non-finite contract for embedders, and every user-visible sequence constructor now respects the same 1,000,000-value memory bound.",
+        "risks": "contract: string/list concatenation over the cap now raises a positioned EvalError and float(inf/nan) is refused; dependency: none, standard library math only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "Failing-first tests for both guards, a patched-cap test that stays fast, direct-call coverage for inf/-inf/nan, ADR-009, README/map sync, and the full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v4-residual-guards",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/3] complete: float() now refuses inf/-inf/nan arguments, string/list + checks the combined length against MAX_SEQUENCE_LENGTH before joining, failing-first direct-call and patched-cap tests pass, ADR-009 records the concatenation cap, README says 179 tests and the map includes _concatenate; 179 tests green.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792648722.5446498,
+      "timestamp_str": "2026-10-22 08:58:42"
+    },
+    {
+      "task_id": "task-pebble-v4-residual-guards",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[3/3] complete: aikit check pebble --no-push 4/4 gates (test 179 green, hygiene, guidelines, secrets); checklists: passed. Delivery is uncommitted and unpushed.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1792648726.525024,
+      "timestamp_str": "2026-10-22 08:58:46"
+    },
+    {
+      "task_id": "task-pebble-v4-residual-guards",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v4-residual-guards' completed successfully.",
+      "status": "completed",
+      "timestamp": 1792648726.7179,
+      "timestamp_str": "2026-10-22 08:58:46"
     }
   ]
 }

@@ -50,8 +50,12 @@ RUNTIME_ERRORS = (
     "[1][0:2:0]",
     '"abc"[1.5:]',
     "range(0, 5, 0)",
+    "range(10 ^ 100)",
     'float("x")',
     "args()",
+    'float("1e308") + float("1e308")',
+    'float("1e308") * 10',
+    'float("1e308") / float("1e-308")',
 )
 
 
@@ -136,6 +140,24 @@ class ResourceGuardTests(unittest.TestCase):
         error = self.eval_error("(10 ^ 400) / 1")
         self.assertIn("the result is too large for a float", error.message)
 
+    def test_a_non_finite_float_result_is_refused(self) -> None:
+        for source in (
+            'float("1e308") + float("1e308")',
+            'float("1e308") - float("-1e308")',
+            'float("1e308") * 10',
+            'float("1e308") / float("1e-308")',
+            'float("1e308") ^ 2',
+        ):
+            with self.subTest(source=source):
+                error = self.eval_error(source)
+                self.assertIn("too large for a float", error.message)
+                self.assertTrue(error.why)
+                self.assertTrue(error.fix)
+
+    def test_finite_extremes_still_compute(self) -> None:
+        self.assertEqual(evaluate('float("1e308") / 1'), 1e308)
+        self.assertEqual(evaluate('float("1e-308") * 1'), 1e-308)
+
     def test_an_int_result_over_the_digit_cap_is_refused(self) -> None:
         error = self.eval_error("10 ^ 10000")
         self.assertIn("integer result is too large", error.message)
@@ -167,6 +189,14 @@ class ResourceGuardTests(unittest.TestCase):
         self.assertIn("range would produce 2000000 values",
                       self.eval_error("range(0, 2000000)").message)
 
+    def test_huge_range_bounds_are_capped_not_a_host_overflow(self) -> None:
+        for source in ("range(10 ^ 100)", "range(0, 10 ^ 100, 3)",
+                       "range(0, -(10 ^ 100), -1)"):
+            with self.subTest(source=source):
+                error = self.eval_error(source)
+                self.assertIn("range would produce", error.message)
+                self.assertIn("1000000", error.why)
+
     def test_sequence_repetition_length_is_capped(self) -> None:
         error = self.eval_error('"x" * 1000001')
         self.assertIn("repeating a string 1000001 times is too large", error.message)
@@ -174,6 +204,17 @@ class ResourceGuardTests(unittest.TestCase):
         error = self.eval_error("[1] * 1000001")
         self.assertIn("repeating a list 1000001 times is too large", error.message)
         self.assertIn("elements", error.why)
+
+    def test_sequence_concatenation_is_capped(self) -> None:
+        with patch("pebble.evaluator.MAX_SEQUENCE_LENGTH", 5):
+            self.assertEqual(evaluate('"ab" + "cde"'), "abcde")
+            self.assertEqual(evaluate("[1, 2] + [3, 4, 5]"), [1, 2, 3, 4, 5])
+            error = self.eval_error('"abc" + "def"')
+            self.assertIn("joining these strings is too large", error.message)
+            self.assertIn("6 characters", error.why)
+            error = self.eval_error("[1, 2, 3] + [4, 5, 6]")
+            self.assertIn("joining these lists is too large", error.message)
+            self.assertIn("6 elements", error.why)
 
 
 class PlatformTests(unittest.TestCase):

@@ -15,6 +15,7 @@ Pebble error, so no failure ever reaches a user as a traceback.
 """
 
 import difflib
+import math
 import sys
 from typing import NoReturn
 
@@ -269,19 +270,29 @@ class Interpreter:
     def _add(self, expression, left, right) -> object:
         """Numbers add, strings join, lists join; nothing else mixes."""
         if is_number(left) and is_number(right):
-            return self._check_int(expression, left + right)
+            return self._check_result(expression, left + right)
         if isinstance(left, str) and isinstance(right, str):
-            return left + right
+            return self._concatenate(expression, left, right, "strings", "characters")
         if isinstance(left, list) and isinstance(right, list):
-            return left + right
+            return self._concatenate(expression, left, right, "lists", "elements")
         self._fail(expression, f"cannot add {type_name(left)} and {type_name(right)}",
                    "+ adds two numbers, joins two strings or joins two lists",
                    "make both operands numbers, or both the same kind of sequence")
 
+    def _concatenate(self, expression, left, right, kind: str, unit: str) -> object:
+        """Join two sequences within the shared length cap (ADR-009)."""
+        length = len(left) + len(right)
+        if length > MAX_SEQUENCE_LENGTH:
+            self._fail(expression, f"joining these {kind} is too large",
+                       f"the result would have {length} {unit}; v1 caps sequences at "
+                       f"{MAX_SEQUENCE_LENGTH}",
+                       f"use shorter {kind}, or build the result with a loop")
+        return left + right
+
     def _numeric(self, expression, left, right, word: str, operation):
         """A binary operation over two numbers, with a shared type error."""
         if is_number(left) and is_number(right):
-            return self._check_int(expression, operation(left, right))
+            return self._check_result(expression, operation(left, right))
         self._fail(expression, f"cannot {word} {type_name(left)} and {type_name(right)}",
                    f"{word}ing needs two numbers",
                    "make both operands numbers")
@@ -289,7 +300,7 @@ class Interpreter:
     def _multiply(self, expression, left, right) -> object:
         """Numbers multiply; a string or list repeats by a whole count."""
         if is_number(left) and is_number(right):
-            return self._check_int(expression, left * right)
+            return self._check_result(expression, left * right)
         sequence, count = (left, right) if isinstance(left, (str, list)) else (right, left)
         if isinstance(sequence, (str, list)) and isinstance(count, int) and not isinstance(count, bool):
             if count < 0:
@@ -317,7 +328,7 @@ class Interpreter:
                            "dividing by zero has no defined result",
                            "guard the divisor with an if, or change it")
             try:
-                return left / right
+                return self._check_result(expression, left / right)
             except OverflowError:
                 self._fail(expression, "the result is too large for a float",
                            "dividing these ints needs a float beyond the largest float",
@@ -333,7 +344,7 @@ class Interpreter:
                 self._fail(expression, "remainder by zero",
                            "the divisor is zero, and x % 0 is undefined",
                            "guard the divisor with an if, or change it")
-            return left % right
+            return self._check_result(expression, left % right)
         self._fail(expression, f"cannot take the remainder of {type_name(left)} and "
                                f"{type_name(right)}",
                    "remainder ( % ) needs two numbers",
@@ -365,11 +376,27 @@ class Interpreter:
                        "a negative base with a fractional exponent has no real result",
                        "use an int exponent, or a non-negative base")
         try:
-            return self._check_int(expression, left ** right)
+            return self._check_result(expression, left ** right)
         except OverflowError:
             self._fail(expression, "the result is too large for a float",
                        "the exponent pushes the result past the largest float",
                        "use a smaller exponent")
+
+    def _check_result(self, expression, value) -> object:
+        """Refuse a result outside Pebble's representable values: a huge int or a non-finite float."""
+        self._check_float(expression, value)
+        return self._check_int(expression, value)
+
+    def _check_float(self, expression, value) -> None:
+        """Refuse inf and nan, which have no literal form in Pebble (ADR-006)."""
+        if isinstance(value, float) and not math.isfinite(value):
+            if math.isnan(value):
+                self._fail(expression, "the result is not a number",
+                           "the operation produced nan, which has no value in Pebble",
+                           "use finite operands, or guard the operation with an if")
+            self._fail(expression, "the result is too large for a float",
+                       "the operation produced a value beyond the largest float",
+                       "use smaller values, or scale them down first")
 
     def _check_int(self, expression, value) -> object:
         """Refuse an int above the digit cap so arithmetic and printing stay bounded."""

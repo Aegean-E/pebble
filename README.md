@@ -79,15 +79,21 @@ adds `break`/`continue`, list and string slices, `range` with a step, and `float
 builtin. ADR-005 adds command-line script arguments accessible through the global `args` list of
 strings; everything else outside those lists waits for a later task.
 
-Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, and `task-pebble-v3-script-args`
-are complete (174 tests): script arguments via `args`, `break`/`continue`, slices, `range` with
-a step and `float()` extend the frozen v1 surface as ADR-004 and ADR-005 record. The plan and its
-checkpoints live in `.aikit/task_ledger.json`.
+Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-script-args`,
+`task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`, and
+`task-pebble-v4-residual-guards` are complete (179 tests): script arguments via `args`,
+`break`/`continue`, slices, `range` with a step and `float()` extend the frozen v1 surface as
+ADR-004 and ADR-005 record. ADR-006 makes every non-finite float result a positioned error,
+ADR-007 records that a loop reuses the enclosing scope, ADR-008 computes a range's length before
+allocating it, and ADR-009 caps string and list concatenation. The plan and its checkpoints live
+in `.aikit/task_ledger.json`.
 
-Pebble stays deliberately bounded (ADR-003, in force for v2 and v3): calls nest at most 100 deep, integer
-exponents stop at 10,000, integers stay near 4,000 digits, ranges and repeated sequences at
-1,000,000 values, and an unexpected host failure still renders as a three-line Pebble report
-rather than a traceback.
+Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008 and ADR-009): calls nest
+at most 100 deep, integer exponents stop at 10,000, integers stay near 4,000 digits, and ranges,
+repeated sequences and joined sequences stop at 1,000,000 values. Every float result must stay
+finite, and an unexpected host failure still renders as a three-line Pebble report rather than a
+traceback. Loops add no scope: the loop variable and any `let` inside a loop body remain visible
+afterwards.
 
 ## 🚀 Running a program
 
