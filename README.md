@@ -1,5 +1,7 @@
 # pebble
 
+[![Built with AIKit](https://img.shields.io/badge/built%20with-AIKit-6f42c1)](https://github.com/Aegean-E/AIKit)
+
 A tiny, dependency-free scripting language: lexer, parser, tree-walking evaluator and REPL.
 Built as an AIKit evaluation project — the process is under test as much as the code.
 
