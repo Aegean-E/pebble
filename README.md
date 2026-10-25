@@ -40,6 +40,7 @@ pebble/
 ├── .gitignore
 ├── LICENSE
 ├── README.md
+├── COMMERCIAL.md
 ├── examples/
 │   ├── hello.peb
 │   ├── greet.peb
