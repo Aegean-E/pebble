@@ -67,4 +67,8 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: `+` on two strings or two lists computes the combined length first and refuses a result over `MAX_SEQUENCE_LENGTH` with a positioned EvalError ("joining these strings/lists is too large") that names the exact length and the cap. A result exactly at the cap is allowed. Repetition and range keep their existing checks.
 - **Consequences**: Every user-visible sequence constructor now respects one memory bound. Costs: a program that built a larger sequence by joining two pieces now gets an error; the check adds one length addition per string or list `+`.
 
+## Licensing migration (v0.1.0-agpl)
 
+- New versions use the Aegean License 1.1 (AL-1.1); versions up to and including `v0.1.0-agpl` remain under GNU AGPL-3.0.
+- Rights holder: AegeanWorks; commercial use under ACL-1.0.
+- Counsel review of the 1.1 texts remains pending.

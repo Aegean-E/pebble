@@ -1,6 +1,6 @@
 # pebble
 
-[![Built with AIKit](https://img.shields.io/badge/built%20with-AIKit-6f42c1)](https://github.com/Aegean-E/AIKit)
+[![Built with AIKit](https://img.shields.io/badge/built%20with-AIKit-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
 A tiny, dependency-free scripting language: lexer, parser, tree-walking evaluator and REPL.
 Built as an AIKit evaluation project — the process is under test as much as the code.
@@ -39,6 +39,8 @@ pebble/
 │   └── task_ledger.json      <- the task ledger: plan and milestone checkpoints
 ├── .gitignore
 ├── LICENSE
+├── LICENSES/                 <- REUSE license texts
+├── REUSE.toml                <- Machine-readable SPDX metadata
 ├── README.md
 ├── COMMERCIAL.md
 ├── examples/
@@ -124,3 +126,9 @@ Single module, from the project root:
 ```bash
 python -m unittest tests.test_lexer
 ```
+
+> **License history:** versions up to and including `v0.1.0-agpl` remain available under GNU AGPL-3.0.
+
+## 📜 License
+
+Free for personal use under the Aegean License 1.1 (AL-1.1); see [LICENSE](LICENSE). Any commercial use needs the Aegean Commercial License 1.0 (ACL-1.0); see [COMMERCIAL.md](COMMERCIAL.md).
