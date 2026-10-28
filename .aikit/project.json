@@ -11,6 +11,9 @@
   "ui_source": "detected",
   "topics": [
     "aikit",
+    "source-available",
+    "aegean-license",
+    "commercial-license",
     "interpreter",
     "language-design",
     "lexer",
@@ -19,17 +22,14 @@
     "python",
     "repl",
     "tree-walking-interpreter",
-    "source-available",
     "aegeanworks",
     "command-line-tool",
     "scripting-language",
-    "software",
     "compiler",
-    "virtual-machine",
     "language-implementation",
-    "education",
     "learning",
-    "scripting"
+    "scripting",
+    "virtual-machine"
   ],
   "topics_source": "ai:kilo:2026-10-27",
   "topics_reviewed_at": "2026-10-28",
@@ -62,5 +62,10 @@
     "education",
     "learning",
     "scripting"
+  ],
+  "license_topics": [
+    "source-available",
+    "aegean-license",
+    "commercial-license"
   ]
 }
