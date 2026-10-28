@@ -11,6 +11,7 @@
   "ui_source": "detected",
   "topics": [
     "aikit",
+    "aikit-integrated",
     "source-available",
     "aegean-license",
     "commercial-license",
@@ -27,7 +28,6 @@
     "scripting-language",
     "compiler",
     "language-implementation",
-    "learning",
     "scripting",
     "virtual-machine"
   ],
