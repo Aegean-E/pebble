@@ -1,5 +1,10 @@
 # pebble
 
+<!-- aegean:media:start -->
+<p align="center"><img src="assets/logo.svg" alt="Pebble logo" width="96" height="96"></p>
+<p align="center"><img src="assets/social-preview.svg" alt="Pebble social preview" width="100%"></p>
+<!-- aegean:media:end -->
+
 [![Built with AIKit](https://img.shields.io/badge/built%20with-AIKit-6f42c1)](https://github.com/AegeanWorks/AIKit)
 
 A tiny, dependency-free scripting language: lexer, parser, tree-walking evaluator and REPL.

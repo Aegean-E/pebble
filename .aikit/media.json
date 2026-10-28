@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "name": "pebble",
+  "repo": "Pebble",
+  "has_ui": false,
+  "ui_kind": "library",
+  "palette": [
+    "#0e1117",
+    "#1f2937",
+    "#60a5fa",
+    "#f8fafc"
+  ],
+  "assets": {
+    "logo": {
+      "path": "assets/logo.svg",
+      "status": "approved",
+      "commit": "",
+      "generated_at": "2026-10-28T08:02:43",
+      "review": {
+        "status": "approved",
+        "reviewer": "subagent:vision-review",
+        "method": "vision",
+        "notes": "PE monogram in blue, dark teal, aligned and readable.",
+        "score": 93,
+        "reviewed_at": "2026-10-28T08:10:43"
+      }
+    },
+    "social_preview": {
+      "path": "assets/social-preview.svg",
+      "status": "approved",
+      "commit": "",
+      "generated_at": "2026-10-28T08:02:43",
+      "review": {
+        "status": "approved",
+        "reviewer": "subagent:vision-review",
+        "method": "vision",
+        "notes": "PE icon, title, scripting language description, LIBRARY tag.",
+        "score": 93,
+        "reviewed_at": "2026-10-28T08:10:43"
+      }
+    },
+    "social_preview_png": {
+      "path": "assets/social-preview.png",
+      "status": "pending_review",
+      "commit": "",
+      "generated_at": "2026-10-28T08:02:44",
+      "review": null
+    }
+  },
+  "screenshots": []
+}
