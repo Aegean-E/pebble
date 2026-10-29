@@ -1,134 +1,17 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v4-residual-guards",
-    "last_phase": "phase 4",
+    "task_id": "task-pebble-v6-sort",
+    "last_phase": "in_progress",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1792648726.525024,
-    "completed_at": 1792648726.7178957
+    "updated_at": 1793252128.8768296,
+    "owner": "kilo:v6-sort",
+    "started_by": "kilo:v6-sort",
+    "continuations": [],
+    "completed_at": 1793252151.4339523
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v2-conveniences",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/4] complete: range accepts range(start, stop, step) with int-only arguments, a zero-step refusal and the same 1,000,000-value cap; float() converts ints, floats and strictly decimal strings, refuses bools, whitespace, non-decimal text and non-finite results, and turns an int beyond the float range into an EvalError; 6 new failing-first builtin tests plus 2 hardening corpus entries; 166 tests green. aikit check pebble: 4/4 gates; checklists: passed. Next: [4/4] final docs, map and verification.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792433021.7921283,
-      "timestamp_str": "2026-10-19 21:03:41"
-    },
-    {
-      "task_id": "task-pebble-v2-conveniences",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/4] complete: README tree, status and v2 wording align with the code; codebase map regenerated; full aikit check pebble run: 4/4 gates (test 166 green, hygiene, guidelines, secrets); checklists: passed. Task complete.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792433115.9866502,
-      "timestamp_str": "2026-10-19 21:05:15"
-    },
-    {
-      "task_id": "task-pebble-v2-conveniences",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v2-conveniences' completed successfully.",
-      "status": "completed",
-      "timestamp": 1792433126.989072,
-      "timestamp_str": "2026-10-19 21:05:26"
-    },
-    {
-      "task_id": "task-pebble-v3-script-args",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/3] ADR-005 and evaluator core: Interpreter(out=None, args=None) seeds global 'args' list of strings (defaults to []), friendly fix when attempting to call args(), failing-first evaluator tests; [2/3] CLI and runner integration: parse arguments after FILE, -e SOURCE, stdin -, and -- option terminator, passing string args to Interpreter; update test_cli.py with failing-first CLI argument tests; [3/3] demo script in examples/, test_hardening corpora check, README updates, regenerated codebase map, full aikit check pebble, delivery",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792439705.1385448,
-      "timestamp_str": "2026-10-19 22:55:05",
-      "impact_assessment": {
-        "why": "Pebble scripts currently cannot access command-line arguments, limiting automation and scripting utility; adding script arguments via a global 'args' string list provides idiomatic CLI parameterization while keeping the language surface minimal and dependency-free",
-        "benefits": "Scripts can read arguments via 'args[0]', 'len(args)', slices, and for-in loops; CLI runner supports passing arguments after script path, -e code, and via stdin or '--' option delimiter; preserves the three-line positioned error contract",
-        "risks": "contract: language surface and CLI option parsing change, requiring ADR-005; dependency: standard library only; concurrency: none, single-threaded execution; state: no persistent state",
-        "mitigation": "ADR-005 recorded before code; backward-compatible Interpreter signature; failing-first tests per milestone; 100% test pass and full aikit check pebble gate before each commit"
-      }
-    },
-    {
-      "task_id": "task-pebble-v3-script-args",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[1/3] complete: ADR-005 records script arguments contract; Interpreter(out=None, args=None) seeds global 'args' list with string args; calling args() provides helpful positioned error fix; 4 new failing-first evaluator tests (170 tests green). aikit check pebble: 4/4 gates; checklists: passed. Next: [2/3] CLI and runner integration.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792439798.5892973,
-      "timestamp_str": "2026-10-19 22:56:38"
-    },
-    {
-      "task_id": "task-pebble-v3-script-args",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/3] complete: CLI and runner argument parsing; supports passing script arguments after FILE, -e SOURCE, and stdin -, with -- option terminator support; 4 new failing-first CLI tests (174 tests green). aikit check pebble: 4/4 gates; checklists: passed. Next: [3/3] examples, README, and final verification.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792439909.132291,
-      "timestamp_str": "2026-10-19 22:58:29"
-    },
-    {
-      "task_id": "task-pebble-v3-script-args",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/3] complete: added greet.peb example, added args() to test_hardening runtime error corpus, updated README.md, regenerated codebase map; 174 tests green; aikit check pebble: 4/4 gates; checklists: passed. Task complete.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792439984.6140451,
-      "timestamp_str": "2026-10-19 22:59:44"
-    },
-    {
-      "task_id": "task-pebble-v3-script-args",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v3-script-args' completed successfully.",
-      "status": "completed",
-      "timestamp": 1792439994.0217266,
-      "timestamp_str": "2026-10-19 22:59:54"
-    },
-    {
-      "task_id": "task-pebble-v4-finite-floats",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/3] Add failing-first regression tests and a finite-float result guard so no arithmetic can produce inf or nan; update the two builtin guards that built non-finite values through arithmetic; pin loop-variable scoping and record ADR-006/007. [2/3] Update README and regenerate the codebase map. [3/3] Run the full pebble test suite and aikit check, then complete the task.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792624538.6767948,
-      "timestamp_str": "2026-10-22 02:15:38",
-      "impact_assessment": {
-        "why": "The analysis found that float arithmetic can produce inf and nan (for example float(10 ^ 308) * 10), values Pebble cannot spell in source, and that loop variables leaking into the enclosing scope is unpinned and undocumented.",
-        "benefits": "Every user-reachable float stays finite, matching the existing float-literal, float() and int()/floor() contracts; loop scoping becomes a tested contract rather than an accidental side effect.",
-        "risks": "contract: arithmetic overflow now raises a positioned EvalError and loops keep their documented non-scoping; dependency: none, standard-library math only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "Failing-first tests for addition, subtraction, multiplication, division, remainder and power overflow; direct-call tests keep the defensive int()/floor() non-finite guards covered; ADRs and tests pin loop scoping before README updates; full aikit check pebble before any delivery."
-      }
-    },
-    {
-      "task_id": "task-pebble-v4-finite-floats",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/3] complete: finite float guard in evaluator (_check_result/_check_float on + - * / % ^), failing-first overflow tests, direct-call int()/floor() guard coverage, loop-scope contract test, ADR-006/007, README and regenerated map; 177 tests green.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792647600.8141298,
-      "timestamp_str": "2026-10-22 08:40:00"
-    },
-    {
-      "task_id": "task-pebble-v4-finite-floats",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[3/3] complete: aikit check pebble --no-push 4/4 gates (test 177 green, hygiene, guidelines, secrets); checklists: passed. Delivery is uncommitted and unpushed.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792647606.1291184,
-      "timestamp_str": "2026-10-22 08:40:06"
-    },
     {
       "task_id": "task-pebble-v4-finite-floats",
       "phase": "completed",
@@ -227,6 +110,137 @@
       "status": "completed",
       "timestamp": 1792648726.7179,
       "timestamp_str": "2026-10-22 08:58:46"
+    },
+    {
+      "task_id": "task-pebble-v5-text-helpers",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/5] Plan: add four text builtins (split, join, trim, replace) under a new ADR-010, pinned by failing-first tests, then sync README, map and examples",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793227857.1860626,
+      "timestamp_str": "2026-10-29 01:50:57",
+      "agent": "kilo:v5-text-helpers",
+      "impact_assessment": {
+        "why": "Pebble can read script arguments but cannot shape text: no split, join, trim or replace, so every real text-processing script is impossible even though strings are a first-class value.",
+        "benefits": "Scripts can tokenize arguments and files, reassemble fields, clean whitespace and rewrite fragments with four small, guarded builtins instead of hand-written while-loop slicing.",
+        "risks": "contract: surface grows to 14 builtins and ADR-002's builtin contract list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "ADR-010 pins every arity, type rule, whitespace set and length cap before code; failing-first tests per builtin; reuse MAX_SEQUENCE_LENGTH; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v5-text-helpers",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/5] split is green: one-argument whitespace splitting and exact-separator splitting, type and empty-separator guards, list cap check, 5 new tests",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793228062.7043247,
+      "timestamp_str": "2026-10-29 01:54:22",
+      "agent": "kilo:v5-text-helpers"
+    },
+    {
+      "task_id": "task-pebble-v5-text-helpers",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[3/5] join is green: separator placement, empty list, non-list and non-string element guards with an index, non-string separator guard, sequence-length cap, arity 2",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793228157.005419,
+      "timestamp_str": "2026-10-29 01:55:57",
+      "agent": "kilo:v5-text-helpers"
+    },
+    {
+      "task_id": "task-pebble-v5-text-helpers",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[4/5] trim and replace are green: whitespace-only end trimming, three-string and empty-search guards, replace length cap; 18 text tests pass and the full suite is green",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793228317.8949668,
+      "timestamp_str": "2026-10-29 01:58:37",
+      "agent": "kilo:v5-text-helpers"
+    },
+    {
+      "task_id": "task-pebble-v5-text-helpers",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[5/5] Docs and gates: ADR-010, README builtin surface, tree and status (197 tests), examples/text.peb, regenerated codebase map; aikit check pebble --no-push 4/4 gates (test 197 green, hygiene, guidelines, secrets); checklists: passed. Delivery is uncommitted and unpushed.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793228735.1713092,
+      "timestamp_str": "2026-10-29 02:05:35",
+      "agent": "kilo:v5-text-helpers"
+    },
+    {
+      "task_id": "task-pebble-v5-text-helpers",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[5/5] Docs and gates: ADR-010 records the four text helpers, README lists the fourteen builtins and 197 tests, examples/text.peb demonstrates them, codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed; delivery uncommitted and unpushed.",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793228746.8801785,
+      "timestamp_str": "2026-10-29 02:05:46",
+      "agent": "kilo:v5-text-helpers"
+    },
+    {
+      "task_id": "task-pebble-v5-text-helpers",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v5-text-helpers' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793228774.4943736,
+      "timestamp_str": "2026-10-29 02:06:14",
+      "agent": "kilo:v5-text-helpers"
+    },
+    {
+      "task_id": "task-pebble-v6-sort",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/4] Plan: add one list builtin, sort(values), ascending and stable, reusing min/max ordering rules, recorded as ADR-011 and pinned by failing-first tests, then sync README, map and examples",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793251941.6140878,
+      "timestamp_str": "2026-10-29 08:32:21",
+      "agent": "kilo:v6-sort",
+      "impact_assessment": {
+        "why": "Pebble can take the minimum and maximum of a set but cannot order it: every list-shaped result, such as split's fields, cannot be ranked except with a hand-written nested loop, which is the one list operation scripts still write by hand.",
+        "benefits": "Scripts can order fields, scores and names in one call and reach descending order with the existing slice syntax, sort(x)[::-1], so no direction argument is needed.",
+        "risks": "contract: surface grows to 15 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "ADR-011 pins the ordering, stability and refusal rules before code; failing-first tests for numbers, strings, stability, mixed and unorderable values, and arity; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v6-sort",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/4] sort is green: ascending numbers and strings, stability, a new list while the input is untouched, reverse slice composition, non-list and unorderable and mixed-kind refusals, arity 1; 9 new tests, full suite 206 green",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793252024.796192,
+      "timestamp_str": "2026-10-29 08:33:44",
+      "agent": "kilo:v6-sort"
+    },
+    {
+      "task_id": "task-pebble-v6-sort",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/4] Docs and examples: ADR-011 records sort, README lists fifteen builtins and 206 tests, examples/sorted.peb demonstrates split+sort+reverse slice, codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793252128.8768296,
+      "timestamp_str": "2026-10-29 08:35:28",
+      "agent": "kilo:v6-sort"
+    },
+    {
+      "task_id": "task-pebble-v6-sort",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v6-sort' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793252151.4339535,
+      "timestamp_str": "2026-10-29 08:35:51",
+      "agent": "kilo:v6-sort"
     }
   ]
 }

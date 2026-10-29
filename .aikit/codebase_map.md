@@ -6,11 +6,11 @@
 ---
 
 ## 📊 Codebase Metrics
-- **Total Python Modules**: `18`
-- **Total Classes**: `44`
-- **Total Top-Level Functions**: `51`
-- **Total Class Methods**: `272`
-- **Total Source Lines**: `3279`
+- **Total Python Modules**: `20`
+- **Total Classes**: `46`
+- **Total Top-Level Functions**: `61`
+- **Total Class Methods**: `301`
+- **Total Source Lines**: `3675`
 
 ---
 
@@ -247,9 +247,9 @@
 ---
 
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
-> *Pebble's ten builtins and their shared argument rules.*
+> *Pebble's builtins and their shared argument rules.*
 
-**Size**: `261` lines (`10529` bytes)
+**Size**: `400` lines (`17249` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -272,7 +272,14 @@
 - `def _same_kind(left, right)` - *Whether two orderable values are comparable: both numbers or both strings.*
 - `def _min(interpreter, call, args)` - *The smallest of the values.*
 - `def _max(interpreter, call, args)` - *The largest of the values.*
+- `def _sort(interpreter, call, args)` - *A new list of the values in ascending order, by the min/max ordering rules.*
 - `def _abs(interpreter, call, args)` - *The magnitude of a number.*
+- `def _string_arg(call, value, name, why, fix)` - *One argument as a string, or the builtin's positioned type error.*
+- `def _split(interpreter, call, args)` - *Text cut into fields: on whitespace runs, or at every exact separator.*
+- `def _split_whitespace(text)` - *The fields between runs of whitespace; leading and trailing whitespace is dropped.*
+- `def _join(interpreter, call, args)` - *The strings of a list in order, with a separator between them.*
+- `def _trim(interpreter, call, args)` - *The text without leading or trailing whitespace; the interior is untouched.*
+- `def _replace(interpreter, call, args)` - *Every non-overlapping occurrence of a search string, left to right, rewritten.*
 
 ---
 
@@ -284,9 +291,9 @@
 ---
 
 ### [`tests/test_builtins.py`](tests/test_builtins.py)
-> *Builtin tests: the ten builtins, their errors and the display form of values.*
+> *Builtin tests: the core builtins, their errors and the display form of values.*
 
-**Size**: `259` lines (`11448` bytes)
+**Size**: `259` lines (`11449` bytes)
 
 **Classes:**
 - `class BuiltinTests` - *One behaviour per test; messages, positions and return values are asserted.*
@@ -509,6 +516,29 @@
 
 ---
 
+### [`tests/test_lists.py`](tests/test_lists.py)
+> *List helpers: sort, with the ordering rules min and max already share.*
+
+**Size**: `78` lines (`3531` bytes)
+
+**Classes:**
+- `class SortTests` - *One behaviour per test; the result is a new list and the input is untouched.*
+  - Method `.eval_error(source)` - *The EvalError `source` raises.*
+  - Method `.test_sort_orders_numbers_ascending()`
+  - Method `.test_sort_orders_strings_by_code_point()`
+  - Method `.test_sort_is_stable_for_equal_values()`
+  - Method `.test_sort_returns_a_new_list_and_leaves_the_input_alone()`
+  - Method `.test_sort_composes_with_a_reverse_slice()`
+  - Method `.test_sort_needs_a_list()`
+  - Method `.test_sort_refuses_values_it_cannot_order()`
+  - Method `.test_sort_refuses_mixed_kinds()`
+  - Method `.test_sort_arity_is_one()`
+
+**Functions:**
+- `def evaluate(source)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
+
+---
+
 ### [`tests/test_parser.py`](tests/test_parser.py)
 > *Parser tests: AST shapes for precedence and statements, and every parse-error path.*
 
@@ -558,5 +588,38 @@
 - `def _optional(node)` - *A slice part that may be omitted renders as `_`.*
 - `def _body(statements)` - *A block renders as { statement statement }.*
 - `def render_all(source)` - *Every statement of `source` in sexpr form.*
+
+---
+
+### [`tests/test_text.py`](tests/test_text.py)
+> *Text helpers: split, join, trim and replace, with their arity and type guards.*
+
+**Size**: `179` lines (`8932` bytes)
+
+**Classes:**
+- `class TextHelperTests` - *One behaviour per test; messages, positions and return values are asserted.*
+  - Method `.eval_error(source)` - *The EvalError `source` raises.*
+  - Method `.test_split_without_a_separator_splits_on_whitespace_runs()`
+  - Method `.test_split_with_a_separator_keeps_empty_fields()`
+  - Method `.test_split_rejects_a_non_string_or_an_empty_separator()`
+  - Method `.test_a_split_result_is_capped_at_the_sequence_limit()`
+  - Method `.test_split_arity_is_one_to_two()`
+  - Method `.test_join_places_the_separator_between_strings()`
+  - Method `.test_join_needs_a_list_of_strings_and_a_string_separator()`
+  - Method `.test_join_refuses_a_non_string_element()`
+  - Method `.test_join_refuses_a_non_string_separator()`
+  - Method `.test_a_join_result_is_capped_at_the_sequence_limit()`
+  - Method `.test_join_arity_is_two()`
+  - Method `.test_trim_removes_whitespace_from_both_ends_only()`
+  - Method `.test_trim_rejects_other_types()`
+  - Method `.test_trim_arity_is_one()`
+  - Method `.test_replace_rewrites_every_occurrence_left_to_right()`
+  - Method `.test_replace_needs_three_strings_and_a_non_empty_search()`
+  - Method `.test_a_replace_result_is_capped_at_the_sequence_limit()`
+  - Method `.test_replace_arity_is_three()`
+
+**Functions:**
+- `def evaluate(source)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
+- `def call_builtin(name, *args)` - *Call one builtin directly, for guards that plain source reaches only with big text.*
 
 ---

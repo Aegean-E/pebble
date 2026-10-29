@@ -1,4 +1,4 @@
-"""Builtin tests: the ten builtins, their errors and the display form of values."""
+"""Builtin tests: the core builtins, their errors and the display form of values."""
 
 import unittest
 from io import StringIO

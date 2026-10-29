@@ -1,8 +1,9 @@
-"""Pebble's ten builtins and their shared argument rules.
+"""Pebble's builtins and their shared argument rules.
 
 Each builtin is a `Builtin` record: a name, an implementation and the arity it advertises. The
 evaluator checks the arity before evaluating arguments and passes the call node, so every builtin
-failure is a positioned EvalError with a Why and a Fix. v2 added `float()` and the `range` step.
+failure is a positioned EvalError with a Why and a Fix. v2 added `float()` and the `range` step;
+v5 adds the text helpers `split`, `join`, `trim` and `replace`.
 """
 
 import math
@@ -11,7 +12,7 @@ from typing import NoReturn
 
 from .errors import EvalError
 from .formatting import format_value, is_number, type_name
-from .limits import MAX_INT_DIGITS, MAX_RANGE_LENGTH
+from .limits import MAX_INT_DIGITS, MAX_RANGE_LENGTH, MAX_SEQUENCE_LENGTH
 
 
 class Builtin:
@@ -237,6 +238,28 @@ def _max(interpreter, call, args):
     return _extreme(call, args, True, "max")
 
 
+def _sort(interpreter, call, args) -> list:
+    """A new list of the values in ascending order, by the min/max ordering rules."""
+    values = args[0]
+    if not isinstance(values, list):
+        _fail(call, f"sort needs a list, got {type_name(values)}",
+              "sort reads a list of values and orders them",
+              'pass a list of numbers or strings, for example sort([3, 1, 2])')
+    if not values:
+        return []
+    first = values[0]
+    if not _orderable(first):
+        _fail(call, f"cannot compare {type_name(first)} with sort",
+              "sort orders numbers or strings",
+              "pass a list of numbers or a list of strings")
+    for value in values[1:]:
+        if not _orderable(value) or not _same_kind(first, value):
+            _fail(call, f"cannot compare {type_name(first)} and {type_name(value)}",
+                  "sort compares numbers with numbers, or strings with strings",
+                  "make every value the same kind")
+    return sorted(values)
+
+
 def _abs(interpreter, call, args):
     """The magnitude of a number."""
     value = args[0]
@@ -245,6 +268,117 @@ def _abs(interpreter, call, args):
     _fail(call, f"cannot take the absolute value of {type_name(value)}",
           "abs needs a number",
           "pass an int or a float, for example abs(-3)")
+
+
+_WHITESPACE = " \t\n\r\f\v"
+
+
+def _string_arg(call, value, name: str, why: str, fix: str) -> str:
+    """One argument as a string, or the builtin's positioned type error."""
+    if isinstance(value, str):
+        return value
+    _fail(call, f"{name} needs a string, got {type_name(value)}", why, fix)
+
+
+def _split(interpreter, call, args) -> list:
+    """Text cut into fields: on whitespace runs, or at every exact separator."""
+    text = _string_arg(call, args[0], "split",
+                       "split reads a text string and an optional separator",
+                       'pass a string, for example split("a,b", ",")')
+    if len(args) == 1:
+        return _split_whitespace(text)
+    separator = _string_arg(call, args[1], "split",
+                            "the text and the separator must both be strings",
+                            'pass a separator string, or omit it to split on whitespace')
+    if separator == "":
+        _fail(call, "split separator cannot be empty",
+              "an empty separator would never advance from one field to the next",
+              'pass a separator such as a comma, or omit it to split on whitespace')
+    pieces = text.count(separator) + 1
+    if pieces > MAX_SEQUENCE_LENGTH:
+        _fail(call, f"split would produce {pieces} pieces",
+              f"a list holds at most {MAX_SEQUENCE_LENGTH} values",
+              "split a shorter piece of text, or use the one-argument whitespace split")
+    return text.split(separator)
+
+
+def _split_whitespace(text: str) -> list:
+    """The fields between runs of whitespace; leading and trailing whitespace is dropped."""
+    pieces = []
+    start = None
+    for index, character in enumerate(text):
+        if character in _WHITESPACE:
+            if start is not None:
+                pieces.append(text[start:index])
+                start = None
+        elif start is None:
+            start = index
+    if start is not None:
+        pieces.append(text[start:])
+    return pieces
+
+
+def _join(interpreter, call, args) -> str:
+    """The strings of a list in order, with a separator between them."""
+    values = args[0]
+    if not isinstance(values, list):
+        _fail(call, f"join needs a list, got {type_name(values)}",
+              "join reads a list of values and a separator string",
+              'pass a list of strings, for example join(["a", "b"], ",")')
+    separator = _string_arg(call, args[1], "join",
+                            "the values and the separator must both be strings",
+                            'pass a separator string, for example join(["a"], ",")')
+    length = len(separator) * (len(values) - 1) if values else 0
+    for index, value in enumerate(values):
+        if not isinstance(value, str):
+            _fail(call, f"join needs a list of strings, found {type_name(value)} "
+                        f"at index {index}",
+                  "the values and the separator must both be strings",
+                  "convert each element with str(...), or keep the list to strings only")
+        length += len(value)
+    if length > MAX_SEQUENCE_LENGTH:
+        _fail(call, "joining these strings is too large",
+              f"the result would have {length} characters; v1 caps sequences at "
+              f"{MAX_SEQUENCE_LENGTH}",
+              "join fewer or shorter strings")
+    return separator.join(values)
+
+
+def _trim(interpreter, call, args) -> str:
+    """The text without leading or trailing whitespace; the interior is untouched."""
+    text = _string_arg(call, args[0], "trim",
+                       "trim removes whitespace from both ends of a string",
+                       'pass a string, for example trim("  hi  ")')
+    start, end = 0, len(text)
+    while start < end and text[start] in _WHITESPACE:
+        start += 1
+    while end > start and text[end - 1] in _WHITESPACE:
+        end -= 1
+    return text[start:end]
+
+
+def _replace(interpreter, call, args) -> str:
+    """Every non-overlapping occurrence of a search string, left to right, rewritten."""
+    text = _string_arg(call, args[0], "replace",
+                       "replace reads text, the search text and the replacement",
+                       'pass strings, for example replace("a-b", "-", "+")')
+    search = _string_arg(call, args[1], "replace",
+                         "the text, the search text and the replacement must all be strings",
+                         "pass the text to search for, for example a dash")
+    replacement = _string_arg(call, args[2], "replace",
+                              "the text, the search text and the replacement must all be strings",
+                              "pass the replacement text, or an empty string to delete matches")
+    if search == "":
+        _fail(call, "replace search text cannot be empty",
+              "an empty search would match between every character",
+              "pass the text to replace, for example replace(\"a-b\", \"-\", \"_\")")
+    length = len(text) + text.count(search) * (len(replacement) - len(search))
+    if length > MAX_SEQUENCE_LENGTH:
+        _fail(call, "replacing this text is too large",
+              f"the result would have {length} characters; v1 caps sequences at "
+              f"{MAX_SEQUENCE_LENGTH}",
+              "replace with shorter text, or work on a smaller piece")
+    return text.replace(search, replacement)
 
 
 BUILTINS = {
@@ -258,4 +392,9 @@ BUILTINS = {
     "min": Builtin("min", _min, "at least 1 argument", 1),
     "max": Builtin("max", _max, "at least 1 argument", 1),
     "abs": Builtin("abs", _abs, "1 argument", 1, 1),
+    "sort": Builtin("sort", _sort, "1 argument", 1, 1),
+    "split": Builtin("split", _split, "1 to 2 arguments", 1, 2),
+    "join": Builtin("join", _join, "2 arguments", 2, 2),
+    "trim": Builtin("trim", _trim, "1 argument", 1, 1),
+    "replace": Builtin("replace", _replace, "3 arguments", 3, 3),
 }

@@ -1,0 +1,6 @@
+# Order split fields, then reverse them with a slice.
+let fruits = split("pear apple fig")
+let ordered = sort(fruits)
+print(join(ordered, ", "))
+print(join(ordered[::-1], ", "))
+print(sort([3, 1, 2])[::-1])

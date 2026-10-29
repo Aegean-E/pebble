@@ -17,11 +17,13 @@ Built as an AIKit evaluation project — the process is under test as much as th
   python -m unittest discover
   ```
 - **Run something now** (under 10 seconds):
-  ```bash
-  python -m pebble examples/fizzbuzz.peb
-  python -m pebble -e "print(2 ^ 10)"
-  python -m pebble
-  ```
+```bash
+python -m pebble examples/fizzbuzz.peb
+python -m pebble examples/text.peb
+python -m pebble examples/sorted.peb
+python -m pebble -e "print(2 ^ 10)"
+python -m pebble
+```
 
 ### 🛠️ AIKit Commands (run from the AIKit folder)
 | Role | Command |
@@ -37,8 +39,9 @@ Built as an AIKit evaluation project — the process is under test as much as th
 pebble/
 ├── .aikit/
 │   ├── codebase_map.md       <- generated symbol map, checked on every gate run
-│   ├── decisions.md          <- ADRs: surface, builtins, limits and v2 additions
+│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 and v6 additions
 │   ├── guidelines.md         <- project rules (none yet)
+│   ├── media.json            <- social preview and artwork metadata
 │   ├── project.json
 │   └── task_ledger.json      <- the task ledger: plan and milestone checkpoints
 ├── .gitignore
@@ -46,12 +49,15 @@ pebble/
 ├── LICENSES/                 <- REUSE license texts
 ├── REUSE.toml                <- Machine-readable SPDX metadata
 ├── README.md
+├── assets/
 ├── COMMERCIAL.md
 ├── examples/
 │   ├── hello.peb
 │   ├── greet.peb
 │   ├── fizzbuzz.peb
-│   └── fibonacci.peb
+│   ├── fibonacci.peb
+│   ├── sorted.peb            <- split, sort and a reverse slice
+│   └── text.peb              <- split, join, trim and replace in one script
 ├── pebble/
 │   ├── __init__.py
 │   ├── __main__.py           <- `python -m pebble`
@@ -63,7 +69,7 @@ pebble/
 │   ├── limits.py             <- call, int, range and sequence caps
 │   ├── nodes.py              <- the AST: frozen nodes with source positions
 │   ├── parser.py             <- recursive-descent parser with positioned errors
-│   └── stdlib.py             <- the ten builtins and their arity rules
+│   └── stdlib.py             <- the fifteen builtins and their arity rules
 ├── pyproject.toml
 └── tests/
     ├── __init__.py
@@ -72,7 +78,9 @@ pebble/
     ├── test_evaluator.py
     ├── test_hardening.py
     ├── test_lexer.py
-    └── test_parser.py
+    ├── test_lists.py           <- sort, its ordering rules and its guards
+    ├── test_parser.py
+    └── test_text.py            <- split, join, trim and replace, with their guards
 ```
 
 ## 🪨 What Pebble is
@@ -86,23 +94,25 @@ strings, booleans, lists and `none`; `let`, assignment, `if`/`else`, `while`, `f
 builtin semantics and the display form that `print` and `str` share. The v2 increment (ADR-004)
 adds `break`/`continue`, list and string slices, `range` with a step, and `float()` as the tenth
 builtin. ADR-005 adds command-line script arguments accessible through the global `args` list of
-strings; everything else outside those lists waits for a later task.
+strings. The v5 increment (ADR-010) adds four text helpers: `split`, `join`, `trim` and `replace`,
+and the v6 increment (ADR-011) adds `sort` for lists. Everything else waits for a later task.
 
 Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-script-args`,
-`task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`, and
-`task-pebble-v4-residual-guards` are complete (179 tests): script arguments via `args`,
-`break`/`continue`, slices, `range` with a step and `float()` extend the frozen v1 surface as
-ADR-004 and ADR-005 record. ADR-006 makes every non-finite float result a positioned error,
-ADR-007 records that a loop reuses the enclosing scope, ADR-008 computes a range's length before
-allocating it, and ADR-009 caps string and list concatenation. The plan and its checkpoints live
-in `.aikit/task_ledger.json`.
+`task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`,
+`task-pebble-v4-residual-guards`, `task-pebble-v5-text-helpers`, and `task-pebble-v6-sort` are
+complete (206 tests): script arguments via `args`, `break`/`continue`, slices, `range` with a
+step, `float()`, the text helpers and `sort` extend the frozen v1 surface as ADR-004, ADR-005,
+ADR-010 and ADR-011 record. ADR-006 makes every non-finite float result a positioned error, ADR-007
+records that a loop reuses the enclosing scope, ADR-008 computes a range's length before allocating
+it, and ADR-009 caps string and list concatenation. The plan and its checkpoints live in
+`.aikit/task_ledger.json`.
 
-Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008 and ADR-009): calls nest
-at most 100 deep, integer exponents stop at 10,000, integers stay near 4,000 digits, and ranges,
-repeated sequences and joined sequences stop at 1,000,000 values. Every float result must stay
-finite, and an unexpected host failure still renders as a three-line Pebble report rather than a
-traceback. Loops add no scope: the loop variable and any `let` inside a loop body remain visible
-afterwards.
+Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008, ADR-009 and ADR-010):
+calls nest at most 100 deep, integer exponents stop at 10,000, integers stay near 4,000 digits, and
+ranges, repeated sequences, joined sequences, split results and replaced text stop at 1,000,000
+values or characters. Every float result must stay finite, and an unexpected host failure still
+renders as a three-line Pebble report rather than a traceback. Loops add no scope: the loop
+variable and any `let` inside a loop body remain visible afterwards.
 
 ## 🚀 Running a program
 
@@ -110,6 +120,8 @@ afterwards.
 python -m pebble examples/fizzbuzz.peb   # run a file
 python -m pebble examples/greet.peb Alice Bob # pass arguments into 'args'
 python -m pebble -e "print(args[0])" hi  # run a command-line program with arguments
+python -m pebble -e "print(join(split(\"a b\"), \"-\"))"  # text helpers: a-b
+python -m pebble -e "print(sort([3, 1, 2])[::-1])"       # order a list: [3, 2, 1]
 python -m pebble                         # REPL on a terminal; piped input runs as a program
 ```
 
