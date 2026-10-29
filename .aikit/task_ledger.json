@@ -3,25 +3,15 @@
   "active_task": {
     "task_id": "task-pebble-v9-sum",
     "last_phase": "in_progress",
-    "active_phase": 4,
-    "status": "in_progress",
+    "active_phase": 5,
+    "status": "completed",
     "updated_at": 1793254926.4387858,
     "owner": "kilo:v9-sum",
     "started_by": "kilo:v9-sum",
-    "continuations": []
+    "continuations": [],
+    "completed_at": 1793254938.3978782
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v5-text-helpers",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[3/5] join is green: separator placement, empty list, non-list and non-string element guards with an index, non-string separator guard, sequence-length cap, arity 2",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793228157.005419,
-      "timestamp_str": "2026-10-29 01:55:57",
-      "agent": "kilo:v5-text-helpers"
-    },
     {
       "task_id": "task-pebble-v5-text-helpers",
       "phase": "in_progress",
@@ -249,6 +239,16 @@
       "status": "in_progress",
       "timestamp": 1793254926.4387858,
       "timestamp_str": "2026-10-29 09:22:06",
+      "agent": "kilo:v9-sum"
+    },
+    {
+      "task_id": "task-pebble-v9-sum",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v9-sum' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793254938.3978796,
+      "timestamp_str": "2026-10-29 09:22:18",
       "agent": "kilo:v9-sum"
     }
   ]
