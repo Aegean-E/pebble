@@ -88,7 +88,10 @@ def number(rng: random.Random, depth: int) -> str:
     if kind == 1:
         return f"{number(rng, depth - 1)} {rng.choice(ARITHMETIC)} {number(rng, depth - 1)}"
     if kind == 2:
-        return f"{rng.choice(('int', 'float', 'floor', 'abs'))}({number(rng, depth - 1)})"
+        name = rng.choice(("int", "float", "floor", "abs", "round"))
+        if name == "round" and rng.random() < 0.5:
+            return f"round({number(rng, depth - 1)}, {rng.randint(0, 3)})"
+        return f"{name}({number(rng, depth - 1)})"
     if kind == 3:
         return f"len({text(rng, depth - 1)})"
     if kind == 4:

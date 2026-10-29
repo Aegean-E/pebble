@@ -1,56 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v11-average",
+    "task_id": "task-pebble-v12-round",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793256234.3520455,
-    "owner": "kilo:v11-average",
-    "started_by": "kilo:v11-average",
-    "continuations": [],
-    "completed_at": 1793256253.2074754
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793257655.712651,
+    "owner": "kilo:v12-round",
+    "started_by": "kilo:v12-round",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v7-text-search",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/5] Plan: add four text builtins (upper, lower, contains, find) under ADR-012, with Unicode-aware case folding, an empty-search refusal shared with split/replace, and find returning none when absent; failing-first tests first",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793252854.014915,
-      "timestamp_str": "2026-10-29 08:47:34",
-      "agent": "kilo:v7-text-search",
-      "impact_assessment": {
-        "why": "Pebble can cut, join, trim, rewrite and order text but cannot compare it case-insensitively or ask whether one string occurs inside another, so every search or match still needs a hand-written index loop.",
-        "benefits": "Scripts can normalise case, test membership in one call and locate a fragment without a sentinel that collides with negative indexing, composing with split, join and sort.",
-        "risks": "contract: surface grows to 19 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "ADR-012 pins case mapping, the empty-search rule, the none result and the length cap before code; failing-first tests per builtin; reuse MAX_SEQUENCE_LENGTH; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v7-text-search",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/5] Failing-first tests then implementation for all four builtins: upper/lower (Unicode-aware case mapping with a length-cap guard), contains (bool) and find (index or none, never -1); type, empty-search and arity refusals; 12 new tests, full suite 218 green",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793253487.6176674,
-      "timestamp_str": "2026-10-29 08:58:07",
-      "agent": "kilo:v7-text-search"
-    },
-    {
-      "task_id": "task-pebble-v7-text-search",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[3/5] Docs: ADR-012 records case folding, contains and the none result for find; README lists nineteen builtins and 218 tests, examples/text.peb demonstrates the four new builtins; codebase map regenerated with the new symbols; aikit check pebble 4/4 gates green; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793253618.1828375,
-      "timestamp_str": "2026-10-29 09:00:18",
-      "agent": "kilo:v7-text-search"
-    },
     {
       "task_id": "task-pebble-v7-text-search",
       "phase": "completed",
@@ -256,6 +216,45 @@
       "timestamp": 1793256253.2074769,
       "timestamp_str": "2026-10-29 09:44:13",
       "agent": "kilo:v11-average"
+    },
+    {
+      "task_id": "task-pebble-v12-round",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/5] Plan: add round(value) and round(value, digits) under ADR-017, choosing decimal half-up (away from zero on ties) over the host's banker's rounding, capping digits at 0..15 and refusing bools, non-finite values and a non-int digit count; failing-first tests first",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793257311.0451615,
+      "timestamp_str": "2026-10-29 10:01:51",
+      "agent": "kilo:v12-round",
+      "impact_assessment": {
+        "why": "Pebble can total, average, floor and take absolute values but cannot round, so every formatted number needs floor(x + 0.5) written by hand, which silently gives the wrong sign for negatives and cannot round to a decimal place at all.",
+        "benefits": "Scripts round to a whole number or to a stated number of decimal places with one rule, and the tie behaviour is stated in an ADR rather than inherited from a host default that surprises users.",
+        "risks": "contract: surface grows to 25 builtins and ADR-002's list is amended, and round(x) returns an int while round(x, d) returns a float; dependency: decimal from the standard library; concurrency: none; state: no files or schema changes.",
+        "mitigation": "ADR-017 pins half-up ties, the digit range, the int/float result split and the non-finite guard before code; failing-first tests for ties, negatives, digits and guards; fuzz corpus extended; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v12-round",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/5] round is green: decimal half-up ties away from zero, int result for one argument and float for a digit count, 0..15 digit range, bool/non-number/non-finite refusals, and huge ints handled without a decimal InvalidOperation (whole numbers return exactly, digit counts report a float overflow); fuzz corpus includes round; 7 new tests, 252 total",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793257527.4908144,
+      "timestamp_str": "2026-10-29 10:05:27",
+      "agent": "kilo:v12-round"
+    },
+    {
+      "task_id": "task-pebble-v12-round",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/5] Docs: ADR-017 records round, the half-up tie rule, the int/float result split, the 0..15 digit range and the decimal-over-IEEE choice; README lists twenty-five builtins and 252 tests with a round example; examples/totals.peb rounds an average both ways; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793257655.712651,
+      "timestamp_str": "2026-10-29 10:07:35",
+      "agent": "kilo:v12-round"
     }
   ]
 }

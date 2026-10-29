@@ -8,9 +8,9 @@
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `21`
 - **Total Classes**: `49`
-- **Total Top-Level Functions**: `86`
-- **Total Class Methods**: `342`
-- **Total Source Lines**: `4372`
+- **Total Top-Level Functions**: `89`
+- **Total Class Methods**: `349`
+- **Total Source Lines**: `4505`
 
 ---
 
@@ -249,7 +249,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `563` lines (`24878` bytes)
+**Size**: `630` lines (`27845` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -274,6 +274,9 @@
 - `def _max(interpreter, call, args)` - *The largest of the values.*
 - `def _sort(interpreter, call, args)` - *A new list of the values in ascending order, by the min/max ordering rules.*
 - `def _sum(interpreter, call, args)` - *The total of a list of numbers: an int for ints only, a float once one appears.*
+- `def _round(interpreter, call, args)` - *The nearest whole number, or the nearest value at a digit count, ties away from zero.*
+- `def _int_as_float(call, value)` - *An int returned at a digit count, which the contract states as a float.*
+- `def _round_away(call, value, digits)` - *Half-up rounding of a finite float from its shortest decimal form.*
 - `def _numbers(call, values, name)` - *Refuse a non-list, or any element that is not a number, naming its index.*
 - `def _average(interpreter, call, args)` - *The mean of a non-empty list of numbers, always as a float.*
 - `def _abs(interpreter, call, args)` - *The magnitude of a number.*
@@ -306,7 +309,7 @@
 ### [`tests/test_builtins.py`](tests/test_builtins.py)
 > *Builtin tests: the core builtins, their errors and the display form of values.*
 
-**Size**: `259` lines (`11449` bytes)
+**Size**: `322` lines (`14697` bytes)
 
 **Classes:**
 - `class BuiltinTests` - *One behaviour per test; messages, positions and return values are asserted.*
@@ -334,6 +337,13 @@
   - Method `.test_float_refuses_a_result_that_is_not_finite()`
   - Method `.test_floor_rounds_down_to_an_int()`
   - Method `.test_floor_rejects_non_numbers_and_non_finite_floats()`
+  - Method `.test_round_returns_the_nearest_int()`
+  - Method `.test_round_ties_go_away_from_zero()`
+  - Method `.test_round_to_decimal_places_returns_a_float()`
+  - Method `.test_round_rejects_non_numbers_and_non_finite_floats()`
+  - Method `.test_round_digits_must_be_an_int_in_range()`
+  - Method `.test_round_of_a_huge_int_is_exact_or_a_positioned_error()`
+  - Method `.test_round_arity_is_one_or_two()`
   - Method `.test_min_and_max_compare_numbers_and_strings()`
   - Method `.test_min_and_max_accept_a_single_list()`
   - Method `.test_min_and_max_reject_mixed_or_unorderable_types()`
@@ -457,7 +467,7 @@
 ### [`tests/test_fuzz.py`](tests/test_fuzz.py)
 > *Deterministic crash fuzz: random and mutated source is a Pebble error, never a host crash.*
 
-**Size**: `255` lines (`9949` bytes)
+**Size**: `258` lines (`10104` bytes)
 
 **Classes:**
 - `class FuzzTests` - *Every corpus is seeded, so a failure names a sample that always reproduces.*

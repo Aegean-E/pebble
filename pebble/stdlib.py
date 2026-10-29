@@ -10,6 +10,7 @@ adds `sum`.
 
 import math
 import re
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 from typing import NoReturn
 
 from .errors import EvalError
@@ -280,6 +281,69 @@ def _sum(interpreter, call, args):
     return total
 
 
+MAX_ROUND_DIGITS = 15
+
+
+def _round(interpreter, call, args):
+    """The nearest whole number, or the nearest value at a digit count, ties away from zero."""
+    value = args[0]
+    if isinstance(value, bool) or not is_number(value):
+        _fail(call, f"cannot round {type_name(value)}",
+              "round needs a number",
+              "pass an int or a float, for example round(3.6) or round(1.234, 2)")
+    if isinstance(value, float) and not math.isfinite(value):
+        _fail(call, "cannot round a non-finite float",
+              "infinity and nan have no nearest whole number",
+              "check the float, or round a finite number")
+    if len(args) == 1:
+        if isinstance(value, int):
+            return value
+        return int(_round_away(call, value, 0))
+    digits = args[1]
+    if isinstance(digits, bool) or not isinstance(digits, int):
+        _fail(call, f"round needs an int digit count, got {type_name(digits)}",
+              "the digit count says how many decimal places to keep",
+              "pass a whole number of digits, for example round(1.234, 2)")
+    if digits < 0 or digits > MAX_ROUND_DIGITS:
+        _fail(call, f"round digit count {digits} is out of range",
+              f"a float carries at most {MAX_ROUND_DIGITS} useful decimal places here, "
+              f"so the count must be 0 to {MAX_ROUND_DIGITS}, and negative counts "
+              "are not supported",
+              f"pass a digit count from 0 to {MAX_ROUND_DIGITS}")
+    if isinstance(value, int):
+        return _int_as_float(call, value)
+    return _round_away(call, value, digits)
+
+
+def _int_as_float(call, value: int) -> float:
+    """An int returned at a digit count, which the contract states as a float."""
+    try:
+        return float(value)
+    except OverflowError:
+        _fail(call, "the result is too large for a float",
+              "an int this large has no float value, so it cannot be rounded to digits",
+              "round to a whole number without a digit count, or use smaller values")
+
+
+def _round_away(call, value: float, digits: int) -> float:
+    """Half-up rounding of a finite float from its shortest decimal form."""
+    with localcontext() as context:
+        context.prec = 40
+        try:
+            scaled = Decimal(str(value)).quantize(
+                Decimal(1).scaleb(-digits), rounding=ROUND_HALF_UP)
+        except (InvalidOperation, ValueError):
+            _fail(call, "cannot round this value",
+                  "the value is beyond the decimal range round can represent",
+                  "use a smaller number")
+        result = float(scaled)
+    if not math.isfinite(result):
+        _fail(call, "the result is too large for a float",
+              "rounding produced a value beyond the largest float",
+              "use a smaller number")
+    return result
+
+
 def _numbers(call, values, name: str) -> None:
     """Refuse a non-list, or any element that is not a number, naming its index."""
     if not isinstance(values, list):
@@ -542,6 +606,7 @@ BUILTINS = {
     "int": Builtin("int", _int, "1 argument", 1, 1),
     "float": Builtin("float", _float, "1 argument", 1, 1),
     "floor": Builtin("floor", _floor, "1 argument", 1, 1),
+    "round": Builtin("round", _round, "1 or 2 arguments", 1, 2),
     "min": Builtin("min", _min, "at least 1 argument", 1),
     "max": Builtin("max", _max, "at least 1 argument", 1),
     "abs": Builtin("abs", _abs, "1 argument", 1, 1),
@@ -560,4 +625,6 @@ BUILTINS = {
     "ends_with": Builtin("ends_with", _ends_with, "2 arguments", 2, 2),
     "count": Builtin("count", _count, "2 arguments", 2, 2),
 }
+
+
 

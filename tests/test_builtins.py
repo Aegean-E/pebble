@@ -208,6 +208,69 @@ class BuiltinTests(unittest.TestCase):
                 self.assertIn("cannot take the floor of a non-finite float",
                               caught.exception.message)
 
+    # round
+
+    def test_round_returns_the_nearest_int(self) -> None:
+        self.assertEqual(evaluate("round(3.4)"), 3)
+        self.assertEqual(evaluate("round(3.6)"), 4)
+        self.assertEqual(evaluate("round(4)"), 4)
+        self.assertIs(type(evaluate("round(4)")), int)
+        self.assertIs(type(evaluate("round(4.0)")), int)
+        self.assertEqual(evaluate("round(-3.6)"), -4)
+
+    def test_round_ties_go_away_from_zero(self) -> None:
+        self.assertEqual(evaluate("round(0.5)"), 1)
+        self.assertEqual(evaluate("round(1.5)"), 2)
+        self.assertEqual(evaluate("round(2.5)"), 3)
+        self.assertEqual(evaluate("round(-0.5)"), -1)
+        self.assertEqual(evaluate("round(-2.5)"), -3)
+
+    def test_round_to_decimal_places_returns_a_float(self) -> None:
+        self.assertEqual(evaluate("round(2.675, 2)"), 2.68)
+        self.assertIs(type(evaluate("round(2.675, 2)")), float)
+        self.assertEqual(evaluate("round(1.2345, 3)"), 1.235)
+        self.assertEqual(evaluate("round(1.2355, 3)"), 1.236)
+        self.assertEqual(evaluate("round(1.005, 2)"), 1.01)
+        self.assertEqual(evaluate("round(3.5, 0)"), 4.0)
+        self.assertEqual(evaluate("round(-2.675, 2)"), -2.68)
+        self.assertEqual(evaluate("round(7, 2)"), 7.0)
+
+    def test_round_rejects_non_numbers_and_non_finite_floats(self) -> None:
+        error = self.eval_error('round("3")')
+        self.assertIn("cannot round string", error.message)
+        self.assertIn("round needs a number", error.why)
+        self.assertIn("cannot round bool", self.eval_error("round(true)").message)
+        for value in (float("inf"), float("-inf"), float("nan")):
+            with self.subTest(value=value):
+                with self.assertRaises(EvalError) as caught:
+                    call_builtin("round", value)
+                self.assertIn("cannot round a non-finite float",
+                              caught.exception.message)
+
+    def test_round_digits_must_be_an_int_in_range(self) -> None:
+        self.assertIn("round needs an int digit count, got float",
+                      self.eval_error("round(1.5, 1.5)").message)
+        self.assertIn("round needs an int digit count, got bool",
+                      self.eval_error("round(1.5, true)").message)
+        error = self.eval_error("round(1.5, 16)")
+        self.assertIn("round digit count 16 is out of range", error.message)
+        self.assertIn("0 to 15", error.why)
+        self.assertIn("round digit count -1 is out of range",
+                      self.eval_error("round(1.5, -1)").message)
+
+    def test_round_of_a_huge_int_is_exact_or_a_positioned_error(self) -> None:
+        self.assertEqual(evaluate("round(10 ^ 300)"), 10 ** 300)
+        error = self.eval_error("round(10 ^ 3990, 2)")
+        self.assertIn("the result is too large for a float", error.message)
+        self.assertIn("no float value", error.why)
+        self.assertIn("without a digit count", error.fix)
+
+    def test_round_arity_is_one_or_two(self) -> None:
+        self.assertIn("round expects 1 or 2 arguments, got 0",
+                      self.eval_error("round()").message)
+        self.assertIn("round expects 1 or 2 arguments, got 3",
+                      self.eval_error("round(1, 2, 3)").message)
+
     # min and max
 
     def test_min_and_max_compare_numbers_and_strings(self) -> None:
