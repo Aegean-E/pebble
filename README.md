@@ -78,6 +78,7 @@ pebble/
     ├── test_builtins.py
     ├── test_cli.py
     ├── test_evaluator.py
+    ├── test_fuzz.py            <- seeded crash fuzz over lexer, parser, evaluator and CLI
     ├── test_hardening.py
     ├── test_lexer.py
     ├── test_lists.py           <- sort and sum, their rules and their guards
@@ -105,14 +106,15 @@ later task.
 Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-script-args`,
 `task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`,
 `task-pebble-v4-residual-guards`, `task-pebble-v5-text-helpers`, `task-pebble-v6-sort`,
-`task-pebble-v7-text-search`, `task-pebble-v8-text-predicates`, and `task-pebble-v9-sum` are
-complete (232 tests): script arguments via `args`, `break`/`continue`, slices, `range` with a step,
-`float()`, the text helpers, `sort`, case folding, text search, the edge and count helpers and
-`sum` extend the frozen v1 surface as ADR-004, ADR-005, ADR-010, ADR-011, ADR-012, ADR-013 and
-ADR-014 record. ADR-006 makes every non-finite float result a positioned error, ADR-007 records
-that a loop reuses the enclosing scope, ADR-008 computes a range's length before allocating it, and
-ADR-009 caps string and list concatenation. The plan and its checkpoints live in
-`.aikit/task_ledger.json`.
+`task-pebble-v7-text-search`, `task-pebble-v8-text-predicates`, `task-pebble-v9-sum`, and
+`task-pebble-v10-crash-fuzz` are complete (238 tests): script arguments via `args`,
+`break`/`continue`, slices, `range` with a step, `float()`, the text helpers, `sort`, case folding,
+text search, the edge and count helpers and `sum` extend the frozen v1 surface as ADR-004,
+ADR-005, ADR-010, ADR-011, ADR-012, ADR-013 and ADR-014 record. ADR-006 makes every non-finite
+float result a positioned error, ADR-007 records that a loop reuses the enclosing scope, ADR-008
+computes a range's length before allocating it, ADR-009 caps string and list concatenation, and
+ADR-015 adds a seeded fuzz corpus that proves a program's failure is always a Pebble report. The
+plan and its checkpoints live in `.aikit/task_ledger.json`.
 
 Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008, ADR-009, ADR-010,
 ADR-012 and ADR-014): calls nest at most 100 deep, integer exponents stop at 10,000, integers stay
@@ -151,6 +153,13 @@ Single module, from the project root:
 
 ```bash
 python -m unittest tests.test_lexer
+```
+
+The crash fuzz is seeded, so a failure names a sample that always reproduces; it also runs every
+example program at the real resource caps:
+
+```bash
+python -m unittest tests.test_fuzz
 ```
 
 <!-- aegean:brand-assets:start -->

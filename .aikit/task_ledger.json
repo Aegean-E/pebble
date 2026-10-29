@@ -1,50 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v9-sum",
+    "task_id": "task-pebble-v10-crash-fuzz",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793254926.4387858,
-    "owner": "kilo:v9-sum",
-    "started_by": "kilo:v9-sum",
-    "continuations": [],
-    "completed_at": 1793254938.3978782
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793255521.7103426,
+    "owner": "kilo:v10-crash-fuzz",
+    "started_by": "kilo:v10-crash-fuzz",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v5-text-helpers",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[4/5] trim and replace are green: whitespace-only end trimming, three-string and empty-search guards, replace length cap; 18 text tests pass and the full suite is green",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793228317.8949668,
-      "timestamp_str": "2026-10-29 01:58:37",
-      "agent": "kilo:v5-text-helpers"
-    },
-    {
-      "task_id": "task-pebble-v5-text-helpers",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[5/5] Docs and gates: ADR-010, README builtin surface, tree and status (197 tests), examples/text.peb, regenerated codebase map; aikit check pebble --no-push 4/4 gates (test 197 green, hygiene, guidelines, secrets); checklists: passed. Delivery is uncommitted and unpushed.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793228735.1713092,
-      "timestamp_str": "2026-10-29 02:05:35",
-      "agent": "kilo:v5-text-helpers"
-    },
-    {
-      "task_id": "task-pebble-v5-text-helpers",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[5/5] Docs and gates: ADR-010 records the four text helpers, README lists the fourteen builtins and 197 tests, examples/text.peb demonstrates them, codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed; delivery uncommitted and unpushed.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793228746.8801785,
-      "timestamp_str": "2026-10-29 02:05:46",
-      "agent": "kilo:v5-text-helpers"
-    },
     {
       "task_id": "task-pebble-v5-text-helpers",
       "phase": "completed",
@@ -250,6 +216,45 @@
       "timestamp": 1793254938.3978796,
       "timestamp_str": "2026-10-29 09:22:18",
       "agent": "kilo:v9-sum"
+    },
+    {
+      "task_id": "task-pebble-v10-crash-fuzz",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/4] Plan: a deterministic crash-fuzz guard under ADR-015 with four corpora (token soup, typed structured programs, every example, single-token mutations) and a CLI-shield check, all with patched resource caps, plus a floor on successful runs so the corpus cannot silently degrade",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793255254.4110055,
+      "timestamp_str": "2026-10-29 09:27:34",
+      "agent": "kilo:v10-crash-fuzz",
+      "impact_assessment": {
+        "why": "ADR-001 and ADR-003 promise every program failure is a positioned Pebble report, and that promise is tested only by hand-written cases; a regression that lets a host exception escape a new builtin would pass the suite.",
+        "benefits": "One seeded corpus exercises lexer, parser, evaluator and the CLI shield together, so a crash is reproducible from a seed and a printed sample rather than reported by a user.",
+        "risks": "contract: no language surface change, only test coverage; dependency: none, standard library random only; concurrency: none; state: no files or schemas change; timing: the whole fuzz module must stay far below the test budget.",
+        "mitigation": "Fixed seed, patched caps so a hostile sample stays cheap, a minimum-success floor, and a measured 41ms module runtime; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v10-crash-fuzz",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/4] Fuzz module is green: seeded token soup, typed structured corpus (89/120 runs succeed, floor 60), every example at real and reduced caps, 60 mutated examples, and the CLI-shield check; one classify helper avoids silent excepts, hygiene and guidelines gates pass; 238 tests, fuzz module 48ms",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793255519.0028558,
+      "timestamp_str": "2026-10-29 09:31:59",
+      "agent": "kilo:v10-crash-fuzz"
+    },
+    {
+      "task_id": "task-pebble-v10-crash-fuzz",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/4] Docs: ADR-015 records the seeded crash-fuzz guard and its costs; README adds test_fuzz.py to the tree, a fuzz run command, and the v10 status at 238 tests; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793255521.7103426,
+      "timestamp_str": "2026-10-29 09:32:01",
+      "agent": "kilo:v10-crash-fuzz"
     }
   ]
 }

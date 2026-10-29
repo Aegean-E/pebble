@@ -6,11 +6,11 @@
 ---
 
 ## 📊 Codebase Metrics
-- **Total Python Modules**: `20`
-- **Total Classes**: `47`
-- **Total Top-Level Functions**: `73`
-- **Total Class Methods**: `328`
-- **Total Source Lines**: `4036`
+- **Total Python Modules**: `21`
+- **Total Classes**: `48`
+- **Total Top-Level Functions**: `84`
+- **Total Class Methods**: `334`
+- **Total Source Lines**: `4291`
 
 ---
 
@@ -449,6 +449,35 @@
 
 **Functions:**
 - `def run(source, out, args)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
+
+---
+
+### [`tests/test_fuzz.py`](tests/test_fuzz.py)
+> *Deterministic crash fuzz: random and mutated source is a Pebble error, never a host crash.*
+
+**Size**: `255` lines (`9936` bytes)
+
+**Classes:**
+- `class FuzzTests` - *Every corpus is seeded, so a failure names a sample that always reproduces.*
+  - Method `.test_generated_token_soup_never_crashes_the_host()`
+  - Method `.test_structured_programs_run_or_report_a_pebble_error()`
+  - Method `.test_every_example_runs_under_reduced_caps()`
+  - Method `.test_every_example_runs_at_the_real_caps()`
+  - Method `.test_a_mutated_example_never_crashes_the_host()`
+  - Method `.test_the_cli_shield_is_never_needed()`
+
+**Functions:**
+- `def bounded()` - *Patch every resource cap down, so a hostile sample stays cheap.*
+- `def outcome(source)` - *Run one program and classify it: `ran`, or `reported` as a Pebble error.*
+- `def assert_no_host_escape(test, source)` - *The outcome of one sample, with a leaked recursion reported against the sample text.*
+- `def number(rng, depth)` - *A numeric expression, so the sample usually reaches the evaluator instead of the parser.*
+- `def text(rng, depth)` - *A string expression over the text builtins.*
+- `def boolean(rng, depth)` - *A boolean expression, which the if and predicate branches consume.*
+- `def generated_source(rng)` - *A short token soup; it is rarely a valid program, which is the point.*
+- `def any_expression(rng, depth)` - *One expression of any type, for print and for the loop source.*
+- `def structured_program(rng)` - *One to three plausible statements, which usually run instead of failing to parse.*
+- `def example_sources()` - *Every tracked example program's text, so the corpus grows with the project.*
+- `def mutated_source(rng, source)` - *One token replaced, dropped or duplicated in a real program.*
 
 ---
 
