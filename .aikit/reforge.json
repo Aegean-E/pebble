@@ -1,0 +1,467 @@
+{
+  "schema": 2,
+  "next_run_id": 2,
+  "active_run": "run-1",
+  "last_run": "run-1",
+  "runs": [
+    {
+      "id": "run-1",
+      "start": 3,
+      "step": 3,
+      "stop": null,
+      "stage": 1,
+      "window": 3,
+      "audited_commits": [
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+      ],
+      "status": "active",
+      "created": "2026-10-29T19:45:33",
+      "updated": "2026-10-29T19:45:35",
+      "last_audit": {
+        "run": "run-1",
+        "stage": 1,
+        "window": 3,
+        "commits": [
+          "51a431979845d33fda15c95f48372a5b21ad96d4",
+          "5e067c228afecdd3779476a99150bddbb6a70c0e",
+          "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+        ],
+        "new_commits": [
+          "51a431979845d33fda15c95f48372a5b21ad96d4",
+          "5e067c228afecdd3779476a99150bddbb6a70c0e",
+          "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+        ],
+        "prior_commits": [],
+        "findings": [
+          {
+            "code": "review-wrong-builtin-count",
+            "category": "review",
+            "severity": "medium",
+            "path": ".aikit/decisions.md",
+            "line": 143,
+            "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+            "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+            "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "hunk": "5e067c228afe:.aikit/decisions.md#1",
+            "symbol": "",
+            "introduced": true,
+            "reproducible": false,
+            "fixable": true,
+            "interaction": "",
+            "repaired": true,
+            "source": "review",
+            "patch_old": "added eleven builtins",
+            "patch_new": "added sixteen builtins"
+          }
+        ],
+        "repairs": [
+          {
+            "code": "review-wrong-builtin-count",
+            "path": ".aikit/decisions.md",
+            "line": 143,
+            "summary": "applied review suggestion: ADR-020 says the listed increments added eleven builtins, but the parenthetical ",
+            "test_name": "",
+            "applied": true
+          }
+        ],
+        "counts": {
+          "review": 1
+        },
+        "reviewed": 4,
+        "review": {
+          "status": "reviewed",
+          "rejected": [],
+          "files": [
+            ".aikit/decisions.md",
+            "README.md",
+            "pebble/__init__.py",
+            "pyproject.toml"
+          ],
+          "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-1-51a431979845.md",
+          "redacted": 0,
+          "reason": "",
+          "coverage": {
+            "reported": 5,
+            "total": 5,
+            "missing": [],
+            "unknown": []
+          },
+          "findings": [
+            {
+              "code": "review-wrong-builtin-count",
+              "category": "review",
+              "severity": "medium",
+              "path": ".aikit/decisions.md",
+              "line": 143,
+              "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+              "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+              "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+              "hunk": "5e067c228afe:.aikit/decisions.md#1",
+              "symbol": "",
+              "introduced": true,
+              "reproducible": false,
+              "fixable": true,
+              "interaction": "",
+              "repaired": false,
+              "source": "review",
+              "patch_old": "added eleven builtins",
+              "patch_new": "added sixteen builtins"
+            }
+          ]
+        },
+        "skipped": [],
+        "tests": {
+          "command": "C:\\Python314\\python.exe -m unittest discover tests",
+          "code": 0,
+          "passed": true,
+          "output": "........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 264 tests in 0.568s\n\nOK",
+          "tail": [
+            "........................................................................................................................................................................................................................................................................",
+            "----------------------------------------------------------------------",
+            "Ran 264 tests in 0.568s",
+            "OK"
+          ]
+        },
+        "gates": {},
+        "timestamp": "2026-10-29T19:45:35"
+      },
+      "history": [
+        {
+          "run": "run-1",
+          "stage": 1,
+          "window": 3,
+          "commits": [
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+          ],
+          "new_commits": [
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+          ],
+          "prior_commits": [],
+          "findings": [
+            {
+              "code": "review-wrong-builtin-count",
+              "category": "review",
+              "severity": "medium",
+              "path": ".aikit/decisions.md",
+              "line": 143,
+              "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+              "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+              "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+              "hunk": "5e067c228afe:.aikit/decisions.md#1",
+              "symbol": "",
+              "introduced": true,
+              "reproducible": false,
+              "fixable": true,
+              "interaction": "",
+              "repaired": true,
+              "source": "review",
+              "patch_old": "added eleven builtins",
+              "patch_new": "added sixteen builtins"
+            }
+          ],
+          "repairs": [
+            {
+              "code": "review-wrong-builtin-count",
+              "path": ".aikit/decisions.md",
+              "line": 143,
+              "summary": "applied review suggestion: ADR-020 says the listed increments added eleven builtins, but the parenthetical ",
+              "test_name": "",
+              "applied": true
+            }
+          ],
+          "counts": {
+            "review": 1
+          },
+          "reviewed": 4,
+          "review": {
+            "status": "reviewed",
+            "rejected": [],
+            "files": [
+              ".aikit/decisions.md",
+              "README.md",
+              "pebble/__init__.py",
+              "pyproject.toml"
+            ],
+            "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-1-51a431979845.md",
+            "redacted": 0,
+            "reason": "",
+            "coverage": {
+              "reported": 5,
+              "total": 5,
+              "missing": [],
+              "unknown": []
+            },
+            "findings": [
+              {
+                "code": "review-wrong-builtin-count",
+                "category": "review",
+                "severity": "medium",
+                "path": ".aikit/decisions.md",
+                "line": 143,
+                "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+                "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+                "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+                "hunk": "5e067c228afe:.aikit/decisions.md#1",
+                "symbol": "",
+                "introduced": true,
+                "reproducible": false,
+                "fixable": true,
+                "interaction": "",
+                "repaired": false,
+                "source": "review",
+                "patch_old": "added eleven builtins",
+                "patch_new": "added sixteen builtins"
+              }
+            ]
+          },
+          "skipped": [],
+          "tests": {
+            "command": "C:\\Python314\\python.exe -m unittest discover tests",
+            "code": 0,
+            "passed": true,
+            "output": "........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 264 tests in 0.568s\n\nOK",
+            "tail": [
+              "........................................................................................................................................................................................................................................................................",
+              "----------------------------------------------------------------------",
+              "Ran 264 tests in 0.568s",
+              "OK"
+            ]
+          },
+          "gates": {},
+          "timestamp": "2026-10-29T19:45:35"
+        }
+      ]
+    }
+  ],
+  "stage": 1,
+  "window": 3,
+  "audited_commits": [
+    "51a431979845d33fda15c95f48372a5b21ad96d4",
+    "5e067c228afecdd3779476a99150bddbb6a70c0e",
+    "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+  ],
+  "last_audit": {
+    "run": "run-1",
+    "stage": 1,
+    "window": 3,
+    "commits": [
+      "51a431979845d33fda15c95f48372a5b21ad96d4",
+      "5e067c228afecdd3779476a99150bddbb6a70c0e",
+      "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+    ],
+    "new_commits": [
+      "51a431979845d33fda15c95f48372a5b21ad96d4",
+      "5e067c228afecdd3779476a99150bddbb6a70c0e",
+      "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+    ],
+    "prior_commits": [],
+    "findings": [
+      {
+        "code": "review-wrong-builtin-count",
+        "category": "review",
+        "severity": "medium",
+        "path": ".aikit/decisions.md",
+        "line": 143,
+        "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+        "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+        "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "hunk": "5e067c228afe:.aikit/decisions.md#1",
+        "symbol": "",
+        "introduced": true,
+        "reproducible": false,
+        "fixable": true,
+        "interaction": "",
+        "repaired": true,
+        "source": "review",
+        "patch_old": "added eleven builtins",
+        "patch_new": "added sixteen builtins"
+      }
+    ],
+    "repairs": [
+      {
+        "code": "review-wrong-builtin-count",
+        "path": ".aikit/decisions.md",
+        "line": 143,
+        "summary": "applied review suggestion: ADR-020 says the listed increments added eleven builtins, but the parenthetical ",
+        "test_name": "",
+        "applied": true
+      }
+    ],
+    "counts": {
+      "review": 1
+    },
+    "reviewed": 4,
+    "review": {
+      "status": "reviewed",
+      "rejected": [],
+      "files": [
+        ".aikit/decisions.md",
+        "README.md",
+        "pebble/__init__.py",
+        "pyproject.toml"
+      ],
+      "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-1-51a431979845.md",
+      "redacted": 0,
+      "reason": "",
+      "coverage": {
+        "reported": 5,
+        "total": 5,
+        "missing": [],
+        "unknown": []
+      },
+      "findings": [
+        {
+          "code": "review-wrong-builtin-count",
+          "category": "review",
+          "severity": "medium",
+          "path": ".aikit/decisions.md",
+          "line": 143,
+          "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+          "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+          "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+          "hunk": "5e067c228afe:.aikit/decisions.md#1",
+          "symbol": "",
+          "introduced": true,
+          "reproducible": false,
+          "fixable": true,
+          "interaction": "",
+          "repaired": false,
+          "source": "review",
+          "patch_old": "added eleven builtins",
+          "patch_new": "added sixteen builtins"
+        }
+      ]
+    },
+    "skipped": [],
+    "tests": {
+      "command": "C:\\Python314\\python.exe -m unittest discover tests",
+      "code": 0,
+      "passed": true,
+      "output": "........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 264 tests in 0.568s\n\nOK",
+      "tail": [
+        "........................................................................................................................................................................................................................................................................",
+        "----------------------------------------------------------------------",
+        "Ran 264 tests in 0.568s",
+        "OK"
+      ]
+    },
+    "gates": {},
+    "timestamp": "2026-10-29T19:45:35"
+  },
+  "history": [
+    {
+      "run": "run-1",
+      "stage": 1,
+      "window": 3,
+      "commits": [
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+      ],
+      "new_commits": [
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c"
+      ],
+      "prior_commits": [],
+      "findings": [
+        {
+          "code": "review-wrong-builtin-count",
+          "category": "review",
+          "severity": "medium",
+          "path": ".aikit/decisions.md",
+          "line": 143,
+          "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+          "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+          "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+          "hunk": "5e067c228afe:.aikit/decisions.md#1",
+          "symbol": "",
+          "introduced": true,
+          "reproducible": false,
+          "fixable": true,
+          "interaction": "",
+          "repaired": true,
+          "source": "review",
+          "patch_old": "added eleven builtins",
+          "patch_new": "added sixteen builtins"
+        }
+      ],
+      "repairs": [
+        {
+          "code": "review-wrong-builtin-count",
+          "path": ".aikit/decisions.md",
+          "line": 143,
+          "summary": "applied review suggestion: ADR-020 says the listed increments added eleven builtins, but the parenthetical ",
+          "test_name": "",
+          "applied": true
+        }
+      ],
+      "counts": {
+        "review": 1
+      },
+      "reviewed": 4,
+      "review": {
+        "status": "reviewed",
+        "rejected": [],
+        "files": [
+          ".aikit/decisions.md",
+          "README.md",
+          "pebble/__init__.py",
+          "pyproject.toml"
+        ],
+        "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-1-51a431979845.md",
+        "redacted": 0,
+        "reason": "",
+        "coverage": {
+          "reported": 5,
+          "total": 5,
+          "missing": [],
+          "unknown": []
+        },
+        "findings": [
+          {
+            "code": "review-wrong-builtin-count",
+            "category": "review",
+            "severity": "medium",
+            "path": ".aikit/decisions.md",
+            "line": 143,
+            "message": "ADR-020 says the listed increments added eleven builtins, but the parenthetical names sixteen and the same sentence says the surface moved from ten builtins to twenty-six. The wrong count makes the release rationale self-contradictory.",
+            "evidence": "- **Context**: ADR-019 made `pyproject.toml` the declared version and aligned `__version__` to its `0.2.0`, which fixed the reporting bug without asking whether that number was still true. Since `0.2.0` was declared, ten increments landed: ADR-010 to ADR-014 and ADR-016 to ADR-018 added eleven builtins (`split`, `join`, `trim`, `replace`, `sort`, `upper`, `lower`, `contains`, `find`, `starts_with`",
+            "commit": "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "hunk": "5e067c228afe:.aikit/decisions.md#1",
+            "symbol": "",
+            "introduced": true,
+            "reproducible": false,
+            "fixable": true,
+            "interaction": "",
+            "repaired": false,
+            "source": "review",
+            "patch_old": "added eleven builtins",
+            "patch_new": "added sixteen builtins"
+          }
+        ]
+      },
+      "skipped": [],
+      "tests": {
+        "command": "C:\\Python314\\python.exe -m unittest discover tests",
+        "code": 0,
+        "passed": true,
+        "output": "........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 264 tests in 0.568s\n\nOK",
+        "tail": [
+          "........................................................................................................................................................................................................................................................................",
+          "----------------------------------------------------------------------",
+          "Ran 264 tests in 0.568s",
+          "OK"
+        ]
+      },
+      "gates": {},
+      "timestamp": "2026-10-29T19:45:35"
+    }
+  ]
+}
