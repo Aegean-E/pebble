@@ -8,9 +8,9 @@
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `20`
 - **Total Classes**: `46`
-- **Total Top-Level Functions**: `61`
-- **Total Class Methods**: `301`
-- **Total Source Lines**: `3675`
+- **Total Top-Level Functions**: `67`
+- **Total Class Methods**: `313`
+- **Total Source Lines**: `3829`
 
 ---
 
@@ -249,7 +249,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `400` lines (`17249` bytes)
+**Size**: `459` lines (`19929` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -280,6 +280,12 @@
 - `def _join(interpreter, call, args)` - *The strings of a list in order, with a separator between them.*
 - `def _trim(interpreter, call, args)` - *The text without leading or trailing whitespace; the interior is untouched.*
 - `def _replace(interpreter, call, args)` - *Every non-overlapping occurrence of a search string, left to right, rewritten.*
+- `def _fold(call, args, mapper, name)` - *Text with every character's case mapped; a character may map to several.*
+- `def _upper(interpreter, call, args)` - *The text in upper case; Unicode characters follow the host's case mapping.*
+- `def _lower(interpreter, call, args)` - *The text in lower case; Unicode characters follow the host's case mapping.*
+- `def _search_args(call, args, name, example, empty_why)` - *The text and the non-empty search string a search builtin reads.*
+- `def _contains(interpreter, call, args)` - *Whether the search text occurs anywhere in the text.*
+- `def _find(interpreter, call, args)` - *The index of the first occurrence, or none when the search text is absent.*
 
 ---
 
@@ -592,9 +598,9 @@
 ---
 
 ### [`tests/test_text.py`](tests/test_text.py)
-> *Text helpers: split, join, trim and replace, with their arity and type guards.*
+> *Text helpers: split, join, trim, replace, case folding, contains and find.*
 
-**Size**: `179` lines (`8932` bytes)
+**Size**: `274` lines (`13651` bytes)
 
 **Classes:**
 - `class TextHelperTests` - *One behaviour per test; messages, positions and return values are asserted.*
@@ -617,6 +623,18 @@
   - Method `.test_replace_needs_three_strings_and_a_non_empty_search()`
   - Method `.test_a_replace_result_is_capped_at_the_sequence_limit()`
   - Method `.test_replace_arity_is_three()`
+  - Method `.test_upper_and_lower_fold_ascii_text()`
+  - Method `.test_upper_and_lower_leave_other_characters_alone()`
+  - Method `.test_upper_and_lower_need_a_string()`
+  - Method `.test_a_case_fold_result_is_capped_at_the_sequence_limit()`
+  - Method `.test_upper_and_lower_arity_is_one()`
+  - Method `.test_contains_reports_whether_the_search_text_occurs()`
+  - Method `.test_contains_needs_two_strings_and_a_non_empty_search()`
+  - Method `.test_contains_arity_is_two()`
+  - Method `.test_find_returns_the_first_index_or_none()`
+  - Method `.test_find_index_counts_characters_not_bytes()`
+  - Method `.test_find_needs_two_strings_and_a_non_empty_search()`
+  - Method `.test_find_arity_is_two()`
 
 **Functions:**
 - `def evaluate(source)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*

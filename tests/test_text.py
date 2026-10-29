@@ -1,4 +1,4 @@
-"""Text helpers: split, join, trim and replace, with their arity and type guards."""
+"""Text helpers: split, join, trim, replace, case folding, contains and find."""
 
 import unittest
 from io import StringIO
@@ -177,3 +177,98 @@ class TextHelperTests(unittest.TestCase):
                       self.eval_error('replace("a", "b")').message)
         self.assertIn("replace expects 3 arguments, got 4",
                       self.eval_error('replace("a", "b", "c", "d")').message)
+
+
+    # upper and lower
+
+    def test_upper_and_lower_fold_ascii_text(self) -> None:
+        self.assertEqual(evaluate('upper("abc")'), "ABC")
+        self.assertEqual(evaluate('lower("ABC")'), "abc")
+        self.assertEqual(evaluate('upper("Hello, World!")'), "HELLO, WORLD!")
+        self.assertEqual(evaluate('lower("Hello, World!")'), "hello, world!")
+        self.assertEqual(evaluate('upper("")'), "")
+        self.assertEqual(evaluate('lower("")'), "")
+
+    def test_upper_and_lower_leave_other_characters_alone(self) -> None:
+        self.assertEqual(evaluate('upper("1-2_3")'), "1-2_3")
+        self.assertEqual(evaluate('upper("héllo")'), "HÉLLO")
+        self.assertEqual(evaluate('lower("HÉLLO")'), "héllo")
+
+    def test_upper_and_lower_need_a_string(self) -> None:
+        error = self.eval_error("upper(5)")
+        self.assertIn("upper needs a string, got int", error.message)
+        self.assertIn("case", error.why)
+        self.assertEqual((error.line, error.col), (1, 6))
+        self.assertIn("lower needs a string, got bool",
+                      self.eval_error("lower(true)").message)
+        self.assertIn("upper needs a string, got list",
+                      self.eval_error("upper([])").message)
+
+    def test_a_case_fold_result_is_capped_at_the_sequence_limit(self) -> None:
+        with mock.patch("pebble.stdlib.MAX_SEQUENCE_LENGTH", 3):
+            self.assertEqual(call_builtin("upper", "abc"), "ABC")
+            with self.assertRaises(EvalError) as caught:
+                call_builtin("upper", "ßß")
+        self.assertIn("changing the case of this text is too large", caught.exception.message)
+        self.assertIn("the result would have 4 characters", caught.exception.why)
+
+    def test_upper_and_lower_arity_is_one(self) -> None:
+        self.assertIn("upper expects 1 argument, got 0",
+                      self.eval_error("upper()").message)
+        self.assertIn("lower expects 1 argument, got 2",
+                      self.eval_error('lower("a", "b")').message)
+
+    # contains
+
+    def test_contains_reports_whether_the_search_text_occurs(self) -> None:
+        self.assertIs(evaluate('contains("abc", "b")'), True)
+        self.assertIs(evaluate('contains("abc", "d")'), False)
+        self.assertIs(evaluate('contains("abc", "abc")'), True)
+        self.assertIs(evaluate('contains("", "a")'), False)
+
+    def test_contains_needs_two_strings_and_a_non_empty_search(self) -> None:
+        error = self.eval_error("contains(5, \"a\")")
+        self.assertIn("contains needs a string, got int", error.message)
+        self.assertIn("search", error.why)
+        self.assertEqual((error.line, error.col), (1, 9))
+        self.assertIn("contains needs a string, got int",
+                      self.eval_error('contains("a", 1)').message)
+        error = self.eval_error('contains("abc", "")')
+        self.assertIn("contains search text cannot be empty", error.message)
+        self.assertIn("found everywhere", error.why)
+
+    def test_contains_arity_is_two(self) -> None:
+        self.assertIn("contains expects 2 arguments, got 1",
+                      self.eval_error('contains("a")').message)
+        self.assertIn("contains expects 2 arguments, got 3",
+                      self.eval_error('contains("a", "b", "c")').message)
+
+    # find
+
+    def test_find_returns_the_first_index_or_none(self) -> None:
+        self.assertEqual(evaluate('find("abcabc", "b")'), 1)
+        self.assertEqual(evaluate('find("abc", "abc")'), 0)
+        self.assertEqual(evaluate('find("abc", "c")'), 2)
+        self.assertIsNone(evaluate('find("abc", "d")'))
+        self.assertIsNone(evaluate('find("", "a")'))
+        self.assertIsNone(evaluate('find("abc", "abcd")'))
+
+    def test_find_index_counts_characters_not_bytes(self) -> None:
+        self.assertEqual(evaluate('find("héllo", "llo")'), 2)
+
+    def test_find_needs_two_strings_and_a_non_empty_search(self) -> None:
+        error = self.eval_error("find(5, \"a\")")
+        self.assertIn("find needs a string, got int", error.message)
+        self.assertIn("search", error.why)
+        self.assertEqual((error.line, error.col), (1, 5))
+        self.assertIn("find needs a string, got none",
+                      self.eval_error('find("a", none)').message)
+        error = self.eval_error('find("abc", "")')
+        self.assertIn("find search text cannot be empty", error.message)
+        self.assertIn("every position", error.why)
+
+    def test_find_arity_is_two(self) -> None:
+        self.assertIn("find expects 2 arguments, got 0",
+                      self.eval_error("find()").message)
+        self.assertIn("find expects 2 arguments, got 3",
+                      self.eval_error('find("a", "b", "c")').message)

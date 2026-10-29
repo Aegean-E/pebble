@@ -3,7 +3,8 @@
 Each builtin is a `Builtin` record: a name, an implementation and the arity it advertises. The
 evaluator checks the arity before evaluating arguments and passes the call node, so every builtin
 failure is a positioned EvalError with a Why and a Fix. v2 added `float()` and the `range` step;
-v5 adds the text helpers `split`, `join`, `trim` and `replace`.
+v5 adds the text helpers `split`, `join`, `trim` and `replace`, v6 adds `sort`, and v7 adds
+`upper`, `lower`, `contains` and `find`.
 """
 
 import math
@@ -381,6 +382,60 @@ def _replace(interpreter, call, args) -> str:
     return text.replace(search, replacement)
 
 
+def _fold(call, args, mapper, name: str) -> str:
+    """Text with every character's case mapped; a character may map to several."""
+    text = _string_arg(call, args[0], name,
+                       f"{name} changes the case of a text string",
+                       f'pass a string, for example {name}("abc")')
+    result = mapper(text)
+    if len(result) > MAX_SEQUENCE_LENGTH:
+        _fail(call, "changing the case of this text is too large",
+              f"the result would have {len(result)} characters; v1 caps sequences at "
+              f"{MAX_SEQUENCE_LENGTH}",
+              "fold a smaller piece of text")
+    return result
+
+
+def _upper(interpreter, call, args) -> str:
+    """The text in upper case; Unicode characters follow the host's case mapping."""
+    return _fold(call, args, str.upper, "upper")
+
+
+def _lower(interpreter, call, args) -> str:
+    """The text in lower case; Unicode characters follow the host's case mapping."""
+    return _fold(call, args, str.lower, "lower")
+
+
+def _search_args(call, args, name: str, example: str, empty_why: str):
+    """The text and the non-empty search string a search builtin reads."""
+    text = _string_arg(call, args[0], name,
+                       f"{name} searches one text string for another",
+                       f"pass two strings, for example {example}")
+    search = _string_arg(call, args[1], name,
+                         "the text and the search text must both be strings",
+                         "pass the text to look for, for example a letter")
+    if search == "":
+        _fail(call, f"{name} search text cannot be empty",
+              empty_why,
+              f"pass the text to look for, for example {example}")
+    return text, search
+
+
+def _contains(interpreter, call, args) -> bool:
+    """Whether the search text occurs anywhere in the text."""
+    text, search = _search_args(call, args, "contains", 'contains("abc", "b")',
+                                "an empty search would be found everywhere")
+    return search in text
+
+
+def _find(interpreter, call, args):
+    """The index of the first occurrence, or none when the search text is absent."""
+    text, search = _search_args(call, args, "find", 'find("abc", "b")',
+                               "an empty search would match at every position")
+    index = text.find(search)
+    return None if index < 0 else index
+
+
 BUILTINS = {
     "print": Builtin("print", _print, "1 argument", 1, 1),
     "len": Builtin("len", _len, "1 argument", 1, 1),
@@ -397,4 +452,8 @@ BUILTINS = {
     "join": Builtin("join", _join, "2 arguments", 2, 2),
     "trim": Builtin("trim", _trim, "1 argument", 1, 1),
     "replace": Builtin("replace", _replace, "3 arguments", 3, 3),
+    "upper": Builtin("upper", _upper, "1 argument", 1, 1),
+    "lower": Builtin("lower", _lower, "1 argument", 1, 1),
+    "contains": Builtin("contains", _contains, "2 arguments", 2, 2),
+    "find": Builtin("find", _find, "2 arguments", 2, 2),
 }

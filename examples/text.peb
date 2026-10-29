@@ -1,7 +1,15 @@
-# Shape text with split, join, trim and replace.
+# Shape text with split, join, trim, replace, case folding and search.
 let sentence = "  the quick brown fox  "
 let words = split(trim(sentence))
 print("words: " + str(len(words)))
 print(join(words, "-"))
 print(replace(join(words, " "), "fox", "pebble"))
 print(join(split("a,b,,c", ","), "|"))
+
+# Case folding, membership and position.
+let title = "The Quick Brown Fox"
+print(upper(title))
+print(lower(title))
+print(contains(title, "Quick"))
+print(find(title, "Brown"))
+print(find(title, "Slow"))
