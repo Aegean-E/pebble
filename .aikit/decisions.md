@@ -165,6 +165,13 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Catch `OverflowError` around the numeric result in `_add`, `_numeric`, `_multiply` and `_remainder`, and raise the same positioned "the result is too large for a float" EvalError that a non-finite float result uses. Add a regression test covering `+`, `-`, `*` and `%` with `10 ^ 3990` and a float. This completes ADR-006's guard; it adds no operator and changes no other rule.
 - **Consequences**: Mixed huge-int/float arithmetic now reports a normal Pebble error, and the no-traceback promise holds for these paths. Costs: each numeric operator carries one explicit exception path, and a program that wants an approximate result must scale its values or convert deliberately.
 
+### ADR-024: v1.1 keeps the EOF position correct after a trailing comment
+- **Date**: 2026-10-29
+- **Status**: Accepted
+- **Context**: ADR-001 makes every failure carry an exact position. The lexer's comment scanner advanced its index without advancing its column, so a comment at end of file left the EOF token at the comment's start column; a parse error at EOF after a trailing comment pointed at the wrong place. The audit of the v1 lexer history found the gap.
+- **Decision**: Advance the comment scanner with the shared `_skip` helper, which updates both index and column. Add assertions for the EOF position after a value followed by a comment and after a comment-only source. This keeps the existing comment rule and changes no token stream.
+- **Consequences**: EOF positions and parse errors after a trailing comment are exact. Costs: none beyond one shared helper call per comment character.
+
 ## Licensing migration (v0.1.0-agpl)
 
 - New versions use the Aegean License 1.1 (AL-1.1); versions up to and including `v0.1.0-agpl` remain under GNU AGPL-3.0.

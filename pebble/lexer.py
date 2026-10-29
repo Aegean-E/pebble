@@ -82,7 +82,7 @@ class _Scanner:
     def _comment(self) -> None:
         """Skip from `#` to the end of the line."""
         while self.index < len(self.source) and self.source[self.index] != "\n":
-            self.index += 1
+            self._skip(1)
 
     def _number(self) -> None:
         """Lex an int or a float; a directly following letter is reported as a typo."""

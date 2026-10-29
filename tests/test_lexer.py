@@ -74,6 +74,8 @@ class LexerTests(unittest.TestCase):
 
     def test_comments_run_to_the_end_of_the_line(self) -> None:
         self.assertEqual(pairs("# note\n42 # trailing\n# last"), [("NUMBER", 42)])
+        self.assertEqual(tokenize("1 # x")[-1], Token("EOF", None, 1, 6))
+        self.assertEqual(tokenize("# x")[-1], Token("EOF", None, 1, 4))
 
     def test_two_char_operators_lex_as_one_token(self) -> None:
         self.assertEqual(pairs("== != <= >= < ="),

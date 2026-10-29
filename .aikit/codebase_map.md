@@ -10,7 +10,7 @@
 - **Total Classes**: `50`
 - **Total Top-Level Functions**: `91`
 - **Total Class Methods**: `365`
-- **Total Source Lines**: `4672`
+- **Total Source Lines**: `4674`
 
 ---
 
@@ -142,7 +142,7 @@
 ### [`pebble/lexer.py`](pebble/lexer.py)
 > *Pebble lexer: source text to tokens carrying 1-based line and column positions.*
 
-**Size**: `201` lines (`8640` bytes)
+**Size**: `201` lines (`8638` bytes)
 
 **Classes:**
 - `class Token` - *One lexical unit; `value` is the payload for numbers and strings, else the token text.*
@@ -543,7 +543,7 @@
 ### [`tests/test_lexer.py`](tests/test_lexer.py)
 > *Lexer tests: token streams, positions, and every lex-error path (PRINCIPLE-014 R2).*
 
-**Size**: `114` lines (`4799` bytes)
+**Size**: `116` lines (`4945` bytes)
 
 **Classes:**
 - `class LexerTests` - *One behaviour per test; every failure message is asserted, not just raised.*
