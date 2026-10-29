@@ -9,8 +9,8 @@
 - **Total Python Modules**: `21`
 - **Total Classes**: `50`
 - **Total Top-Level Functions**: `91`
-- **Total Class Methods**: `364`
-- **Total Source Lines**: `4639`
+- **Total Class Methods**: `365`
+- **Total Source Lines**: `4672`
 
 ---
 
@@ -75,7 +75,7 @@
 ### [`pebble/evaluator.py`](pebble/evaluator.py)
 > *Tree-walking evaluator: the runtime semantics of Pebble.*
 
-**Size**: `540` lines (`27359` bytes)
+**Size**: `560` lines (`28627` bytes)
 
 **Classes:**
 - `class _Return` - *Internal signal carrying a `return` value out of nested blocks; never escapes run().*
@@ -500,7 +500,7 @@
 ### [`tests/test_hardening.py`](tests/test_hardening.py)
 > *Hardening tests: error-format contract, resource guards, platform parity and performance.*
 
-**Size**: `256` lines (`10127` bytes)
+**Size**: `269` lines (`10639` bytes)
 
 **Classes:**
 - `class ErrorFormatTests` - *Every error kind carries a position, a reason and a fix, and renders as three lines.*
@@ -516,6 +516,7 @@
   - Method `.test_a_division_result_too_large_for_a_float_is_refused()`
   - Method `.test_a_non_finite_float_result_is_refused()`
   - Method `.test_finite_extremes_still_compute()`
+  - Method `.test_a_huge_int_mixed_with_a_float_is_a_positioned_error()`
   - Method `.test_an_int_result_over_the_digit_cap_is_refused()`
   - Method `.test_a_power_within_the_cap_still_works()`
   - Method `.test_an_oversized_integer_literal_is_a_lex_error()`

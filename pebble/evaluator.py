@@ -265,7 +265,12 @@ class Interpreter:
     def _add(self, expression, left, right) -> object:
         """Numbers add, strings join, lists join; nothing else mixes."""
         if is_number(left) and is_number(right):
-            return self._check_result(expression, left + right)
+            try:
+                return self._check_result(expression, left + right)
+            except OverflowError:
+                self._fail(expression, "the result is too large for a float",
+                           "the operation on a huge int and a float needs a value beyond the largest float",
+                           "use smaller values, or scale them down first")
         if isinstance(left, str) and isinstance(right, str):
             return self._concatenate(expression, left, right, "strings", "characters")
         if isinstance(left, list) and isinstance(right, list):
@@ -287,7 +292,12 @@ class Interpreter:
     def _numeric(self, expression, left, right, word: str, operation):
         """A binary operation over two numbers, with a shared type error."""
         if is_number(left) and is_number(right):
-            return self._check_result(expression, operation(left, right))
+            try:
+                return self._check_result(expression, operation(left, right))
+            except OverflowError:
+                self._fail(expression, "the result is too large for a float",
+                           "the operation on a huge int and a float needs a value beyond the largest float",
+                           "use smaller values, or scale them down first")
         self._fail(expression, f"cannot {word} {type_name(left)} and {type_name(right)}",
                    f"{word}ing needs two numbers",
                    "make both operands numbers")
@@ -295,7 +305,12 @@ class Interpreter:
     def _multiply(self, expression, left, right) -> object:
         """Numbers multiply; a string or list repeats by a whole count."""
         if is_number(left) and is_number(right):
-            return self._check_result(expression, left * right)
+            try:
+                return self._check_result(expression, left * right)
+            except OverflowError:
+                self._fail(expression, "the result is too large for a float",
+                           "the operation on a huge int and a float needs a value beyond the largest float",
+                           "use smaller values, or scale them down first")
         sequence, count = (left, right) if isinstance(left, (str, list)) else (right, left)
         if isinstance(sequence, (str, list)) and isinstance(count, int) and not isinstance(count, bool):
             if count < 0:
@@ -339,7 +354,12 @@ class Interpreter:
                 self._fail(expression, "remainder by zero",
                            "the divisor is zero, and x % 0 is undefined",
                            "guard the divisor with an if, or change it")
-            return self._check_result(expression, left % right)
+            try:
+                return self._check_result(expression, left % right)
+            except OverflowError:
+                self._fail(expression, "the result is too large for a float",
+                           "the operation on a huge int and a float needs a value beyond the largest float",
+                           "use smaller values, or scale them down first")
         self._fail(expression, f"cannot take the remainder of {type_name(left)} and "
                                f"{type_name(right)}",
                    "remainder ( % ) needs two numbers",

@@ -158,6 +158,13 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Catch `OverflowError` around the total and raise the same positioned "the result is too large for a float" EvalError that a non-finite float total uses. Add a regression test with `sum([10 ^ 3990, 1.5])`. This completes ADR-014's stated guard; it adds no builtin and changes no other rule.
 - **Consequences**: A mixed huge-int/float total now reports a normal Pebble error, and the no-traceback promise holds for this path. Costs: the guard is one more explicit exception path, and a program that wants an approximate total must scale its values or convert deliberately.
 
+### ADR-023: v4.1 closes the mixed int/float arithmetic overflow
+- **Date**: 2026-10-29
+- **Status**: Accepted
+- **Context**: ADR-006 requires every arithmetic result to be finite and every user failure to be a positioned Pebble report. Adding, subtracting, multiplying or taking the remainder of a huge int and a float made Python convert the int to a float before the result checks ran, so `OverflowError` escaped to the CLI shield. The audit of the v4 hardening history found the gap.
+- **Decision**: Catch `OverflowError` around the numeric result in `_add`, `_numeric`, `_multiply` and `_remainder`, and raise the same positioned "the result is too large for a float" EvalError that a non-finite float result uses. Add a regression test covering `+`, `-`, `*` and `%` with `10 ^ 3990` and a float. This completes ADR-006's guard; it adds no operator and changes no other rule.
+- **Consequences**: Mixed huge-int/float arithmetic now reports a normal Pebble error, and the no-traceback promise holds for these paths. Costs: each numeric operator carries one explicit exception path, and a program that wants an approximate result must scale its values or convert deliberately.
+
 ## Licensing migration (v0.1.0-agpl)
 
 - New versions use the Aegean License 1.1 (AL-1.1); versions up to and including `v0.1.0-agpl` remain under GNU AGPL-3.0.

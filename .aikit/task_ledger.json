@@ -13,104 +13,6 @@
   },
   "checkpoints": [
     {
-      "task_id": "task-pebble-v12-round",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/5] round is green: decimal half-up ties away from zero, int result for one argument and float for a digit count, 0..15 digit range, bool/non-number/non-finite refusals, and huge ints handled without a decimal InvalidOperation (whole numbers return exactly, digit counts report a float overflow); fuzz corpus includes round; 7 new tests, 252 total",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793257527.4908144,
-      "timestamp_str": "2026-10-29 10:05:27",
-      "agent": "kilo:v12-round"
-    },
-    {
-      "task_id": "task-pebble-v12-round",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[3/5] Docs: ADR-017 records round, the half-up tie rule, the int/float result split, the 0..15 digit range and the decimal-over-IEEE choice; README lists twenty-five builtins and 252 tests with a round example; examples/totals.peb rounds an average both ways; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793257655.712651,
-      "timestamp_str": "2026-10-29 10:07:35",
-      "agent": "kilo:v12-round"
-    },
-    {
-      "task_id": "task-pebble-v12-round",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v12-round' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793257669.5287552,
-      "timestamp_str": "2026-10-29 10:07:49",
-      "agent": "kilo:v12-round"
-    },
-    {
-      "task_id": "task-pebble-v13-list-search",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/5] Plan: add index_of(list, value) and extend contains to lists under ADR-018, moving Pebble equality into formatting.py so the evaluator and the builtins share one rule; failing-first tests first, including cross-type and nested-list cases",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793258258.1033683,
-      "timestamp_str": "2026-10-29 10:17:38",
-      "agent": "kilo:v13-list-search",
-      "impact_assessment": {
-        "why": "Pebble can search text and order a list but cannot ask whether a list holds a value or where, so every membership check is a hand-written for loop with a found flag and a position variable.",
-        "benefits": "Scripts check and locate list members in one call, and equality is stated once for ==, contains and index_of instead of a second definition growing in the stdlib.",
-        "risks": "contract: surface grows to 26 builtins, contains gains a list form that amends ADR-012, and equality moves modules; dependency: none, standard library only; concurrency: none; state: no files or schema changes.",
-        "mitigation": "ADR-018 pins that both builtins use the same equality as ==, that index_of returns none for a miss, and that a non-list first argument to the list form is a positioned error; failing-first tests; fuzz corpus extended; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v13-list-search",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/5] index_of and the list form of contains are green: both compare with formatting.values_equal, so == and the builtins share one rule (numbers mix, bools do not, nested lists deep, other kinds never); index_of returns none on a miss; 11 new tests, 263 total",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793258341.385186,
-      "timestamp_str": "2026-10-29 10:19:01",
-      "agent": "kilo:v13-list-search"
-    },
-    {
-      "task_id": "task-pebble-v13-list-search",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[3/5] Docs: ADR-018 records index_of, the list form of contains and the move of Pebble equality to formatting.values_equal; README lists twenty-six builtins and 263 tests, examples/sorted.peb searches a list; the fuzz corpus generates index_of and list contains; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793258465.3286192,
-      "timestamp_str": "2026-10-29 10:21:05",
-      "agent": "kilo:v13-list-search"
-    },
-    {
-      "task_id": "task-pebble-v13-list-search",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v13-list-search' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793258476.9347446,
-      "timestamp_str": "2026-10-29 10:21:16",
-      "agent": "kilo:v13-list-search"
-    },
-    {
-      "task_id": "task-pebble-v14-version",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/4] Plan: make the reported version agree with pyproject and keep it that way, under ADR-019: bump __version__ to the packaging version and add a test that reads pyproject and fails on drift, so --version can never under-report again",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793258538.0534422,
-      "timestamp_str": "2026-10-29 10:22:18",
-      "agent": "kilo:v14-version",
-      "impact_assessment": {
-        "why": "pebble/__init__.py carries 0.1.0 while pyproject.toml carries 0.2.0, so python -m pebble --version reports a version the package was never released at, and nothing in the suite compares the two numbers.",
-        "benefits": "The version a user sees matches the version the package declares, and a future packaging bump cannot silently leave the runtime behind.",
-        "risks": "contract: python -m pebble --version prints 0.2.0 instead of 0.1.0; dependency: none, the test reads pyproject with the standard library only; concurrency: none; state: no schema change, one literal changes.",
-        "mitigation": "ADR-019 pins pyproject as the declared version and the test as the guard; the test parses pyproject with a plain read rather than tomllib so Python 3.10, which the project supports, still runs it; full aikit check pebble gate."
-      }
-    },
-    {
       "task_id": "task-pebble-v14-version",
       "phase": "in_progress",
       "phase_num": 3,
@@ -244,6 +146,105 @@
       "status": "in_progress",
       "timestamp": 1793292909.7701643,
       "timestamp_str": "2026-10-29 19:55:09",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 7",
+      "phase_num": 3,
+      "description": "Reforge stage 7: window 21, 3 commit(s), 7 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793293022.624987,
+      "timestamp_str": "2026-10-29 19:57:02",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 8",
+      "phase_num": 3,
+      "description": "Reforge stage 8: window 24, 3 commit(s), 11 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793293067.9678438,
+      "timestamp_str": "2026-10-29 19:57:47",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 9",
+      "phase_num": 3,
+      "description": "Reforge stage 9: window 27, 3 commit(s), 2 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793293133.0197601,
+      "timestamp_str": "2026-10-29 19:58:53",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 10",
+      "phase_num": 3,
+      "description": "Reforge stage 10: window 30, 3 commit(s), 2 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, 4 binary not analysed",
+      "files_affected": [
+        "assets/logo.jpg",
+        "assets/logo.png",
+        "assets/social-preview.jpg",
+        "assets/social-preview.png"
+      ],
+      "status": "in_progress",
+      "timestamp": 1793293163.3526428,
+      "timestamp_str": "2026-10-29 19:59:23",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 11",
+      "phase_num": 3,
+      "description": "Reforge stage 11: window 33, 3 commit(s), 4 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, 3 binary not analysed",
+      "files_affected": [
+        "assets/artwork.jpg",
+        "assets/logo.png",
+        "assets/social-preview.png"
+      ],
+      "status": "in_progress",
+      "timestamp": 1793293199.295236,
+      "timestamp_str": "2026-10-29 19:59:59",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 12",
+      "phase_num": 3,
+      "description": "Reforge stage 12: window 36, 3 commit(s), 7 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, 1 binary not analysed",
+      "files_affected": [
+        "assets/social-preview.png"
+      ],
+      "status": "in_progress",
+      "timestamp": 1793293232.4955487,
+      "timestamp_str": "2026-10-29 20:00:32",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 13",
+      "phase_num": 3,
+      "description": "Reforge stage 13: window 39, 3 commit(s), 7 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793293282.034243,
+      "timestamp_str": "2026-10-29 20:01:22",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 14",
+      "phase_num": 3,
+      "description": "Reforge stage 14: window 42, 3 commit(s), 8 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793293376.8552165,
+      "timestamp_str": "2026-10-29 20:02:56",
       "agent": "opencode"
     }
   ]

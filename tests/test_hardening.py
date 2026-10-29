@@ -158,6 +158,19 @@ class ResourceGuardTests(unittest.TestCase):
         self.assertEqual(evaluate('float("1e308") / 1'), 1e308)
         self.assertEqual(evaluate('float("1e-308") * 1'), 1e-308)
 
+    def test_a_huge_int_mixed_with_a_float_is_a_positioned_error(self) -> None:
+        for source in (
+            "(10 ^ 3990) + 1.5",
+            "(10 ^ 3990) - 1.5",
+            "(10 ^ 3990) * 1.5",
+            "(10 ^ 3990) % 1.5",
+        ):
+            with self.subTest(source=source):
+                error = self.eval_error(source)
+                self.assertIn("the result is too large for a float", error.message)
+                self.assertTrue(error.why)
+                self.assertTrue(error.fix)
+
     def test_an_int_result_over_the_digit_cap_is_refused(self) -> None:
         error = self.eval_error("10 ^ 10000")
         self.assertIn("integer result is too large", error.message)
