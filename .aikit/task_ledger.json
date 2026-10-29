@@ -3,24 +3,15 @@
   "active_task": {
     "task_id": "task-pebble-v13-list-search",
     "last_phase": "in_progress",
-    "active_phase": 4,
-    "status": "in_progress",
+    "active_phase": 5,
+    "status": "completed",
     "updated_at": 1793258465.3286192,
     "owner": "kilo:v13-list-search",
     "started_by": "kilo:v13-list-search",
-    "continuations": []
+    "continuations": [],
+    "completed_at": 1793258476.9347427
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v8-text-predicates",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v8-text-predicates' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793254589.4847534,
-      "timestamp_str": "2026-10-29 09:16:29",
-      "agent": "kilo:v8-text-predicates"
-    },
     {
       "task_id": "task-pebble-v9-sum",
       "phase": "in_progress",
@@ -254,6 +245,16 @@
       "status": "in_progress",
       "timestamp": 1793258465.3286192,
       "timestamp_str": "2026-10-29 10:21:05",
+      "agent": "kilo:v13-list-search"
+    },
+    {
+      "task_id": "task-pebble-v13-list-search",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v13-list-search' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793258476.9347446,
+      "timestamp_str": "2026-10-29 10:21:16",
       "agent": "kilo:v13-list-search"
     }
   ]
