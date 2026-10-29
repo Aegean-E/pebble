@@ -144,6 +144,13 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Declare `0.3.0` in `pyproject.toml` and set `__version__` to it, so `python -m pebble --version` reports `pebble 0.3.0`. This is a minor bump, not a major one: every change since `0.2.0` adds to the frozen v1 surface under its own ADR (ADR-001's rule that an addition needs a new task and a new ADR), and no v1 contract was broken — `split` and `replace` refuse new cases, `round` is new rather than changed, and the moved equality rule preserves `==` behaviour exactly. ADR-019's coherence test is the guard that the bump reached both files.
 - **Consequences**: The declared version now matches what a user actually gets, and the next release has a stated baseline. Costs: the version lives in two files, so a release still edits both (the test makes the pair mandatory, not automatic); this record does not tag or publish anything, so the `0.3.0` marker exists only in the source tree until a release task uses it.
 
+### ADR-021: v13.1 corrects nested list equality and large-float rounding
+- **Date**: 2026-10-29
+- **Status**: Accepted
+- **Context**: ADR-018 moved equality into `formatting.values_equal` and added list search, but the shared function delegated list comparison to Python's `==`, so nested bools compared equal to nested numbers even though ADR-002 says bools do not mix. ADR-017's `round` used a fixed 40-digit decimal context, so a finite float with a large exponent, such as `float(10 ^ 300)`, was refused even though its rounded value is representable. Both cases were found while auditing the v13 history.
+- **Decision**: Compare lists element by element with `values_equal` so nested values follow the same equality rule as top-level values. Size the decimal context to the input's adjusted exponent plus the digit count, with a floor of 40 digits, so large finite floats round instead of failing. Add regression tests for nested bool/number lists and for `round(float(10 ^ 300))` and `round(float(10 ^ 300), 2)`. This corrects the implementation to the contracts ADR-002 and ADR-017 already state; it adds no builtin and changes no other rule.
+- **Consequences**: `[[true]] == [[1]]` is now false, `contains([[true]], [1])` and `index_of([[true]], [1])` no longer match, and large finite floats round successfully. Costs: list equality is now recursive in Python rather than a single C-level comparison, so deeply nested lists are slower; the decimal context can grow with the exponent, though it remains bounded by the finite float range.
+
 ## Licensing migration (v0.1.0-agpl)
 
 - New versions use the Aegean License 1.1 (AL-1.1); versions up to and including `v0.1.0-agpl` remain under GNU AGPL-3.0.

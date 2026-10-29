@@ -44,6 +44,7 @@ pebble/
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── media.json            <- social preview and artwork metadata
 │   ├── project.json
+│   ├── reforge.json          <- Reforge audit state
 │   └── task_ledger.json      <- the task ledger: plan and milestone checkpoints
 ├── .gitignore
 ├── LICENSE
@@ -112,7 +113,7 @@ Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-sc
 `task-pebble-v7-text-search`, `task-pebble-v8-text-predicates`, `task-pebble-v9-sum`,
 `task-pebble-v10-crash-fuzz`, `task-pebble-v11-average`, `task-pebble-v12-round`,
 `task-pebble-v13-list-search`, `task-pebble-v14-version`, and `task-pebble-v15-release-0-3-0` are
-complete (264 tests): script arguments via `args`, `break`/`continue`, slices, `range` with a step,
+complete (265 tests): script arguments via `args`, `break`/`continue`, slices, `range` with a step,
 `float()`, the text helpers, `sort`, case folding, text search, the edge and count helpers, `sum`,
 `average`, `round` and list search extend the frozen v1 surface as ADR-004, ADR-005, ADR-010,
 ADR-011, ADR-012, ADR-013, ADR-014, ADR-016, ADR-017 and ADR-018 record. ADR-006 makes every

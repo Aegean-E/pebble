@@ -13,44 +13,6 @@
   },
   "checkpoints": [
     {
-      "task_id": "task-pebble-v10-crash-fuzz",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v10-crash-fuzz' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793255541.4322546,
-      "timestamp_str": "2026-10-29 09:32:21",
-      "agent": "kilo:v10-crash-fuzz"
-    },
-    {
-      "task_id": "task-pebble-v11-average",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/4] Plan: add average(values) under ADR-016, the follow-up ADR-014 named: a float result for any non-empty number list, an error for an empty list because there is no average of nothing, and the same element and finiteness rules sum already enforces",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793255992.6809506,
-      "timestamp_str": "2026-10-29 09:39:52",
-      "agent": "kilo:v11-average",
-      "impact_assessment": {
-        "why": "ADR-014 gave lists a total and deliberately deferred an average because it needs a zero-length rule; that rule is a one-line contract, and until it exists every script writes sum(xs) / len(xs) and must remember to guard an empty list itself.",
-        "benefits": "Scripts get a mean in one call with a stated empty-list behaviour, composing with sum, sort and the text helpers to turn parsed fields into statistics.",
-        "risks": "contract: surface grows to 24 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "ADR-016 pins the empty-list error, the always-float result and the finiteness guard before code; failing-first tests including both guards; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v11-average",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/4] average is green: always-float mean, empty list is a positioned error, shared _numbers element rule now used by sum too, and a guarded division so an int inside the digit cap but beyond float range reports instead of raising OverflowError; the fuzz corpus now includes 10 ^ 3990; 8 new tests, 245 total",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793256229.6072462,
-      "timestamp_str": "2026-10-29 09:43:49",
-      "agent": "kilo:v11-average"
-    },
-    {
       "task_id": "task-pebble-v11-average",
       "phase": "in_progress",
       "phase_num": 4,
@@ -255,6 +217,39 @@
       "timestamp": 1793258736.3108907,
       "timestamp_str": "2026-10-29 10:25:36",
       "agent": "kilo:v15-release"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 1",
+      "phase_num": 3,
+      "description": "Reforge stage 1: window 3, 3 commit(s), 4 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793292335.9362473,
+      "timestamp_str": "2026-10-29 19:45:35",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 2",
+      "phase_num": 3,
+      "description": "Reforge stage 2: window 6, 3 commit(s), 5 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793292477.397468,
+      "timestamp_str": "2026-10-29 19:47:57",
+      "agent": "opencode"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 3",
+      "phase_num": 3,
+      "description": "Reforge stage 3: window 9, 3 commit(s), 11 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793292533.5907276,
+      "timestamp_str": "2026-10-29 19:48:53",
+      "agent": "opencode"
     }
   ]
 }

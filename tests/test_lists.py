@@ -231,6 +231,8 @@ class ListSearchTests(unittest.TestCase):
     def test_index_of_matches_a_nested_list_deeply(self) -> None:
         self.assertEqual(evaluate("index_of([[1], [2, 3]], [2, 3])"), 1)
         self.assertIsNone(evaluate("index_of([[1], [2]], [3])"))
+        self.assertIsNone(evaluate("index_of([[true]], [1])"))
+        self.assertIsNone(evaluate("index_of([[1]], [true])"))
 
     def test_index_of_does_not_mix_kinds(self) -> None:
         self.assertIsNone(evaluate('index_of([1, 2], "1")'))

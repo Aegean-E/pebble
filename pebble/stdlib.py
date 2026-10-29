@@ -329,7 +329,7 @@ def _int_as_float(call, value: int) -> float:
 def _round_away(call, value: float, digits: int) -> float:
     """Half-up rounding of a finite float from its shortest decimal form."""
     with localcontext() as context:
-        context.prec = 40
+        context.prec = max(40, Decimal(str(value)).adjusted() + digits + 2)
         try:
             scaled = Decimal(str(value)).quantize(
                 Decimal(1).scaleb(-digits), rounding=ROUND_HALF_UP)

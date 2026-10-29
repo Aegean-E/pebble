@@ -9,8 +9,8 @@
 - **Total Python Modules**: `21`
 - **Total Classes**: `50`
 - **Total Top-Level Functions**: `91`
-- **Total Class Methods**: `362`
-- **Total Source Lines**: `4620`
+- **Total Class Methods**: `363`
+- **Total Source Lines**: `4629`
 
 ---
 
@@ -128,7 +128,7 @@
 ### [`pebble/formatting.py`](pebble/formatting.py)
 > *How Pebble names and displays values in messages and in print.*
 
-**Size**: `65` lines (`2219` bytes)
+**Size**: `68` lines (`2421` bytes)
 
 **Functions:**
 - `def is_number(value)` - *True for int and float, but not for bool: Pebble keeps booleans out of arithmetic.*
@@ -250,7 +250,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `649` lines (`28693` bytes)
+**Size**: `649` lines (`28743` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -311,7 +311,7 @@
 ### [`tests/test_builtins.py`](tests/test_builtins.py)
 > *Builtin tests: the core builtins, their errors and the display form of values.*
 
-**Size**: `322` lines (`14697` bytes)
+**Size**: `326` lines (`14949` bytes)
 
 **Classes:**
 - `class BuiltinTests` - *One behaviour per test; messages, positions and return values are asserted.*
@@ -345,6 +345,7 @@
   - Method `.test_round_rejects_non_numbers_and_non_finite_floats()`
   - Method `.test_round_digits_must_be_an_int_in_range()`
   - Method `.test_round_of_a_huge_int_is_exact_or_a_positioned_error()`
+  - Method `.test_round_of_a_huge_float_stays_finite()`
   - Method `.test_round_arity_is_one_or_two()`
   - Method `.test_min_and_max_compare_numbers_and_strings()`
   - Method `.test_min_and_max_accept_a_single_list()`
@@ -574,7 +575,7 @@
 ### [`tests/test_lists.py`](tests/test_lists.py)
 > *List helpers: sort and sum, with the numeric rules min, max and sum share.*
 
-**Size**: `273` lines (`12858` bytes)
+**Size**: `275` lines (`12984` bytes)
 
 **Classes:**
 - `class SortTests` - *One behaviour per test; the result is a new list and the input is untouched.*

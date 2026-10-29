@@ -265,6 +265,10 @@ class BuiltinTests(unittest.TestCase):
         self.assertIn("no float value", error.why)
         self.assertIn("without a digit count", error.fix)
 
+    def test_round_of_a_huge_float_stays_finite(self) -> None:
+        self.assertEqual(evaluate("round(float(10 ^ 300))"), evaluate("int(float(10 ^ 300))"))
+        self.assertEqual(evaluate("round(float(10 ^ 300), 2)"), evaluate("float(10 ^ 300)"))
+
     def test_round_arity_is_one_or_two(self) -> None:
         self.assertIn("round expects 1 or 2 arguments, got 0",
                       self.eval_error("round()").message)

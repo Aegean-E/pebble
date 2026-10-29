@@ -60,6 +60,9 @@ def values_equal(left, right) -> bool:
     """
     if is_number(left) and is_number(right):
         return left == right
+    if isinstance(left, list) and isinstance(right, list):
+        return len(left) == len(right) and all(
+            values_equal(left_item, right_item) for left_item, right_item in zip(left, right))
     if type(left) is not type(right):
         return False
     return left == right
