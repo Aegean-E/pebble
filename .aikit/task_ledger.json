@@ -3,24 +3,15 @@
   "active_task": {
     "task_id": "task-pebble-v11-average",
     "last_phase": "in_progress",
-    "active_phase": 4,
-    "status": "in_progress",
+    "active_phase": 5,
+    "status": "completed",
     "updated_at": 1793256234.3520455,
     "owner": "kilo:v11-average",
     "started_by": "kilo:v11-average",
-    "continuations": []
+    "continuations": [],
+    "completed_at": 1793256253.2074754
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v6-sort",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v6-sort' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793252151.4339535,
-      "timestamp_str": "2026-10-29 08:35:51",
-      "agent": "kilo:v6-sort"
-    },
     {
       "task_id": "task-pebble-v7-text-search",
       "phase": "in_progress",
@@ -254,6 +245,16 @@
       "status": "in_progress",
       "timestamp": 1793256234.3520455,
       "timestamp_str": "2026-10-29 09:43:54",
+      "agent": "kilo:v11-average"
+    },
+    {
+      "task_id": "task-pebble-v11-average",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v11-average' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793256253.2074769,
+      "timestamp_str": "2026-10-29 09:44:13",
       "agent": "kilo:v11-average"
     }
   ]
