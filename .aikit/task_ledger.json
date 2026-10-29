@@ -3,24 +3,15 @@
   "active_task": {
     "task_id": "task-pebble-v7-text-search",
     "last_phase": "in_progress",
-    "active_phase": 4,
-    "status": "in_progress",
+    "active_phase": 5,
+    "status": "completed",
     "updated_at": 1793253618.1828375,
     "owner": "kilo:v7-text-search",
     "started_by": "kilo:v7-text-search",
-    "continuations": []
+    "continuations": [],
+    "completed_at": 1793253633.3823347
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v4-range-bounds",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[3/3] complete: aikit check pebble --no-push 4/4 gates (test 178 green, hygiene, guidelines, secrets); checklists: passed. Delivery is uncommitted and unpushed.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792647870.4160588,
-      "timestamp_str": "2026-10-22 08:44:30"
-    },
     {
       "task_id": "task-pebble-v4-range-bounds",
       "phase": "completed",
@@ -243,6 +234,16 @@
       "status": "in_progress",
       "timestamp": 1793253618.1828375,
       "timestamp_str": "2026-10-29 09:00:18",
+      "agent": "kilo:v7-text-search"
+    },
+    {
+      "task_id": "task-pebble-v7-text-search",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v7-text-search' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793253633.382336,
+      "timestamp_str": "2026-10-29 09:00:33",
       "agent": "kilo:v7-text-search"
     }
   ]
