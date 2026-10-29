@@ -8,9 +8,9 @@
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `20`
 - **Total Classes**: `46`
-- **Total Top-Level Functions**: `67`
-- **Total Class Methods**: `313`
-- **Total Source Lines**: `3829`
+- **Total Top-Level Functions**: `71`
+- **Total Class Methods**: `320`
+- **Total Source Lines**: `3940`
 
 ---
 
@@ -249,7 +249,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `459` lines (`19929` bytes)
+**Size**: `506` lines (`22314` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -284,6 +284,10 @@
 - `def _upper(interpreter, call, args)` - *The text in upper case; Unicode characters follow the host's case mapping.*
 - `def _lower(interpreter, call, args)` - *The text in lower case; Unicode characters follow the host's case mapping.*
 - `def _search_args(call, args, name, example, empty_why)` - *The text and the non-empty search string a search builtin reads.*
+- `def _edge_args(call, args, name, role, example)` - *The text and the non-empty prefix, suffix or search an edge builtin reads.*
+- `def _starts_with(interpreter, call, args)` - *Whether the text begins with the prefix.*
+- `def _ends_with(interpreter, call, args)` - *Whether the text ends with the suffix.*
+- `def _count(interpreter, call, args)` - *How many non-overlapping times the search text occurs, counted left to right.*
 - `def _contains(interpreter, call, args)` - *Whether the search text occurs anywhere in the text.*
 - `def _find(interpreter, call, args)` - *The index of the first occurrence, or none when the search text is absent.*
 
@@ -600,7 +604,7 @@
 ### [`tests/test_text.py`](tests/test_text.py)
 > *Text helpers: split, join, trim, replace, case folding, contains and find.*
 
-**Size**: `274` lines (`13651` bytes)
+**Size**: `338` lines (`17060` bytes)
 
 **Classes:**
 - `class TextHelperTests` - *One behaviour per test; messages, positions and return values are asserted.*
@@ -635,6 +639,13 @@
   - Method `.test_find_index_counts_characters_not_bytes()`
   - Method `.test_find_needs_two_strings_and_a_non_empty_search()`
   - Method `.test_find_arity_is_two()`
+  - Method `.test_starts_with_and_ends_with_report_the_edges()`
+  - Method `.test_starts_with_and_ends_with_count_characters_not_bytes()`
+  - Method `.test_starts_with_and_ends_with_need_two_non_empty_strings()`
+  - Method `.test_starts_with_and_ends_with_arity_is_two()`
+  - Method `.test_count_returns_non_overlapping_occurrences()`
+  - Method `.test_count_needs_two_non_empty_strings()`
+  - Method `.test_count_arity_is_two()`
 
 **Functions:**
 - `def evaluate(source)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*

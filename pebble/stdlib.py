@@ -3,8 +3,8 @@
 Each builtin is a `Builtin` record: a name, an implementation and the arity it advertises. The
 evaluator checks the arity before evaluating arguments and passes the call node, so every builtin
 failure is a positioned EvalError with a Why and a Fix. v2 added `float()` and the `range` step;
-v5 adds the text helpers `split`, `join`, `trim` and `replace`, v6 adds `sort`, and v7 adds
-`upper`, `lower`, `contains` and `find`.
+v5 adds the text helpers `split`, `join`, `trim` and `replace`, v6 adds `sort`, v7 adds
+`upper`, `lower`, `contains` and `find`, and v8 adds `starts_with`, `ends_with` and `count`.
 """
 
 import math
@@ -421,6 +421,50 @@ def _search_args(call, args, name: str, example: str, empty_why: str):
     return text, search
 
 
+def _edge_args(call, args, name: str, role: str, example: str):
+    """The text and the non-empty prefix, suffix or search an edge builtin reads."""
+    text = _string_arg(call, args[0], name,
+                       f"{name} compares one text string with another",
+                       f"pass two strings, for example {example}")
+    part = _string_arg(call, args[1], name,
+                       f"the text and the {role} must both be strings",
+                       f"pass the {role} to compare, for example a letter")
+    if part == "":
+        _fail(call, f"{name} {role} cannot be empty",
+              f"every string would match an empty {role}, so the answer is always true",
+              f"pass at least one character, or omit the {name} call entirely")
+    return text, part
+
+
+def _starts_with(interpreter, call, args) -> bool:
+    """Whether the text begins with the prefix."""
+    text, prefix = _edge_args(call, args, "starts_with", "prefix",
+                              'starts_with("hello", "he")')
+    return text.startswith(prefix)
+
+
+def _ends_with(interpreter, call, args) -> bool:
+    """Whether the text ends with the suffix."""
+    text, suffix = _edge_args(call, args, "ends_with", "suffix",
+                              'ends_with("hello", "lo")')
+    return text.endswith(suffix)
+
+
+def _count(interpreter, call, args) -> int:
+    """How many non-overlapping times the search text occurs, counted left to right."""
+    text = _string_arg(call, args[0], "count",
+                       "count reports how many times one text occurs in another",
+                       'pass two strings, for example count("banana", "an")')
+    search = _string_arg(call, args[1], "count",
+                         "the text and the search text must both be strings",
+                         "pass the text to look for, for example a letter")
+    if search == "":
+        _fail(call, "count search text cannot be empty",
+              "an empty search would match at every position, so the count is endless",
+              'pass the text to count, for example count("banana", "an")')
+    return text.count(search)
+
+
 def _contains(interpreter, call, args) -> bool:
     """Whether the search text occurs anywhere in the text."""
     text, search = _search_args(call, args, "contains", 'contains("abc", "b")',
@@ -456,4 +500,7 @@ BUILTINS = {
     "lower": Builtin("lower", _lower, "1 argument", 1, 1),
     "contains": Builtin("contains", _contains, "2 arguments", 2, 2),
     "find": Builtin("find", _find, "2 arguments", 2, 2),
+    "starts_with": Builtin("starts_with", _starts_with, "2 arguments", 2, 2),
+    "ends_with": Builtin("ends_with", _ends_with, "2 arguments", 2, 2),
+    "count": Builtin("count", _count, "2 arguments", 2, 2),
 }

@@ -13,3 +13,8 @@ print(lower(title))
 print(contains(title, "Quick"))
 print(find(title, "Brown"))
 print(find(title, "Slow"))
+
+# Edges and counting.
+print(starts_with(title, "The"))
+print(ends_with(title, "Fox"))
+print(count(title, "o"))

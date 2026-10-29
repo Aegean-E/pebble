@@ -39,7 +39,7 @@ python -m pebble
 pebble/
 ├── .aikit/
 │   ├── codebase_map.md       <- generated symbol map, checked on every gate run
-│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v7 additions
+│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v8 additions
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── media.json            <- social preview and artwork metadata
 │   ├── project.json
@@ -69,7 +69,7 @@ pebble/
 │   ├── limits.py             <- call, int, range and sequence caps
 │   ├── nodes.py              <- the AST: frozen nodes with source positions
 │   ├── parser.py             <- recursive-descent parser with positioned errors
-│   └── stdlib.py             <- the nineteen builtins and their arity rules
+│   └── stdlib.py             <- the twenty-two builtins and their arity rules
 ├── pyproject.toml
 └── tests/
     ├── __init__.py
@@ -80,7 +80,7 @@ pebble/
     ├── test_lexer.py
     ├── test_lists.py           <- sort, its ordering rules and its guards
     ├── test_parser.py
-    └── test_text.py            <- text helpers, case folding and search, with their guards
+    └── test_text.py            <- text helpers, case, search, edges and count, with guards
 ```
 
 ## 🪨 What Pebble is
@@ -95,27 +95,27 @@ builtin semantics and the display form that `print` and `str` share. The v2 incr
 adds `break`/`continue`, list and string slices, `range` with a step, and `float()` as the tenth
 builtin. ADR-005 adds command-line script arguments accessible through the global `args` list of
 strings. The v5 increment (ADR-010) adds four text helpers: `split`, `join`, `trim` and `replace`;
-the v6 increment (ADR-011) adds `sort` for lists; and the v7 increment (ADR-012) adds `upper`,
-`lower`, `contains` and `find`. Everything else waits for a later task.
+the v6 increment (ADR-011) adds `sort` for lists; the v7 increment (ADR-012) adds `upper`,
+`lower`, `contains` and `find`; and the v8 increment (ADR-013) adds `starts_with`, `ends_with` and
+`count`. Everything else waits for a later task.
 
 Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-script-args`,
 `task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`,
-`task-pebble-v4-residual-guards`, `task-pebble-v5-text-helpers`, `task-pebble-v6-sort`, and
-`task-pebble-v7-text-search` are complete (218 tests): script arguments via `args`,
-`break`/`continue`, slices, `range` with a step, `float()`, the text helpers, `sort`, case folding
-and text search extend the frozen v1 surface as ADR-004, ADR-005, ADR-010, ADR-011 and ADR-012
-record. ADR-006 makes every non-finite float result a positioned error, ADR-007 records that a loop
-reuses the enclosing scope, ADR-008 computes a range's length before allocating it, and ADR-009
-caps string and list concatenation. The plan and its checkpoints live in
-`.aikit/task_ledger.json`.
+`task-pebble-v4-residual-guards`, `task-pebble-v5-text-helpers`, `task-pebble-v6-sort`,
+`task-pebble-v7-text-search`, and `task-pebble-v8-text-predicates` are complete (225 tests): script
+arguments via `args`, `break`/`continue`, slices, `range` with a step, `float()`, the text helpers,
+`sort`, case folding, text search and the edge and count helpers extend the frozen v1 surface as
+ADR-004, ADR-005, ADR-010, ADR-011, ADR-012 and ADR-013 record. ADR-006 makes every non-finite
+float result a positioned error, ADR-007 records that a loop reuses the enclosing scope, ADR-008
+computes a range's length before allocating it, and ADR-009 caps string and list concatenation. The
+plan and its checkpoints live in `.aikit/task_ledger.json`.
 
 Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008, ADR-009, ADR-010 and
 ADR-012): calls nest at most 100 deep, integer exponents stop at 10,000, integers stay near 4,000
 digits, and ranges, repeated sequences, joined sequences, split results, replaced text and
 case-folded text stop at 1,000,000 values or characters. Every float result must stay finite, and an
-unexpected host failure still
-renders as a three-line Pebble report rather than a traceback. Loops add no scope: the loop
-variable and any `let` inside a loop body remain visible afterwards.
+unexpected host failure still renders as a three-line Pebble report rather than a traceback. Loops
+add no scope: the loop variable and any `let` inside a loop body remain visible afterwards.
 
 ## 🚀 Running a program
 
@@ -126,6 +126,7 @@ python -m pebble -e "print(args[0])" hi  # run a command-line program with argum
 python -m pebble -e "print(join(split(\"a b\"), \"-\"))"  # text helpers: a-b
 python -m pebble -e "print(sort([3, 1, 2])[::-1])"       # order a list: [3, 2, 1]
 python -m pebble -e "print(find(upper(\"abc\"), \"B\"))"  # case and search: 1
+python -m pebble -e "print(count(\"banana\", \"an\"))"     # occurrences: 2
 python -m pebble                         # REPL on a terminal; piped input runs as a program
 ```
 

@@ -272,3 +272,67 @@ class TextHelperTests(unittest.TestCase):
                       self.eval_error("find()").message)
         self.assertIn("find expects 2 arguments, got 3",
                       self.eval_error('find("a", "b", "c")').message)
+
+    # starts_with and ends_with
+
+    def test_starts_with_and_ends_with_report_the_edges(self) -> None:
+        self.assertIs(evaluate('starts_with("hello", "he")'), True)
+        self.assertIs(evaluate('starts_with("hello", "lo")'), False)
+        self.assertIs(evaluate('starts_with("hello", "hello")'), True)
+        self.assertIs(evaluate('ends_with("hello", "lo")'), True)
+        self.assertIs(evaluate('ends_with("hello", "he")'), False)
+        self.assertIs(evaluate('ends_with("hello", "hello")'), True)
+        self.assertIs(evaluate('starts_with("", "a")'), False)
+        self.assertIs(evaluate('ends_with("", "a")'), False)
+
+    def test_starts_with_and_ends_with_count_characters_not_bytes(self) -> None:
+        self.assertIs(evaluate('starts_with("héllo", "hé")'), True)
+        self.assertIs(evaluate('ends_with("héllo", "éllo")'), True)
+
+    def test_starts_with_and_ends_with_need_two_non_empty_strings(self) -> None:
+        error = self.eval_error("starts_with(5, \"a\")")
+        self.assertIn("starts_with needs a string, got int", error.message)
+        self.assertIn("compares one text string", error.why)
+        self.assertEqual((error.line, error.col), (1, 12))
+        self.assertIn("starts_with needs a string, got bool",
+                      self.eval_error('starts_with("a", true)').message)
+        self.assertIn("ends_with needs a string, got list",
+                      self.eval_error('ends_with("a", [])').message)
+        error = self.eval_error('starts_with("abc", "")')
+        self.assertIn("starts_with prefix cannot be empty", error.message)
+        self.assertIn("always true", error.why)
+        error = self.eval_error('ends_with("abc", "")')
+        self.assertIn("ends_with suffix cannot be empty", error.message)
+        self.assertIn("always true", error.why)
+
+    def test_starts_with_and_ends_with_arity_is_two(self) -> None:
+        self.assertIn("starts_with expects 2 arguments, got 1",
+                      self.eval_error('starts_with("a")').message)
+        self.assertIn("ends_with expects 2 arguments, got 3",
+                      self.eval_error('ends_with("a", "b", "c")').message)
+
+    # count
+
+    def test_count_returns_non_overlapping_occurrences(self) -> None:
+        self.assertEqual(evaluate('count("banana", "an")'), 2)
+        self.assertEqual(evaluate('count("banana", "a")'), 3)
+        self.assertEqual(evaluate('count("banana", "x")'), 0)
+        self.assertEqual(evaluate('count("aaa", "aa")'), 1)
+        self.assertEqual(evaluate('count("", "a")'), 0)
+
+    def test_count_needs_two_non_empty_strings(self) -> None:
+        error = self.eval_error('count(5, "a")')
+        self.assertIn("count needs a string, got int", error.message)
+        self.assertIn("occur", error.why)
+        self.assertEqual((error.line, error.col), (1, 6))
+        self.assertIn("count needs a string, got none",
+                      self.eval_error('count("a", none)').message)
+        error = self.eval_error('count("abc", "")')
+        self.assertIn("count search text cannot be empty", error.message)
+        self.assertIn("endless", error.why)
+
+    def test_count_arity_is_two(self) -> None:
+        self.assertIn("count expects 2 arguments, got 0",
+                      self.eval_error("count()").message)
+        self.assertIn("count expects 2 arguments, got 3",
+                      self.eval_error('count("a", "b", "c")').message)

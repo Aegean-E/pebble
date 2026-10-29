@@ -1,52 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v7-text-search",
+    "task_id": "task-pebble-v8-text-predicates",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793253618.1828375,
-    "owner": "kilo:v7-text-search",
-    "started_by": "kilo:v7-text-search",
-    "continuations": [],
-    "completed_at": 1793253633.3823347
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793254577.9447162,
+    "owner": "kilo:v8-text-predicates",
+    "started_by": "kilo:v8-text-predicates",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v4-range-bounds",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v4-range-bounds' completed successfully.",
-      "status": "completed",
-      "timestamp": 1792647870.6649868,
-      "timestamp_str": "2026-10-22 08:44:30"
-    },
-    {
-      "task_id": "task-pebble-v4-residual-guards",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/3] Add failing-first tests for a non-finite float argument to float() and for sequence concatenation over the cap, then guard both. [2/3] Record ADR-009, update README and the codebase map. [3/3] Run the full pebble suite and aikit check, then complete the task.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792648585.94391,
-      "timestamp_str": "2026-10-22 08:56:25",
-      "impact_assessment": {
-        "why": "The analysis found two residual contract gaps: float() returns an already non-finite float unchanged even though ADR-004 says non-finite results are refused, and string/list + bypasses MAX_SEQUENCE_LENGTH so concatenation can grow without bound while repetition and ranges are capped.",
-        "benefits": "The conversion builtins share one non-finite contract for embedders, and every user-visible sequence constructor now respects the same 1,000,000-value memory bound.",
-        "risks": "contract: string/list concatenation over the cap now raises a positioned EvalError and float(inf/nan) is refused; dependency: none, standard library math only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "Failing-first tests for both guards, a patched-cap test that stays fast, direct-call coverage for inf/-inf/nan, ADR-009, README/map sync, and the full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v4-residual-guards",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/3] complete: float() now refuses inf/-inf/nan arguments, string/list + checks the combined length against MAX_SEQUENCE_LENGTH before joining, failing-first direct-call and patched-cap tests pass, ADR-009 records the concatenation cap, README says 179 tests and the map includes _concatenate; 179 tests green.",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1792648722.5446498,
-      "timestamp_str": "2026-10-22 08:58:42"
-    },
     {
       "task_id": "task-pebble-v4-residual-guards",
       "phase": "phase 4",
@@ -245,6 +209,45 @@
       "timestamp": 1793253633.382336,
       "timestamp_str": "2026-10-29 09:00:33",
       "agent": "kilo:v7-text-search"
+    },
+    {
+      "task_id": "task-pebble-v8-text-predicates",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/4] Plan: add starts_with, ends_with and count under ADR-013, keeping one rule that every search argument must be non-empty, pinned by failing-first tests, then sync README, example and map",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793254371.781998,
+      "timestamp_str": "2026-10-29 09:12:51",
+      "agent": "kilo:v8-text-predicates",
+      "impact_assessment": {
+        "why": "Pebble can locate and rewrite a fragment but cannot ask whether text begins or ends with one, or how many times it occurs, so prefix checks and quick frequency counts still need index arithmetic by hand.",
+        "benefits": "Scripts can validate a prefix or suffix in one call and count occurrences without a loop, composing with find, split, sort and replace.",
+        "risks": "contract: surface grows to 22 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "ADR-013 pins the empty-argument rule, the non-overlapping count and the boolean results before code; failing-first tests per builtin; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v8-text-predicates",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/4] starts_with, ends_with and count are green: edge predicates, non-overlapping counts, character-based matching, one shared rule that the prefix, suffix or search must be non-empty, type and arity guards; 7 new tests, full suite 225 green",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793254455.255354,
+      "timestamp_str": "2026-10-29 09:14:15",
+      "agent": "kilo:v8-text-predicates"
+    },
+    {
+      "task_id": "task-pebble-v8-text-predicates",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/4] Docs: ADR-013 records starts_with, ends_with and count with the shared non-empty rule and the non-overlapping count; README lists twenty-two builtins and 225 tests; examples/text.peb shows edges and counting; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793254577.9447162,
+      "timestamp_str": "2026-10-29 09:16:17",
+      "agent": "kilo:v8-text-predicates"
     }
   ]
 }
