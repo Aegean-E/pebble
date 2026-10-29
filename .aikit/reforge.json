@@ -9,8 +9,8 @@
       "start": 3,
       "step": 3,
       "stop": null,
-      "stage": 3,
-      "window": 9,
+      "stage": 6,
+      "window": 18,
       "audited_commits": [
         "51a431979845d33fda15c95f48372a5b21ad96d4",
         "5e067c228afecdd3779476a99150bddbb6a70c0e",
@@ -20,16 +20,26 @@
         "7d272ffab9abc27a0be5b845f9270b41315113ac",
         "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
         "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
-        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+        "251a7f698afc3f9ac31d66fc207643871a526a83",
+        "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+        "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+        "2ab84f566d411cb4ef01cff11d8341b330179298",
+        "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+        "6fb249156f65b63fc76c205ea1c6af44fa061886",
+        "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+        "879a18cc8395e63844265d5049d90f0edc719d79",
+        "e4d227186e0a447b90eaba38044224adc7824201"
       ],
       "status": "active",
       "created": "2026-10-29T19:45:33",
-      "updated": "2026-10-29T19:48:53",
+      "updated": "2026-10-29T19:55:09",
       "last_audit": {
         "run": "run-1",
-        "stage": 3,
-        "window": 9,
+        "stage": 6,
+        "window": 18,
         "commits": [
+          "251a7f698afc3f9ac31d66fc207643871a526a83",
           "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
           "51a431979845d33fda15c95f48372a5b21ad96d4",
           "5e067c228afecdd3779476a99150bddbb6a70c0e",
@@ -38,12 +48,20 @@
           "7d272ffab9abc27a0be5b845f9270b41315113ac",
           "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
           "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
-          "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+          "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+          "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+          "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+          "2ab84f566d411cb4ef01cff11d8341b330179298",
+          "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+          "6fb249156f65b63fc76c205ea1c6af44fa061886",
+          "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+          "879a18cc8395e63844265d5049d90f0edc719d79",
+          "e4d227186e0a447b90eaba38044224adc7824201"
         ],
         "new_commits": [
-          "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-          "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
-          "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+          "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+          "879a18cc8395e63844265d5049d90f0edc719d79",
+          "e4d227186e0a447b90eaba38044224adc7824201"
         ],
         "prior_commits": [
           "51a431979845d33fda15c95f48372a5b21ad96d4",
@@ -51,39 +69,28 @@
           "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
           "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
           "a59f8d6543e7aed80aa363774538c367b60e16e7",
-          "7d272ffab9abc27a0be5b845f9270b41315113ac"
+          "7d272ffab9abc27a0be5b845f9270b41315113ac",
+          "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+          "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+          "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+          "251a7f698afc3f9ac31d66fc207643871a526a83",
+          "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+          "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+          "2ab84f566d411cb4ef01cff11d8341b330179298",
+          "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+          "6fb249156f65b63fc76c205ea1c6af44fa061886"
         ],
         "findings": [
           {
-            "code": "review-nested-list-equality-mixes-bools",
+            "code": "review-sum-mixed-huge-int-overflow",
             "category": "review",
             "severity": "high",
-            "path": "pebble/formatting.py",
-            "line": 63,
-            "message": "values_equal falls back to Python == for lists, so nested elements are not compared with Pebble equality. contains([[true]], [1]) and index_of([[true]], [1]) wrongly match, and [[true]] == [[1]] is true, contradicting ADR-002 and ADR-018's rule that bools do not mix with numbers and lists compare deeply.",
-            "evidence": "if type(left) is not type(right):",
-            "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-            "hunk": "9e7435d8e4d1:pebble/formatting.py#1",
-            "symbol": "",
-            "introduced": true,
-            "reproducible": false,
-            "fixable": true,
-            "interaction": "",
-            "repaired": true,
-            "source": "review",
-            "patch_old": "    if type(left) is not type(right):",
-            "patch_new": "    if isinstance(left, list) and isinstance(right, list):\n        return len(left) == len(right) and all(\n            values_equal(left_item, right_item) for left_item, right_item in zip(left, right))\n    if type(left) is not type(right):"
-          },
-          {
-            "code": "review-round-large-finite-float",
-            "category": "review",
-            "severity": "medium",
             "path": "pebble/stdlib.py",
-            "line": 332,
-            "message": "The fixed 40-digit decimal context rejects finite floats with large exponents: round(float(10 ^ 300)) and round(float(10 ^ 300), 2) raise 'cannot round this value' even though both inputs are finite and the rounded value is representable. Scale the context precision to the value's adjusted exponent.",
-            "evidence": "context.prec = 40",
-            "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-            "hunk": "bb85178ca365:pebble/stdlib.py#2",
+            "line": 271,
+            "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+            "evidence": "total = sum(values)",
+            "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+            "hunk": "7980a325486b:pebble/stdlib.py#3",
             "symbol": "",
             "introduced": true,
             "reproducible": false,
@@ -91,19 +98,19 @@
             "interaction": "",
             "repaired": true,
             "source": "review",
-            "patch_old": "        context.prec = 40",
-            "patch_new": "        context.prec = max(40, Decimal(str(value)).adjusted() + digits + 2)"
+            "patch_old": "    total = sum(values)",
+            "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
           },
           {
-            "code": "review-missing-nested-equality-test",
+            "code": "review-missing-mixed-sum-overflow-test",
             "category": "improvement",
             "severity": "low",
             "path": "tests/test_lists.py",
-            "line": 233,
-            "message": "The nested-list test only covers lists whose elements have the same types, so the bool/number mixing bug in values_equal is not exercised. Add assertions for nested bools on both sides.",
-            "evidence": "self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-            "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-            "hunk": "9e7435d8e4d1:tests/test_lists.py#1",
+            "line": 137,
+            "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+            "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+            "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+            "hunk": "7980a325486b:tests/test_lists.py#3",
             "symbol": "",
             "introduced": true,
             "reproducible": false,
@@ -111,69 +118,33 @@
             "interaction": "",
             "repaired": true,
             "source": "review",
-            "patch_old": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-            "patch_new": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))\n        self.assertIsNone(evaluate(\"index_of([[true]], [1])\"))\n        self.assertIsNone(evaluate(\"index_of([[1]], [true])\"))"
-          },
-          {
-            "code": "review-missing-huge-float-round-test",
-            "category": "improvement",
-            "severity": "low",
-            "path": "tests/test_builtins.py",
-            "line": 266,
-            "message": "The huge-value round test covers only ints. Add a finite large-float case so the fixed decimal context cannot regress.",
-            "evidence": "self.assertIn(\"without a digit count\", error.fix)",
-            "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-            "hunk": "bb85178ca365:tests/test_builtins.py#1",
-            "symbol": "",
-            "introduced": true,
-            "reproducible": false,
-            "fixable": true,
-            "interaction": "",
-            "repaired": true,
-            "source": "review",
-            "patch_old": "        self.assertIn(\"without a digit count\", error.fix)",
-            "patch_new": "        self.assertIn(\"without a digit count\", error.fix)\n\n    def test_round_of_a_huge_float_stays_finite(self) -> None:\n        self.assertEqual(evaluate(\"round(float(10 ^ 300))\"), evaluate(\"int(float(10 ^ 300))\"))\n        self.assertEqual(evaluate(\"round(float(10 ^ 300), 2)\"), evaluate(\"float(10 ^ 300)\"))"
+            "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+            "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
           }
         ],
         "repairs": [
           {
-            "code": "review-nested-list-equality-mixes-bools",
-            "path": "pebble/formatting.py",
-            "line": 63,
-            "summary": "applied review suggestion: values_equal falls back to Python == for lists, so nested elements are not compa",
-            "test_name": "",
-            "applied": true
-          },
-          {
-            "code": "review-round-large-finite-float",
+            "code": "review-sum-mixed-huge-int-overflow",
             "path": "pebble/stdlib.py",
-            "line": 332,
-            "summary": "applied review suggestion: The fixed 40-digit decimal context rejects finite floats with large exponents: r",
+            "line": 271,
+            "summary": "applied review suggestion: sum(values) converts a huge int to float when the list also holds a float, and P",
             "test_name": "",
             "applied": true
           },
           {
-            "code": "review-missing-huge-float-round-test",
-            "path": "tests/test_builtins.py",
-            "line": 266,
-            "summary": "applied review suggestion: The huge-value round test covers only ints. Add a finite large-float case so the",
-            "test_name": "",
-            "applied": true
-          },
-          {
-            "code": "review-missing-nested-equality-test",
+            "code": "review-missing-mixed-sum-overflow-test",
             "path": "tests/test_lists.py",
-            "line": 233,
-            "summary": "applied review suggestion: The nested-list test only covers lists whose elements have the same types, so th",
+            "line": 137,
+            "summary": "applied review suggestion: The sum guard tests cover a non-finite float total and an oversized int total, b",
             "test_name": "",
             "applied": true
           }
         ],
         "counts": {
-          "review": 2,
-          "improvement": 2
+          "review": 1,
+          "improvement": 1
         },
-        "reviewed": 11,
+        "reviewed": 8,
         "review": {
           "status": "reviewed",
           "rejected": [],
@@ -181,55 +152,32 @@
             ".aikit/codebase_map.md",
             ".aikit/decisions.md",
             "README.md",
-            "examples/sorted.peb",
+            "examples/text.peb",
             "examples/totals.peb",
-            "pebble/evaluator.py",
-            "pebble/formatting.py",
             "pebble/stdlib.py",
-            "tests/test_builtins.py",
-            "tests/test_fuzz.py",
-            "tests/test_lists.py"
+            "tests/test_lists.py",
+            "tests/test_text.py"
           ],
-          "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-3-9e7435d8e4d1.md",
+          "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-6-7980a325486b.md",
           "redacted": 0,
           "reason": "",
           "coverage": {
-            "reported": 47,
-            "total": 47,
+            "reported": 37,
+            "total": 37,
             "missing": [],
             "unknown": []
           },
           "findings": [
             {
-              "code": "review-nested-list-equality-mixes-bools",
+              "code": "review-sum-mixed-huge-int-overflow",
               "category": "review",
               "severity": "high",
-              "path": "pebble/formatting.py",
-              "line": 63,
-              "message": "values_equal falls back to Python == for lists, so nested elements are not compared with Pebble equality. contains([[true]], [1]) and index_of([[true]], [1]) wrongly match, and [[true]] == [[1]] is true, contradicting ADR-002 and ADR-018's rule that bools do not mix with numbers and lists compare deeply.",
-              "evidence": "if type(left) is not type(right):",
-              "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-              "hunk": "9e7435d8e4d1:pebble/formatting.py#1",
-              "symbol": "",
-              "introduced": true,
-              "reproducible": false,
-              "fixable": true,
-              "interaction": "",
-              "repaired": false,
-              "source": "review",
-              "patch_old": "    if type(left) is not type(right):",
-              "patch_new": "    if isinstance(left, list) and isinstance(right, list):\n        return len(left) == len(right) and all(\n            values_equal(left_item, right_item) for left_item, right_item in zip(left, right))\n    if type(left) is not type(right):"
-            },
-            {
-              "code": "review-round-large-finite-float",
-              "category": "review",
-              "severity": "medium",
               "path": "pebble/stdlib.py",
-              "line": 332,
-              "message": "The fixed 40-digit decimal context rejects finite floats with large exponents: round(float(10 ^ 300)) and round(float(10 ^ 300), 2) raise 'cannot round this value' even though both inputs are finite and the rounded value is representable. Scale the context precision to the value's adjusted exponent.",
-              "evidence": "context.prec = 40",
-              "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-              "hunk": "bb85178ca365:pebble/stdlib.py#2",
+              "line": 271,
+              "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+              "evidence": "total = sum(values)",
+              "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+              "hunk": "7980a325486b:pebble/stdlib.py#3",
               "symbol": "",
               "introduced": true,
               "reproducible": false,
@@ -237,19 +185,19 @@
               "interaction": "",
               "repaired": false,
               "source": "review",
-              "patch_old": "        context.prec = 40",
-              "patch_new": "        context.prec = max(40, Decimal(str(value)).adjusted() + digits + 2)"
+              "patch_old": "    total = sum(values)",
+              "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
             },
             {
-              "code": "review-missing-nested-equality-test",
+              "code": "review-missing-mixed-sum-overflow-test",
               "category": "improvement",
               "severity": "low",
               "path": "tests/test_lists.py",
-              "line": 233,
-              "message": "The nested-list test only covers lists whose elements have the same types, so the bool/number mixing bug in values_equal is not exercised. Add assertions for nested bools on both sides.",
-              "evidence": "self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-              "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-              "hunk": "9e7435d8e4d1:tests/test_lists.py#1",
+              "line": 137,
+              "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+              "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+              "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+              "hunk": "7980a325486b:tests/test_lists.py#3",
               "symbol": "",
               "introduced": true,
               "reproducible": false,
@@ -257,28 +205,8 @@
               "interaction": "",
               "repaired": false,
               "source": "review",
-              "patch_old": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-              "patch_new": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))\n        self.assertIsNone(evaluate(\"index_of([[true]], [1])\"))\n        self.assertIsNone(evaluate(\"index_of([[1]], [true])\"))"
-            },
-            {
-              "code": "review-missing-huge-float-round-test",
-              "category": "improvement",
-              "severity": "low",
-              "path": "tests/test_builtins.py",
-              "line": 266,
-              "message": "The huge-value round test covers only ints. Add a finite large-float case so the fixed decimal context cannot regress.",
-              "evidence": "self.assertIn(\"without a digit count\", error.fix)",
-              "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-              "hunk": "bb85178ca365:tests/test_builtins.py#1",
-              "symbol": "",
-              "introduced": true,
-              "reproducible": false,
-              "fixable": true,
-              "interaction": "",
-              "repaired": false,
-              "source": "review",
-              "patch_old": "        self.assertIn(\"without a digit count\", error.fix)",
-              "patch_new": "        self.assertIn(\"without a digit count\", error.fix)\n\n    def test_round_of_a_huge_float_stays_finite(self) -> None:\n        self.assertEqual(evaluate(\"round(float(10 ^ 300))\"), evaluate(\"int(float(10 ^ 300))\"))\n        self.assertEqual(evaluate(\"round(float(10 ^ 300), 2)\"), evaluate(\"float(10 ^ 300)\"))"
+              "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+              "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
             }
           ]
         },
@@ -287,16 +215,16 @@
           "command": "C:\\Python314\\python.exe -m unittest discover tests",
           "code": 0,
           "passed": true,
-          "output": ".........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 265 tests in 0.855s\n\nOK",
+          "output": "..........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 266 tests in 0.611s\n\nOK",
           "tail": [
-            ".........................................................................................................................................................................................................................................................................",
+            "..........................................................................................................................................................................................................................................................................",
             "----------------------------------------------------------------------",
-            "Ran 265 tests in 0.855s",
+            "Ran 266 tests in 0.611s",
             "OK"
           ]
         },
         "gates": {},
-        "timestamp": "2026-10-29T19:48:53"
+        "timestamp": "2026-10-29T19:55:09"
       },
       "history": [
         {
@@ -731,12 +659,342 @@
           },
           "gates": {},
           "timestamp": "2026-10-29T19:48:53"
+        },
+        {
+          "run": "run-1",
+          "stage": 4,
+          "window": 12,
+          "commits": [
+            "251a7f698afc3f9ac31d66fc207643871a526a83",
+            "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+            "a59f8d6543e7aed80aa363774538c367b60e16e7",
+            "7d272ffab9abc27a0be5b845f9270b41315113ac",
+            "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+            "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+            "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+            "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+            "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c"
+          ],
+          "new_commits": [
+            "251a7f698afc3f9ac31d66fc207643871a526a83",
+            "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+            "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c"
+          ],
+          "prior_commits": [
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+            "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+            "a59f8d6543e7aed80aa363774538c367b60e16e7",
+            "7d272ffab9abc27a0be5b845f9270b41315113ac",
+            "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+            "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+            "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+          ],
+          "findings": [],
+          "repairs": [],
+          "counts": {},
+          "reviewed": 10,
+          "review": {
+            "status": "reviewed",
+            "rejected": [],
+            "files": [
+              ".aikit/codebase_map.md",
+              ".aikit/decisions.md",
+              ".gitignore",
+              "README.md",
+              "examples/totals.peb",
+              "pebble/formatting.py",
+              "pebble/stdlib.py",
+              "tests/test_builtins.py",
+              "tests/test_fuzz.py",
+              "tests/test_lists.py"
+            ],
+            "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-4-251a7f698afc.md",
+            "redacted": 0,
+            "reason": "the answer held no findings",
+            "coverage": {
+              "reported": 31,
+              "total": 31,
+              "missing": [],
+              "unknown": []
+            },
+            "findings": []
+          },
+          "skipped": [],
+          "tests": {},
+          "gates": {},
+          "timestamp": "2026-10-29T19:53:28"
+        },
+        {
+          "run": "run-1",
+          "stage": 5,
+          "window": 15,
+          "commits": [
+            "251a7f698afc3f9ac31d66fc207643871a526a83",
+            "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+            "a59f8d6543e7aed80aa363774538c367b60e16e7",
+            "7d272ffab9abc27a0be5b845f9270b41315113ac",
+            "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+            "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+            "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+            "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+            "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+            "2ab84f566d411cb4ef01cff11d8341b330179298",
+            "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+            "6fb249156f65b63fc76c205ea1c6af44fa061886"
+          ],
+          "new_commits": [
+            "2ab84f566d411cb4ef01cff11d8341b330179298",
+            "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+            "6fb249156f65b63fc76c205ea1c6af44fa061886"
+          ],
+          "prior_commits": [
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+            "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+            "a59f8d6543e7aed80aa363774538c367b60e16e7",
+            "7d272ffab9abc27a0be5b845f9270b41315113ac",
+            "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+            "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+            "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+            "251a7f698afc3f9ac31d66fc207643871a526a83",
+            "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+            "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c"
+          ],
+          "findings": [],
+          "repairs": [],
+          "counts": {},
+          "reviewed": 4,
+          "review": {
+            "status": "reviewed",
+            "rejected": [],
+            "files": [
+              ".aikit/codebase_map.md",
+              ".aikit/decisions.md",
+              "README.md",
+              "tests/test_fuzz.py"
+            ],
+            "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-5-2ab84f566d41.md",
+            "redacted": 0,
+            "reason": "the answer held no findings",
+            "coverage": {
+              "reported": 7,
+              "total": 7,
+              "missing": [],
+              "unknown": []
+            },
+            "findings": []
+          },
+          "skipped": [],
+          "tests": {},
+          "gates": {},
+          "timestamp": "2026-10-29T19:54:25"
+        },
+        {
+          "run": "run-1",
+          "stage": 6,
+          "window": 18,
+          "commits": [
+            "251a7f698afc3f9ac31d66fc207643871a526a83",
+            "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+            "a59f8d6543e7aed80aa363774538c367b60e16e7",
+            "7d272ffab9abc27a0be5b845f9270b41315113ac",
+            "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+            "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+            "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+            "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+            "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+            "2ab84f566d411cb4ef01cff11d8341b330179298",
+            "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+            "6fb249156f65b63fc76c205ea1c6af44fa061886",
+            "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+            "879a18cc8395e63844265d5049d90f0edc719d79",
+            "e4d227186e0a447b90eaba38044224adc7824201"
+          ],
+          "new_commits": [
+            "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+            "879a18cc8395e63844265d5049d90f0edc719d79",
+            "e4d227186e0a447b90eaba38044224adc7824201"
+          ],
+          "prior_commits": [
+            "51a431979845d33fda15c95f48372a5b21ad96d4",
+            "5e067c228afecdd3779476a99150bddbb6a70c0e",
+            "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+            "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+            "a59f8d6543e7aed80aa363774538c367b60e16e7",
+            "7d272ffab9abc27a0be5b845f9270b41315113ac",
+            "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+            "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+            "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+            "251a7f698afc3f9ac31d66fc207643871a526a83",
+            "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+            "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+            "2ab84f566d411cb4ef01cff11d8341b330179298",
+            "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+            "6fb249156f65b63fc76c205ea1c6af44fa061886"
+          ],
+          "findings": [
+            {
+              "code": "review-sum-mixed-huge-int-overflow",
+              "category": "review",
+              "severity": "high",
+              "path": "pebble/stdlib.py",
+              "line": 271,
+              "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+              "evidence": "total = sum(values)",
+              "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+              "hunk": "7980a325486b:pebble/stdlib.py#3",
+              "symbol": "",
+              "introduced": true,
+              "reproducible": false,
+              "fixable": true,
+              "interaction": "",
+              "repaired": true,
+              "source": "review",
+              "patch_old": "    total = sum(values)",
+              "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
+            },
+            {
+              "code": "review-missing-mixed-sum-overflow-test",
+              "category": "improvement",
+              "severity": "low",
+              "path": "tests/test_lists.py",
+              "line": 137,
+              "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+              "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+              "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+              "hunk": "7980a325486b:tests/test_lists.py#3",
+              "symbol": "",
+              "introduced": true,
+              "reproducible": false,
+              "fixable": true,
+              "interaction": "",
+              "repaired": true,
+              "source": "review",
+              "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+              "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
+            }
+          ],
+          "repairs": [
+            {
+              "code": "review-sum-mixed-huge-int-overflow",
+              "path": "pebble/stdlib.py",
+              "line": 271,
+              "summary": "applied review suggestion: sum(values) converts a huge int to float when the list also holds a float, and P",
+              "test_name": "",
+              "applied": true
+            },
+            {
+              "code": "review-missing-mixed-sum-overflow-test",
+              "path": "tests/test_lists.py",
+              "line": 137,
+              "summary": "applied review suggestion: The sum guard tests cover a non-finite float total and an oversized int total, b",
+              "test_name": "",
+              "applied": true
+            }
+          ],
+          "counts": {
+            "review": 1,
+            "improvement": 1
+          },
+          "reviewed": 8,
+          "review": {
+            "status": "reviewed",
+            "rejected": [],
+            "files": [
+              ".aikit/codebase_map.md",
+              ".aikit/decisions.md",
+              "README.md",
+              "examples/text.peb",
+              "examples/totals.peb",
+              "pebble/stdlib.py",
+              "tests/test_lists.py",
+              "tests/test_text.py"
+            ],
+            "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-6-7980a325486b.md",
+            "redacted": 0,
+            "reason": "",
+            "coverage": {
+              "reported": 37,
+              "total": 37,
+              "missing": [],
+              "unknown": []
+            },
+            "findings": [
+              {
+                "code": "review-sum-mixed-huge-int-overflow",
+                "category": "review",
+                "severity": "high",
+                "path": "pebble/stdlib.py",
+                "line": 271,
+                "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+                "evidence": "total = sum(values)",
+                "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+                "hunk": "7980a325486b:pebble/stdlib.py#3",
+                "symbol": "",
+                "introduced": true,
+                "reproducible": false,
+                "fixable": true,
+                "interaction": "",
+                "repaired": false,
+                "source": "review",
+                "patch_old": "    total = sum(values)",
+                "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
+              },
+              {
+                "code": "review-missing-mixed-sum-overflow-test",
+                "category": "improvement",
+                "severity": "low",
+                "path": "tests/test_lists.py",
+                "line": 137,
+                "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+                "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+                "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+                "hunk": "7980a325486b:tests/test_lists.py#3",
+                "symbol": "",
+                "introduced": true,
+                "reproducible": false,
+                "fixable": true,
+                "interaction": "",
+                "repaired": false,
+                "source": "review",
+                "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+                "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
+              }
+            ]
+          },
+          "skipped": [],
+          "tests": {
+            "command": "C:\\Python314\\python.exe -m unittest discover tests",
+            "code": 0,
+            "passed": true,
+            "output": "..........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 266 tests in 0.611s\n\nOK",
+            "tail": [
+              "..........................................................................................................................................................................................................................................................................",
+              "----------------------------------------------------------------------",
+              "Ran 266 tests in 0.611s",
+              "OK"
+            ]
+          },
+          "gates": {},
+          "timestamp": "2026-10-29T19:55:09"
         }
       ]
     }
   ],
-  "stage": 3,
-  "window": 9,
+  "stage": 6,
+  "window": 18,
   "audited_commits": [
     "51a431979845d33fda15c95f48372a5b21ad96d4",
     "5e067c228afecdd3779476a99150bddbb6a70c0e",
@@ -746,13 +1004,23 @@
     "7d272ffab9abc27a0be5b845f9270b41315113ac",
     "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
     "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
-    "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+    "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+    "251a7f698afc3f9ac31d66fc207643871a526a83",
+    "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+    "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+    "2ab84f566d411cb4ef01cff11d8341b330179298",
+    "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+    "6fb249156f65b63fc76c205ea1c6af44fa061886",
+    "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+    "879a18cc8395e63844265d5049d90f0edc719d79",
+    "e4d227186e0a447b90eaba38044224adc7824201"
   ],
   "last_audit": {
     "run": "run-1",
-    "stage": 3,
-    "window": 9,
+    "stage": 6,
+    "window": 18,
     "commits": [
+      "251a7f698afc3f9ac31d66fc207643871a526a83",
       "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
       "51a431979845d33fda15c95f48372a5b21ad96d4",
       "5e067c228afecdd3779476a99150bddbb6a70c0e",
@@ -761,12 +1029,20 @@
       "7d272ffab9abc27a0be5b845f9270b41315113ac",
       "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
       "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
-      "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+      "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+      "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+      "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+      "2ab84f566d411cb4ef01cff11d8341b330179298",
+      "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+      "6fb249156f65b63fc76c205ea1c6af44fa061886",
+      "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+      "879a18cc8395e63844265d5049d90f0edc719d79",
+      "e4d227186e0a447b90eaba38044224adc7824201"
     ],
     "new_commits": [
-      "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-      "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
-      "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+      "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+      "879a18cc8395e63844265d5049d90f0edc719d79",
+      "e4d227186e0a447b90eaba38044224adc7824201"
     ],
     "prior_commits": [
       "51a431979845d33fda15c95f48372a5b21ad96d4",
@@ -774,39 +1050,28 @@
       "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
       "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
       "a59f8d6543e7aed80aa363774538c367b60e16e7",
-      "7d272ffab9abc27a0be5b845f9270b41315113ac"
+      "7d272ffab9abc27a0be5b845f9270b41315113ac",
+      "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+      "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+      "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+      "251a7f698afc3f9ac31d66fc207643871a526a83",
+      "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+      "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+      "2ab84f566d411cb4ef01cff11d8341b330179298",
+      "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+      "6fb249156f65b63fc76c205ea1c6af44fa061886"
     ],
     "findings": [
       {
-        "code": "review-nested-list-equality-mixes-bools",
+        "code": "review-sum-mixed-huge-int-overflow",
         "category": "review",
         "severity": "high",
-        "path": "pebble/formatting.py",
-        "line": 63,
-        "message": "values_equal falls back to Python == for lists, so nested elements are not compared with Pebble equality. contains([[true]], [1]) and index_of([[true]], [1]) wrongly match, and [[true]] == [[1]] is true, contradicting ADR-002 and ADR-018's rule that bools do not mix with numbers and lists compare deeply.",
-        "evidence": "if type(left) is not type(right):",
-        "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-        "hunk": "9e7435d8e4d1:pebble/formatting.py#1",
-        "symbol": "",
-        "introduced": true,
-        "reproducible": false,
-        "fixable": true,
-        "interaction": "",
-        "repaired": true,
-        "source": "review",
-        "patch_old": "    if type(left) is not type(right):",
-        "patch_new": "    if isinstance(left, list) and isinstance(right, list):\n        return len(left) == len(right) and all(\n            values_equal(left_item, right_item) for left_item, right_item in zip(left, right))\n    if type(left) is not type(right):"
-      },
-      {
-        "code": "review-round-large-finite-float",
-        "category": "review",
-        "severity": "medium",
         "path": "pebble/stdlib.py",
-        "line": 332,
-        "message": "The fixed 40-digit decimal context rejects finite floats with large exponents: round(float(10 ^ 300)) and round(float(10 ^ 300), 2) raise 'cannot round this value' even though both inputs are finite and the rounded value is representable. Scale the context precision to the value's adjusted exponent.",
-        "evidence": "context.prec = 40",
-        "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-        "hunk": "bb85178ca365:pebble/stdlib.py#2",
+        "line": 271,
+        "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+        "evidence": "total = sum(values)",
+        "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+        "hunk": "7980a325486b:pebble/stdlib.py#3",
         "symbol": "",
         "introduced": true,
         "reproducible": false,
@@ -814,19 +1079,19 @@
         "interaction": "",
         "repaired": true,
         "source": "review",
-        "patch_old": "        context.prec = 40",
-        "patch_new": "        context.prec = max(40, Decimal(str(value)).adjusted() + digits + 2)"
+        "patch_old": "    total = sum(values)",
+        "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
       },
       {
-        "code": "review-missing-nested-equality-test",
+        "code": "review-missing-mixed-sum-overflow-test",
         "category": "improvement",
         "severity": "low",
         "path": "tests/test_lists.py",
-        "line": 233,
-        "message": "The nested-list test only covers lists whose elements have the same types, so the bool/number mixing bug in values_equal is not exercised. Add assertions for nested bools on both sides.",
-        "evidence": "self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-        "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-        "hunk": "9e7435d8e4d1:tests/test_lists.py#1",
+        "line": 137,
+        "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+        "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+        "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+        "hunk": "7980a325486b:tests/test_lists.py#3",
         "symbol": "",
         "introduced": true,
         "reproducible": false,
@@ -834,69 +1099,33 @@
         "interaction": "",
         "repaired": true,
         "source": "review",
-        "patch_old": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-        "patch_new": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))\n        self.assertIsNone(evaluate(\"index_of([[true]], [1])\"))\n        self.assertIsNone(evaluate(\"index_of([[1]], [true])\"))"
-      },
-      {
-        "code": "review-missing-huge-float-round-test",
-        "category": "improvement",
-        "severity": "low",
-        "path": "tests/test_builtins.py",
-        "line": 266,
-        "message": "The huge-value round test covers only ints. Add a finite large-float case so the fixed decimal context cannot regress.",
-        "evidence": "self.assertIn(\"without a digit count\", error.fix)",
-        "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-        "hunk": "bb85178ca365:tests/test_builtins.py#1",
-        "symbol": "",
-        "introduced": true,
-        "reproducible": false,
-        "fixable": true,
-        "interaction": "",
-        "repaired": true,
-        "source": "review",
-        "patch_old": "        self.assertIn(\"without a digit count\", error.fix)",
-        "patch_new": "        self.assertIn(\"without a digit count\", error.fix)\n\n    def test_round_of_a_huge_float_stays_finite(self) -> None:\n        self.assertEqual(evaluate(\"round(float(10 ^ 300))\"), evaluate(\"int(float(10 ^ 300))\"))\n        self.assertEqual(evaluate(\"round(float(10 ^ 300), 2)\"), evaluate(\"float(10 ^ 300)\"))"
+        "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+        "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
       }
     ],
     "repairs": [
       {
-        "code": "review-nested-list-equality-mixes-bools",
-        "path": "pebble/formatting.py",
-        "line": 63,
-        "summary": "applied review suggestion: values_equal falls back to Python == for lists, so nested elements are not compa",
-        "test_name": "",
-        "applied": true
-      },
-      {
-        "code": "review-round-large-finite-float",
+        "code": "review-sum-mixed-huge-int-overflow",
         "path": "pebble/stdlib.py",
-        "line": 332,
-        "summary": "applied review suggestion: The fixed 40-digit decimal context rejects finite floats with large exponents: r",
+        "line": 271,
+        "summary": "applied review suggestion: sum(values) converts a huge int to float when the list also holds a float, and P",
         "test_name": "",
         "applied": true
       },
       {
-        "code": "review-missing-huge-float-round-test",
-        "path": "tests/test_builtins.py",
-        "line": 266,
-        "summary": "applied review suggestion: The huge-value round test covers only ints. Add a finite large-float case so the",
-        "test_name": "",
-        "applied": true
-      },
-      {
-        "code": "review-missing-nested-equality-test",
+        "code": "review-missing-mixed-sum-overflow-test",
         "path": "tests/test_lists.py",
-        "line": 233,
-        "summary": "applied review suggestion: The nested-list test only covers lists whose elements have the same types, so th",
+        "line": 137,
+        "summary": "applied review suggestion: The sum guard tests cover a non-finite float total and an oversized int total, b",
         "test_name": "",
         "applied": true
       }
     ],
     "counts": {
-      "review": 2,
-      "improvement": 2
+      "review": 1,
+      "improvement": 1
     },
-    "reviewed": 11,
+    "reviewed": 8,
     "review": {
       "status": "reviewed",
       "rejected": [],
@@ -904,55 +1133,32 @@
         ".aikit/codebase_map.md",
         ".aikit/decisions.md",
         "README.md",
-        "examples/sorted.peb",
+        "examples/text.peb",
         "examples/totals.peb",
-        "pebble/evaluator.py",
-        "pebble/formatting.py",
         "pebble/stdlib.py",
-        "tests/test_builtins.py",
-        "tests/test_fuzz.py",
-        "tests/test_lists.py"
+        "tests/test_lists.py",
+        "tests/test_text.py"
       ],
-      "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-3-9e7435d8e4d1.md",
+      "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-6-7980a325486b.md",
       "redacted": 0,
       "reason": "",
       "coverage": {
-        "reported": 47,
-        "total": 47,
+        "reported": 37,
+        "total": 37,
         "missing": [],
         "unknown": []
       },
       "findings": [
         {
-          "code": "review-nested-list-equality-mixes-bools",
+          "code": "review-sum-mixed-huge-int-overflow",
           "category": "review",
           "severity": "high",
-          "path": "pebble/formatting.py",
-          "line": 63,
-          "message": "values_equal falls back to Python == for lists, so nested elements are not compared with Pebble equality. contains([[true]], [1]) and index_of([[true]], [1]) wrongly match, and [[true]] == [[1]] is true, contradicting ADR-002 and ADR-018's rule that bools do not mix with numbers and lists compare deeply.",
-          "evidence": "if type(left) is not type(right):",
-          "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-          "hunk": "9e7435d8e4d1:pebble/formatting.py#1",
-          "symbol": "",
-          "introduced": true,
-          "reproducible": false,
-          "fixable": true,
-          "interaction": "",
-          "repaired": false,
-          "source": "review",
-          "patch_old": "    if type(left) is not type(right):",
-          "patch_new": "    if isinstance(left, list) and isinstance(right, list):\n        return len(left) == len(right) and all(\n            values_equal(left_item, right_item) for left_item, right_item in zip(left, right))\n    if type(left) is not type(right):"
-        },
-        {
-          "code": "review-round-large-finite-float",
-          "category": "review",
-          "severity": "medium",
           "path": "pebble/stdlib.py",
-          "line": 332,
-          "message": "The fixed 40-digit decimal context rejects finite floats with large exponents: round(float(10 ^ 300)) and round(float(10 ^ 300), 2) raise 'cannot round this value' even though both inputs are finite and the rounded value is representable. Scale the context precision to the value's adjusted exponent.",
-          "evidence": "context.prec = 40",
-          "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-          "hunk": "bb85178ca365:pebble/stdlib.py#2",
+          "line": 271,
+          "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+          "evidence": "total = sum(values)",
+          "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+          "hunk": "7980a325486b:pebble/stdlib.py#3",
           "symbol": "",
           "introduced": true,
           "reproducible": false,
@@ -960,19 +1166,19 @@
           "interaction": "",
           "repaired": false,
           "source": "review",
-          "patch_old": "        context.prec = 40",
-          "patch_new": "        context.prec = max(40, Decimal(str(value)).adjusted() + digits + 2)"
+          "patch_old": "    total = sum(values)",
+          "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
         },
         {
-          "code": "review-missing-nested-equality-test",
+          "code": "review-missing-mixed-sum-overflow-test",
           "category": "improvement",
           "severity": "low",
           "path": "tests/test_lists.py",
-          "line": 233,
-          "message": "The nested-list test only covers lists whose elements have the same types, so the bool/number mixing bug in values_equal is not exercised. Add assertions for nested bools on both sides.",
-          "evidence": "self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-          "commit": "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
-          "hunk": "9e7435d8e4d1:tests/test_lists.py#1",
+          "line": 137,
+          "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+          "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+          "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+          "hunk": "7980a325486b:tests/test_lists.py#3",
           "symbol": "",
           "introduced": true,
           "reproducible": false,
@@ -980,28 +1186,8 @@
           "interaction": "",
           "repaired": false,
           "source": "review",
-          "patch_old": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))",
-          "patch_new": "        self.assertIsNone(evaluate(\"index_of([[1], [2]], [3])\"))\n        self.assertIsNone(evaluate(\"index_of([[true]], [1])\"))\n        self.assertIsNone(evaluate(\"index_of([[1]], [true])\"))"
-        },
-        {
-          "code": "review-missing-huge-float-round-test",
-          "category": "improvement",
-          "severity": "low",
-          "path": "tests/test_builtins.py",
-          "line": 266,
-          "message": "The huge-value round test covers only ints. Add a finite large-float case so the fixed decimal context cannot regress.",
-          "evidence": "self.assertIn(\"without a digit count\", error.fix)",
-          "commit": "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
-          "hunk": "bb85178ca365:tests/test_builtins.py#1",
-          "symbol": "",
-          "introduced": true,
-          "reproducible": false,
-          "fixable": true,
-          "interaction": "",
-          "repaired": false,
-          "source": "review",
-          "patch_old": "        self.assertIn(\"without a digit count\", error.fix)",
-          "patch_new": "        self.assertIn(\"without a digit count\", error.fix)\n\n    def test_round_of_a_huge_float_stays_finite(self) -> None:\n        self.assertEqual(evaluate(\"round(float(10 ^ 300))\"), evaluate(\"int(float(10 ^ 300))\"))\n        self.assertEqual(evaluate(\"round(float(10 ^ 300), 2)\"), evaluate(\"float(10 ^ 300)\"))"
+          "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+          "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
         }
       ]
     },
@@ -1010,16 +1196,16 @@
       "command": "C:\\Python314\\python.exe -m unittest discover tests",
       "code": 0,
       "passed": true,
-      "output": ".........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 265 tests in 0.855s\n\nOK",
+      "output": "..........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 266 tests in 0.611s\n\nOK",
       "tail": [
-        ".........................................................................................................................................................................................................................................................................",
+        "..........................................................................................................................................................................................................................................................................",
         "----------------------------------------------------------------------",
-        "Ran 265 tests in 0.855s",
+        "Ran 266 tests in 0.611s",
         "OK"
       ]
     },
     "gates": {},
-    "timestamp": "2026-10-29T19:48:53"
+    "timestamp": "2026-10-29T19:55:09"
   },
   "history": [
     {
@@ -1454,6 +1640,336 @@
       },
       "gates": {},
       "timestamp": "2026-10-29T19:48:53"
+    },
+    {
+      "run": "run-1",
+      "stage": 4,
+      "window": 12,
+      "commits": [
+        "251a7f698afc3f9ac31d66fc207643871a526a83",
+        "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+        "a59f8d6543e7aed80aa363774538c367b60e16e7",
+        "7d272ffab9abc27a0be5b845f9270b41315113ac",
+        "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+        "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+        "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+        "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c"
+      ],
+      "new_commits": [
+        "251a7f698afc3f9ac31d66fc207643871a526a83",
+        "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+        "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c"
+      ],
+      "prior_commits": [
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+        "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+        "a59f8d6543e7aed80aa363774538c367b60e16e7",
+        "7d272ffab9abc27a0be5b845f9270b41315113ac",
+        "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+        "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3"
+      ],
+      "findings": [],
+      "repairs": [],
+      "counts": {},
+      "reviewed": 10,
+      "review": {
+        "status": "reviewed",
+        "rejected": [],
+        "files": [
+          ".aikit/codebase_map.md",
+          ".aikit/decisions.md",
+          ".gitignore",
+          "README.md",
+          "examples/totals.peb",
+          "pebble/formatting.py",
+          "pebble/stdlib.py",
+          "tests/test_builtins.py",
+          "tests/test_fuzz.py",
+          "tests/test_lists.py"
+        ],
+        "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-4-251a7f698afc.md",
+        "redacted": 0,
+        "reason": "the answer held no findings",
+        "coverage": {
+          "reported": 31,
+          "total": 31,
+          "missing": [],
+          "unknown": []
+        },
+        "findings": []
+      },
+      "skipped": [],
+      "tests": {},
+      "gates": {},
+      "timestamp": "2026-10-29T19:53:28"
+    },
+    {
+      "run": "run-1",
+      "stage": 5,
+      "window": 15,
+      "commits": [
+        "251a7f698afc3f9ac31d66fc207643871a526a83",
+        "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+        "a59f8d6543e7aed80aa363774538c367b60e16e7",
+        "7d272ffab9abc27a0be5b845f9270b41315113ac",
+        "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+        "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+        "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+        "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+        "2ab84f566d411cb4ef01cff11d8341b330179298",
+        "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+        "6fb249156f65b63fc76c205ea1c6af44fa061886"
+      ],
+      "new_commits": [
+        "2ab84f566d411cb4ef01cff11d8341b330179298",
+        "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+        "6fb249156f65b63fc76c205ea1c6af44fa061886"
+      ],
+      "prior_commits": [
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+        "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+        "a59f8d6543e7aed80aa363774538c367b60e16e7",
+        "7d272ffab9abc27a0be5b845f9270b41315113ac",
+        "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+        "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+        "251a7f698afc3f9ac31d66fc207643871a526a83",
+        "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+        "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c"
+      ],
+      "findings": [],
+      "repairs": [],
+      "counts": {},
+      "reviewed": 4,
+      "review": {
+        "status": "reviewed",
+        "rejected": [],
+        "files": [
+          ".aikit/codebase_map.md",
+          ".aikit/decisions.md",
+          "README.md",
+          "tests/test_fuzz.py"
+        ],
+        "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-5-2ab84f566d41.md",
+        "redacted": 0,
+        "reason": "the answer held no findings",
+        "coverage": {
+          "reported": 7,
+          "total": 7,
+          "missing": [],
+          "unknown": []
+        },
+        "findings": []
+      },
+      "skipped": [],
+      "tests": {},
+      "gates": {},
+      "timestamp": "2026-10-29T19:54:25"
+    },
+    {
+      "run": "run-1",
+      "stage": 6,
+      "window": 18,
+      "commits": [
+        "251a7f698afc3f9ac31d66fc207643871a526a83",
+        "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+        "a59f8d6543e7aed80aa363774538c367b60e16e7",
+        "7d272ffab9abc27a0be5b845f9270b41315113ac",
+        "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+        "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+        "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+        "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+        "2ab84f566d411cb4ef01cff11d8341b330179298",
+        "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+        "6fb249156f65b63fc76c205ea1c6af44fa061886",
+        "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+        "879a18cc8395e63844265d5049d90f0edc719d79",
+        "e4d227186e0a447b90eaba38044224adc7824201"
+      ],
+      "new_commits": [
+        "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+        "879a18cc8395e63844265d5049d90f0edc719d79",
+        "e4d227186e0a447b90eaba38044224adc7824201"
+      ],
+      "prior_commits": [
+        "51a431979845d33fda15c95f48372a5b21ad96d4",
+        "5e067c228afecdd3779476a99150bddbb6a70c0e",
+        "a7e5c65a2c8c536db7e43e74a4995a66c446c67c",
+        "1513d5a7b7ccf685dee66f43dbebd0fcf8fce15c",
+        "a59f8d6543e7aed80aa363774538c367b60e16e7",
+        "7d272ffab9abc27a0be5b845f9270b41315113ac",
+        "9e7435d8e4d19d3a8210642a05e8ce5adf028f94",
+        "8a119fb9c1efb503aea0bd167da4543fecb6ae48",
+        "bb85178ca365b6b21be8f69710c5fc1fd2ceb1d3",
+        "251a7f698afc3f9ac31d66fc207643871a526a83",
+        "46a2c968d3289357fbd73034d9fab31f8ac6ba67",
+        "d7ce86aa37264f24cc568afab6974ee7ff5a8a6c",
+        "2ab84f566d411cb4ef01cff11d8341b330179298",
+        "1048c8df84d2e1a7d03f2132f390d23870e3df1b",
+        "6fb249156f65b63fc76c205ea1c6af44fa061886"
+      ],
+      "findings": [
+        {
+          "code": "review-sum-mixed-huge-int-overflow",
+          "category": "review",
+          "severity": "high",
+          "path": "pebble/stdlib.py",
+          "line": 271,
+          "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+          "evidence": "total = sum(values)",
+          "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+          "hunk": "7980a325486b:pebble/stdlib.py#3",
+          "symbol": "",
+          "introduced": true,
+          "reproducible": false,
+          "fixable": true,
+          "interaction": "",
+          "repaired": true,
+          "source": "review",
+          "patch_old": "    total = sum(values)",
+          "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
+        },
+        {
+          "code": "review-missing-mixed-sum-overflow-test",
+          "category": "improvement",
+          "severity": "low",
+          "path": "tests/test_lists.py",
+          "line": 137,
+          "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+          "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+          "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+          "hunk": "7980a325486b:tests/test_lists.py#3",
+          "symbol": "",
+          "introduced": true,
+          "reproducible": false,
+          "fixable": true,
+          "interaction": "",
+          "repaired": true,
+          "source": "review",
+          "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+          "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
+        }
+      ],
+      "repairs": [
+        {
+          "code": "review-sum-mixed-huge-int-overflow",
+          "path": "pebble/stdlib.py",
+          "line": 271,
+          "summary": "applied review suggestion: sum(values) converts a huge int to float when the list also holds a float, and P",
+          "test_name": "",
+          "applied": true
+        },
+        {
+          "code": "review-missing-mixed-sum-overflow-test",
+          "path": "tests/test_lists.py",
+          "line": 137,
+          "summary": "applied review suggestion: The sum guard tests cover a non-finite float total and an oversized int total, b",
+          "test_name": "",
+          "applied": true
+        }
+      ],
+      "counts": {
+        "review": 1,
+        "improvement": 1
+      },
+      "reviewed": 8,
+      "review": {
+        "status": "reviewed",
+        "rejected": [],
+        "files": [
+          ".aikit/codebase_map.md",
+          ".aikit/decisions.md",
+          "README.md",
+          "examples/text.peb",
+          "examples/totals.peb",
+          "pebble/stdlib.py",
+          "tests/test_lists.py",
+          "tests/test_text.py"
+        ],
+        "packet": "C:\\Users\\Yunus-Emre\\Desktop\\portable_agent_kit\\projects\\pebble\\.aikit\\reforge.reviews\\stage-run-1-6-7980a325486b.md",
+        "redacted": 0,
+        "reason": "",
+        "coverage": {
+          "reported": 37,
+          "total": 37,
+          "missing": [],
+          "unknown": []
+        },
+        "findings": [
+          {
+            "code": "review-sum-mixed-huge-int-overflow",
+            "category": "review",
+            "severity": "high",
+            "path": "pebble/stdlib.py",
+            "line": 271,
+            "message": "sum(values) converts a huge int to float when the list also holds a float, and Python raises OverflowError. The CLI then reports an internal error instead of a positioned Pebble error, violating ADR-001 and ADR-014. Catch OverflowError around the total and report it as a too-large float.",
+            "evidence": "total = sum(values)",
+            "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+            "hunk": "7980a325486b:pebble/stdlib.py#3",
+            "symbol": "",
+            "introduced": true,
+            "reproducible": false,
+            "fixable": true,
+            "interaction": "",
+            "repaired": false,
+            "source": "review",
+            "patch_old": "    total = sum(values)",
+            "patch_new": "    try:\n        total = sum(values)\n    except OverflowError:\n        _fail(call, \"the result is too large for a float\",\n              \"an int this large has no float value, so it cannot be summed with a float\",\n              \"use smaller values, or scale them down first\")"
+          },
+          {
+            "code": "review-missing-mixed-sum-overflow-test",
+            "category": "improvement",
+            "severity": "low",
+            "path": "tests/test_lists.py",
+            "line": 137,
+            "message": "The sum guard tests cover a non-finite float total and an oversized int total, but not a huge int mixed with a float, which is the case that escapes as a host OverflowError. Add that regression case.",
+            "evidence": "error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')",
+            "commit": "7980a325486b12cb50c8f44f94ce2c91c6885bef",
+            "hunk": "7980a325486b:tests/test_lists.py#3",
+            "symbol": "",
+            "introduced": true,
+            "reproducible": false,
+            "fixable": true,
+            "interaction": "",
+            "repaired": false,
+            "source": "review",
+            "patch_old": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)",
+            "patch_new": "    def test_sum_refuses_a_non_finite_float_result(self) -> None:\n        error = self.eval_error('sum([float(\"1e308\"), float(\"1e308\")])')\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"beyond the largest float\", error.why)\n\n    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:\n        error = self.eval_error(\"sum([10 ^ 3990, 1.5])\")\n        self.assertIn(\"the result is too large for a float\", error.message)\n        self.assertIn(\"no float value\", error.why)"
+          }
+        ]
+      },
+      "skipped": [],
+      "tests": {
+        "command": "C:\\Python314\\python.exe -m unittest discover tests",
+        "code": 0,
+        "passed": true,
+        "output": "..........................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 266 tests in 0.611s\n\nOK",
+        "tail": [
+          "..........................................................................................................................................................................................................................................................................",
+          "----------------------------------------------------------------------",
+          "Ran 266 tests in 0.611s",
+          "OK"
+        ]
+      },
+      "gates": {},
+      "timestamp": "2026-10-29T19:55:09"
     }
   ]
 }

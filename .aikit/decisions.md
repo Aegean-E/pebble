@@ -151,6 +151,13 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Decision**: Compare lists element by element with `values_equal` so nested values follow the same equality rule as top-level values. Size the decimal context to the input's adjusted exponent plus the digit count, with a floor of 40 digits, so large finite floats round instead of failing. Add regression tests for nested bool/number lists and for `round(float(10 ^ 300))` and `round(float(10 ^ 300), 2)`. This corrects the implementation to the contracts ADR-002 and ADR-017 already state; it adds no builtin and changes no other rule.
 - **Consequences**: `[[true]] == [[1]]` is now false, `contains([[true]], [1])` and `index_of([[true]], [1])` no longer match, and large finite floats round successfully. Costs: list equality is now recursive in Python rather than a single C-level comparison, so deeply nested lists are slower; the decimal context can grow with the exponent, though it remains bounded by the finite float range.
 
+### ADR-022: v9.1 closes the mixed int/float sum overflow
+- **Date**: 2026-10-29
+- **Status**: Accepted
+- **Context**: ADR-014 promised that a `sum` result outside the float range is a positioned "too large for a float" error. `sum(values)` on a list holding a huge int and a float made Python convert the int to a float, which raised `OverflowError`; the CLI shield then reported an internal error instead of a Pebble report. The audit of the v9 history found the gap.
+- **Decision**: Catch `OverflowError` around the total and raise the same positioned "the result is too large for a float" EvalError that a non-finite float total uses. Add a regression test with `sum([10 ^ 3990, 1.5])`. This completes ADR-014's stated guard; it adds no builtin and changes no other rule.
+- **Consequences**: A mixed huge-int/float total now reports a normal Pebble error, and the no-traceback promise holds for this path. Costs: the guard is one more explicit exception path, and a program that wants an approximate total must scale its values or convert deliberately.
+
 ## Licensing migration (v0.1.0-agpl)
 
 - New versions use the Aegean License 1.1 (AL-1.1); versions up to and including `v0.1.0-agpl` remain under GNU AGPL-3.0.

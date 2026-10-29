@@ -268,7 +268,12 @@ def _sum(interpreter, call, args):
     """The total of a list of numbers: an int for ints only, a float once one appears."""
     values = args[0]
     _numbers(call, values, "sum")
-    total = sum(values)
+    try:
+        total = sum(values)
+    except OverflowError:
+        _fail(call, "the result is too large for a float",
+              "an int this large has no float value, so it cannot be summed with a float",
+              "use smaller values, or scale them down first")
     if isinstance(total, float):
         if not math.isfinite(total):
             _fail(call, "the result is too large for a float",

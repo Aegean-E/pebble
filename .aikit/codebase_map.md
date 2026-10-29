@@ -9,8 +9,8 @@
 - **Total Python Modules**: `21`
 - **Total Classes**: `50`
 - **Total Top-Level Functions**: `91`
-- **Total Class Methods**: `363`
-- **Total Source Lines**: `4629`
+- **Total Class Methods**: `364`
+- **Total Source Lines**: `4639`
 
 ---
 
@@ -250,7 +250,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `649` lines (`28743` bytes)
+**Size**: `654` lines (`28994` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -575,7 +575,7 @@
 ### [`tests/test_lists.py`](tests/test_lists.py)
 > *List helpers: sort and sum, with the numeric rules min, max and sum share.*
 
-**Size**: `275` lines (`12984` bytes)
+**Size**: `280` lines (`13245` bytes)
 
 **Classes:**
 - `class SortTests` - *One behaviour per test; the result is a new list and the input is untouched.*
@@ -597,6 +597,7 @@
   - Method `.test_sum_refuses_non_numbers_and_bools()`
   - Method `.test_sum_refuses_an_int_result_over_the_digit_cap()`
   - Method `.test_sum_refuses_a_non_finite_float_result()`
+  - Method `.test_sum_of_a_huge_int_and_a_float_is_a_pebble_error()`
   - Method `.test_sum_arity_is_one()`
 - `class AverageTests` - *average returns the mean as a float, and refuses an empty list explicitly.*
   - Method `.eval_error(source)` - *The EvalError `source` raises.*

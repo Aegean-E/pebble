@@ -138,6 +138,11 @@ class SumTests(unittest.TestCase):
         self.assertIn("the result is too large for a float", error.message)
         self.assertIn("beyond the largest float", error.why)
 
+    def test_sum_of_a_huge_int_and_a_float_is_a_pebble_error(self) -> None:
+        error = self.eval_error("sum([10 ^ 3990, 1.5])")
+        self.assertIn("the result is too large for a float", error.message)
+        self.assertIn("no float value", error.why)
+
     def test_sum_arity_is_one(self) -> None:
         self.assertIn("sum expects 1 argument, got 0", self.eval_error("sum()").message)
         self.assertIn("sum expects 1 argument, got 2",
