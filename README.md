@@ -40,7 +40,7 @@ python -m pebble
 pebble/
 ├── .aikit/
 │   ├── codebase_map.md       <- generated symbol map, checked on every gate run
-│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v14 additions
+│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v15 additions
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── media.json            <- social preview and artwork metadata
 │   ├── project.json
@@ -102,24 +102,25 @@ the v6 increment (ADR-011) adds `sort` for lists; the v7 increment (ADR-012) add
 `lower`, `contains` and `find`; the v8 increment (ADR-013) adds `starts_with`, `ends_with` and
 `count`; the v9 increment (ADR-014) adds `sum` for lists of numbers; the v11 increment (ADR-016)
 adds `average`; the v12 increment (ADR-017) adds `round`, which rounds ties away from zero rather
-than to even; the v13 increment (ADR-018) adds `index_of` and lets `contains` search a list; and the
-v14 increment (ADR-019) makes the reported version match the packaging metadata. Everything else
-waits for a later task.
+than to even; the v13 increment (ADR-018) adds `index_of` and lets `contains` search a list; the v14
+increment (ADR-019) makes the reported version match the packaging metadata; and the v15 increment
+(ADR-020) declares version 0.3.0. Everything else waits for a later task.
 
 Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-script-args`,
 `task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`,
 `task-pebble-v4-residual-guards`, `task-pebble-v5-text-helpers`, `task-pebble-v6-sort`,
 `task-pebble-v7-text-search`, `task-pebble-v8-text-predicates`, `task-pebble-v9-sum`,
 `task-pebble-v10-crash-fuzz`, `task-pebble-v11-average`, `task-pebble-v12-round`,
-`task-pebble-v13-list-search`, and `task-pebble-v14-version` are complete (264 tests): script
-arguments via `args`, `break`/`continue`, slices, `range` with a step, `float()`, the text helpers,
-`sort`, case folding, text search, the edge and count helpers, `sum`, `average`, `round` and list
-search extend the frozen v1 surface as ADR-004, ADR-005, ADR-010, ADR-011, ADR-012, ADR-013,
-ADR-014, ADR-016, ADR-017 and ADR-018 record. ADR-006 makes every non-finite float result a
-positioned error, ADR-007 records that a loop reuses the enclosing scope, ADR-008 computes a range's
-length before allocating it, ADR-009 caps string and list concatenation, ADR-015 adds a seeded fuzz
-corpus that proves a program's failure is always a Pebble report, and ADR-019 keeps `--version` in
-step with `pyproject.toml`. The plan and its checkpoints live in `.aikit/task_ledger.json`.
+`task-pebble-v13-list-search`, `task-pebble-v14-version`, and `task-pebble-v15-release-0-3-0` are
+complete (264 tests): script arguments via `args`, `break`/`continue`, slices, `range` with a step,
+`float()`, the text helpers, `sort`, case folding, text search, the edge and count helpers, `sum`,
+`average`, `round` and list search extend the frozen v1 surface as ADR-004, ADR-005, ADR-010,
+ADR-011, ADR-012, ADR-013, ADR-014, ADR-016, ADR-017 and ADR-018 record. ADR-006 makes every
+non-finite float result a positioned error, ADR-007 records that a loop reuses the enclosing scope,
+ADR-008 computes a range's length before allocating it, ADR-009 caps string and list concatenation,
+ADR-015 adds a seeded fuzz corpus that proves a program's failure is always a Pebble report, ADR-019
+keeps `--version` in step with `pyproject.toml`, and ADR-020 declares version 0.3.0. The plan and
+its checkpoints live in `.aikit/task_ledger.json`.
 
 Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008, ADR-009, ADR-010,
 ADR-012 and ADR-014): calls nest at most 100 deep, integer exponents stop at 10,000, integers stay

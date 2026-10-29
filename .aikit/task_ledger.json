@@ -1,45 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v14-version",
+    "task_id": "task-pebble-v15-release-0-3-0",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793258613.503099,
-    "owner": "kilo:v14-version",
-    "started_by": "kilo:v14-version",
-    "continuations": [],
-    "completed_at": 1793258622.503009
+    "active_phase": 3,
+    "status": "in_progress",
+    "updated_at": 1793258728.60835,
+    "owner": "kilo:v15-release",
+    "started_by": "kilo:v15-release",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v10-crash-fuzz",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/4] Plan: a deterministic crash-fuzz guard under ADR-015 with four corpora (token soup, typed structured programs, every example, single-token mutations) and a CLI-shield check, all with patched resource caps, plus a floor on successful runs so the corpus cannot silently degrade",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793255254.4110055,
-      "timestamp_str": "2026-10-29 09:27:34",
-      "agent": "kilo:v10-crash-fuzz",
-      "impact_assessment": {
-        "why": "ADR-001 and ADR-003 promise every program failure is a positioned Pebble report, and that promise is tested only by hand-written cases; a regression that lets a host exception escape a new builtin would pass the suite.",
-        "benefits": "One seeded corpus exercises lexer, parser, evaluator and the CLI shield together, so a crash is reproducible from a seed and a printed sample rather than reported by a user.",
-        "risks": "contract: no language surface change, only test coverage; dependency: none, standard library random only; concurrency: none; state: no files or schemas change; timing: the whole fuzz module must stay far below the test budget.",
-        "mitigation": "Fixed seed, patched caps so a hostile sample stays cheap, a minimum-success floor, and a measured 41ms module runtime; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v10-crash-fuzz",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/4] Fuzz module is green: seeded token soup, typed structured corpus (89/120 runs succeed, floor 60), every example at real and reduced caps, 60 mutated examples, and the CLI-shield check; one classify helper avoids silent excepts, hygiene and guidelines gates pass; 238 tests, fuzz module 48ms",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793255519.0028558,
-      "timestamp_str": "2026-10-29 09:31:59",
-      "agent": "kilo:v10-crash-fuzz"
-    },
     {
       "task_id": "task-pebble-v10-crash-fuzz",
       "phase": "in_progress",
@@ -256,6 +227,34 @@
       "timestamp": 1793258622.5030103,
       "timestamp_str": "2026-10-29 10:23:42",
       "agent": "kilo:v14-version"
+    },
+    {
+      "task_id": "task-pebble-v15-release-0-3-0",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/3] Plan: bump the declared version to 0.3.0 under ADR-020, because thirteen language increments (ADR-010 to ADR-018) have landed since 0.2.0 and the number no longer describes the surface; ADR-019's guard forces __version__ to follow",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258673.7300613,
+      "timestamp_str": "2026-10-29 10:24:33",
+      "agent": "kilo:v15-release",
+      "impact_assessment": {
+        "why": "The package still declares 0.2.0 after ten shipped increments that added eleven builtins and a fuzz guard, so the version number understates what a user gets and cannot serve as a release marker.",
+        "benefits": "The declared version describes the surface users actually have, and the existing version-coherence test proves the bump reached both files.",
+        "risks": "contract: --version prints 0.3.0; dependency: none; concurrency: none; state: the two version literals change together.",
+        "mitigation": "ADR-020 records why this bump and not a major one (no v1 contract broken, only additions); ADR-019's test is the guard; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v15-release-0-3-0",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/3] Version 0.3.0 declared in pyproject.toml and __version__, --version prints pebble 0.3.0, ADR-019's coherence test and all 264 tests pass; ADR-020 and README status updated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258728.60835,
+      "timestamp_str": "2026-10-29 10:25:28",
+      "agent": "kilo:v15-release"
     }
   ]
 }

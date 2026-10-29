@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 license = "LicenseRef-AL-1.1"
 license-files = ["LICENSE"]
 name = "pebble-lang"
-version = "0.2.0"
+version = "0.3.0"
 description = "A tiny, dependency-free scripting language: lexer, parser, evaluator and REPL"
 readme = "README.md"
 requires-python = ">=3.10"
