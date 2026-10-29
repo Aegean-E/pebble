@@ -265,16 +265,7 @@ def _sort(interpreter, call, args) -> list:
 def _sum(interpreter, call, args):
     """The total of a list of numbers: an int for ints only, a float once one appears."""
     values = args[0]
-    if not isinstance(values, list):
-        _fail(call, f"sum needs a list, got {type_name(values)}",
-              "sum totals a list of numbers",
-              'pass a list of numbers, for example sum([1, 2, 3])')
-    for index, value in enumerate(values):
-        if not is_number(value):
-            _fail(call, f"sum needs a list of numbers, found {type_name(value)} "
-                        f"at index {index}",
-                  "sum adds numbers; booleans are not numbers",
-                  "keep the list to int and float values")
+    _numbers(call, values, "sum")
     total = sum(values)
     if isinstance(total, float):
         if not math.isfinite(total):
@@ -287,6 +278,41 @@ def _sum(interpreter, call, args):
               "the result would exceed the v1 cap of about 4000 decimal digits",
               "scale the values down, or use a float for an approximation")
     return total
+
+
+def _numbers(call, values, name: str) -> None:
+    """Refuse a non-list, or any element that is not a number, naming its index."""
+    if not isinstance(values, list):
+        _fail(call, f"{name} needs a list, got {type_name(values)}",
+              f"{name} totals or averages a list of numbers",
+              f"pass a list of numbers, for example {name}([1, 2, 3])")
+    for index, value in enumerate(values):
+        if not is_number(value):
+            _fail(call, f"{name} needs a list of numbers, found {type_name(value)} "
+                        f"at index {index}",
+                  f"{name} works on numbers; booleans are not numbers",
+                  "keep the list to int and float values")
+
+
+def _average(interpreter, call, args) -> float:
+    """The mean of a non-empty list of numbers, always as a float."""
+    values = args[0]
+    _numbers(call, values, "average")
+    if not values:
+        _fail(call, "average needs at least one value",
+              "the list is empty, so there is nothing to divide by",
+              "pass a non-empty list, or check len(values) before averaging")
+    try:
+        mean = sum(values) / len(values)
+    except OverflowError:
+        _fail(call, "the result is too large for a float",
+              "an int this large has no float value, so it cannot be averaged",
+              "use smaller values, or scale them down first")
+    if not math.isfinite(mean):
+        _fail(call, "the result is too large for a float",
+              "averaging these values produced a value beyond the largest float",
+              "use smaller values, or scale them down first")
+    return mean
 
 
 def _abs(interpreter, call, args):
@@ -521,6 +547,7 @@ BUILTINS = {
     "abs": Builtin("abs", _abs, "1 argument", 1, 1),
     "sort": Builtin("sort", _sort, "1 argument", 1, 1),
     "sum": Builtin("sum", _sum, "1 argument", 1, 1),
+    "average": Builtin("average", _average, "1 argument", 1, 1),
     "split": Builtin("split", _split, "1 to 2 arguments", 1, 2),
     "join": Builtin("join", _join, "2 arguments", 2, 2),
     "trim": Builtin("trim", _trim, "1 argument", 1, 1),

@@ -70,7 +70,7 @@ def assert_no_host_escape(test: unittest.TestCase, source: str) -> str:
     return RAN
 
 
-NUMBERS = ("0", "1", "2", "7", "9999", "1.5", "-3")
+NUMBERS = ("0", "1", "2", "7", "9999", "1.5", "-3", "10 ^ 3990")
 TEXTS = ('"a"', '"b,c"', '""', '"banana"')
 NUMBER_LISTS = ("[1, 2, 3]", "[]", "range(3)", "sort([3, 1])")
 TEXT_LISTS = ('split("a b")', 'split("a,b", ",")', "[]")

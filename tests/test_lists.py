@@ -142,3 +142,57 @@ class SumTests(unittest.TestCase):
         self.assertIn("sum expects 1 argument, got 0", self.eval_error("sum()").message)
         self.assertIn("sum expects 1 argument, got 2",
                       self.eval_error("sum([1], [2])").message)
+
+
+class AverageTests(unittest.TestCase):
+    """average returns the mean as a float, and refuses an empty list explicitly."""
+
+    def eval_error(self, source: str) -> EvalError:
+        """The EvalError `source` raises."""
+        with self.assertRaises(EvalError) as caught:
+            evaluate(source)
+        return caught.exception
+
+    def test_average_returns_the_mean_as_a_float(self) -> None:
+        self.assertEqual(evaluate("average([1, 2, 3])"), 2.0)
+        self.assertIs(type(evaluate("average([1, 2, 3])")), float)
+        self.assertEqual(evaluate("average([2, 3])"), 2.5)
+        self.assertEqual(evaluate("average([7])"), 7.0)
+        self.assertEqual(evaluate("average([-2, 2])"), 0.0)
+
+    def test_average_of_an_empty_list_is_an_error_not_zero(self) -> None:
+        error = self.eval_error("average([])")
+        self.assertIn("average needs at least one value", error.message)
+        self.assertIn("nothing to divide by", error.why)
+        self.assertIn("non-empty list", error.fix)
+        self.assertEqual((error.line, error.col), (1, 8))
+
+    def test_average_needs_a_list(self) -> None:
+        error = self.eval_error("average(5)")
+        self.assertIn("average needs a list, got int", error.message)
+        self.assertIn("numbers", error.why)
+        self.assertIn("average needs a list, got none",
+                      self.eval_error("average(none)").message)
+
+    def test_average_refuses_non_numbers_and_bools(self) -> None:
+        self.assertIn("average needs a list of numbers, found string at index 1",
+                      self.eval_error('average([1, "a"])').message)
+        self.assertIn("average needs a list of numbers, found bool at index 0",
+                      self.eval_error("average([true, 1])").message)
+
+    def test_average_refuses_a_non_finite_result(self) -> None:
+        error = self.eval_error('average([float("1e308"), float("1e308")])')
+        self.assertIn("the result is too large for a float", error.message)
+        self.assertIn("beyond the largest float", error.why)
+
+    def test_average_of_a_huge_int_is_a_pebble_error_not_a_host_overflow(self) -> None:
+        error = self.eval_error("average([10 ^ 3990])")
+        self.assertIn("the result is too large for a float", error.message)
+        self.assertIn("no float value", error.why)
+        self.assertIn("scale them down", error.fix)
+
+    def test_average_arity_is_one(self) -> None:
+        self.assertIn("average expects 1 argument, got 0",
+                      self.eval_error("average()").message)
+        self.assertIn("average expects 1 argument, got 2",
+                      self.eval_error("average([1], [2])").message)

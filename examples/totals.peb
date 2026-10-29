@@ -4,6 +4,8 @@ print(sum(scores))
 print(sum(sort(scores)))
 print(sum([1, 2.5]))
 print(sum([]))
+print(average([1, 2, 3]))
+print(average([2, 3]))
 
 # Sum the numbers read from text fields.
 let fields = split("10 20 30")

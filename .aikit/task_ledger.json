@@ -1,56 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v10-crash-fuzz",
+    "task_id": "task-pebble-v11-average",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793255521.7103426,
-    "owner": "kilo:v10-crash-fuzz",
-    "started_by": "kilo:v10-crash-fuzz",
-    "continuations": [],
-    "completed_at": 1793255541.432253
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793256234.3520455,
+    "owner": "kilo:v11-average",
+    "started_by": "kilo:v11-average",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v6-sort",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/4] Plan: add one list builtin, sort(values), ascending and stable, reusing min/max ordering rules, recorded as ADR-011 and pinned by failing-first tests, then sync README, map and examples",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793251941.6140878,
-      "timestamp_str": "2026-10-29 08:32:21",
-      "agent": "kilo:v6-sort",
-      "impact_assessment": {
-        "why": "Pebble can take the minimum and maximum of a set but cannot order it: every list-shaped result, such as split's fields, cannot be ranked except with a hand-written nested loop, which is the one list operation scripts still write by hand.",
-        "benefits": "Scripts can order fields, scores and names in one call and reach descending order with the existing slice syntax, sort(x)[::-1], so no direction argument is needed.",
-        "risks": "contract: surface grows to 15 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "ADR-011 pins the ordering, stability and refusal rules before code; failing-first tests for numbers, strings, stability, mixed and unorderable values, and arity; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v6-sort",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/4] sort is green: ascending numbers and strings, stability, a new list while the input is untouched, reverse slice composition, non-list and unorderable and mixed-kind refusals, arity 1; 9 new tests, full suite 206 green",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793252024.796192,
-      "timestamp_str": "2026-10-29 08:33:44",
-      "agent": "kilo:v6-sort"
-    },
-    {
-      "task_id": "task-pebble-v6-sort",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[3/4] Docs and examples: ADR-011 records sort, README lists fifteen builtins and 206 tests, examples/sorted.peb demonstrates split+sort+reverse slice, codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793252128.8768296,
-      "timestamp_str": "2026-10-29 08:35:28",
-      "agent": "kilo:v6-sort"
-    },
     {
       "task_id": "task-pebble-v6-sort",
       "phase": "completed",
@@ -256,6 +216,45 @@
       "timestamp": 1793255541.4322546,
       "timestamp_str": "2026-10-29 09:32:21",
       "agent": "kilo:v10-crash-fuzz"
+    },
+    {
+      "task_id": "task-pebble-v11-average",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/4] Plan: add average(values) under ADR-016, the follow-up ADR-014 named: a float result for any non-empty number list, an error for an empty list because there is no average of nothing, and the same element and finiteness rules sum already enforces",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793255992.6809506,
+      "timestamp_str": "2026-10-29 09:39:52",
+      "agent": "kilo:v11-average",
+      "impact_assessment": {
+        "why": "ADR-014 gave lists a total and deliberately deferred an average because it needs a zero-length rule; that rule is a one-line contract, and until it exists every script writes sum(xs) / len(xs) and must remember to guard an empty list itself.",
+        "benefits": "Scripts get a mean in one call with a stated empty-list behaviour, composing with sum, sort and the text helpers to turn parsed fields into statistics.",
+        "risks": "contract: surface grows to 24 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "ADR-016 pins the empty-list error, the always-float result and the finiteness guard before code; failing-first tests including both guards; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v11-average",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/4] average is green: always-float mean, empty list is a positioned error, shared _numbers element rule now used by sum too, and a guarded division so an int inside the digit cap but beyond float range reports instead of raising OverflowError; the fuzz corpus now includes 10 ^ 3990; 8 new tests, 245 total",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793256229.6072462,
+      "timestamp_str": "2026-10-29 09:43:49",
+      "agent": "kilo:v11-average"
+    },
+    {
+      "task_id": "task-pebble-v11-average",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/4] Docs: ADR-016 records average, its empty-list error and the guarded division; README lists twenty-four builtins and 245 tests, examples/totals.peb shows both means; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793256234.3520455,
+      "timestamp_str": "2026-10-29 09:43:54",
+      "agent": "kilo:v11-average"
     }
   ]
 }

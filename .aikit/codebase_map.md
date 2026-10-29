@@ -7,10 +7,10 @@
 
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `21`
-- **Total Classes**: `48`
-- **Total Top-Level Functions**: `84`
-- **Total Class Methods**: `334`
-- **Total Source Lines**: `4291`
+- **Total Classes**: `49`
+- **Total Top-Level Functions**: `86`
+- **Total Class Methods**: `342`
+- **Total Source Lines**: `4372`
 
 ---
 
@@ -249,7 +249,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `536` lines (`23683` bytes)
+**Size**: `563` lines (`24878` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -274,6 +274,8 @@
 - `def _max(interpreter, call, args)` - *The largest of the values.*
 - `def _sort(interpreter, call, args)` - *A new list of the values in ascending order, by the min/max ordering rules.*
 - `def _sum(interpreter, call, args)` - *The total of a list of numbers: an int for ints only, a float once one appears.*
+- `def _numbers(call, values, name)` - *Refuse a non-list, or any element that is not a number, naming its index.*
+- `def _average(interpreter, call, args)` - *The mean of a non-empty list of numbers, always as a float.*
 - `def _abs(interpreter, call, args)` - *The magnitude of a number.*
 - `def _string_arg(call, value, name, why, fix)` - *One argument as a string, or the builtin's positioned type error.*
 - `def _split(interpreter, call, args)` - *Text cut into fields: on whitespace runs, or at every exact separator.*
@@ -455,7 +457,7 @@
 ### [`tests/test_fuzz.py`](tests/test_fuzz.py)
 > *Deterministic crash fuzz: random and mutated source is a Pebble error, never a host crash.*
 
-**Size**: `255` lines (`9936` bytes)
+**Size**: `255` lines (`9949` bytes)
 
 **Classes:**
 - `class FuzzTests` - *Every corpus is seeded, so a failure names a sample that always reproduces.*
@@ -559,7 +561,7 @@
 ### [`tests/test_lists.py`](tests/test_lists.py)
 > *List helpers: sort and sum, with the numeric rules min, max and sum share.*
 
-**Size**: `144` lines (`6624` bytes)
+**Size**: `198` lines (`9287` bytes)
 
 **Classes:**
 - `class SortTests` - *One behaviour per test; the result is a new list and the input is untouched.*
@@ -582,6 +584,15 @@
   - Method `.test_sum_refuses_an_int_result_over_the_digit_cap()`
   - Method `.test_sum_refuses_a_non_finite_float_result()`
   - Method `.test_sum_arity_is_one()`
+- `class AverageTests` - *average returns the mean as a float, and refuses an empty list explicitly.*
+  - Method `.eval_error(source)` - *The EvalError `source` raises.*
+  - Method `.test_average_returns_the_mean_as_a_float()`
+  - Method `.test_average_of_an_empty_list_is_an_error_not_zero()`
+  - Method `.test_average_needs_a_list()`
+  - Method `.test_average_refuses_non_numbers_and_bools()`
+  - Method `.test_average_refuses_a_non_finite_result()`
+  - Method `.test_average_of_a_huge_int_is_a_pebble_error_not_a_host_overflow()`
+  - Method `.test_average_arity_is_one()`
 
 **Functions:**
 - `def evaluate(source)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*

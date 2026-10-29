@@ -40,7 +40,7 @@ python -m pebble
 pebble/
 ├── .aikit/
 │   ├── codebase_map.md       <- generated symbol map, checked on every gate run
-│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v9 additions
+│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v11 additions
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── media.json            <- social preview and artwork metadata
 │   ├── project.json
@@ -71,7 +71,7 @@ pebble/
 │   ├── limits.py             <- call, int, range and sequence caps
 │   ├── nodes.py              <- the AST: frozen nodes with source positions
 │   ├── parser.py             <- recursive-descent parser with positioned errors
-│   └── stdlib.py             <- the twenty-three builtins and their arity rules
+│   └── stdlib.py             <- the twenty-four builtins and their arity rules
 ├── pyproject.toml
 └── tests/
     ├── __init__.py
@@ -81,7 +81,7 @@ pebble/
     ├── test_fuzz.py            <- seeded crash fuzz over lexer, parser, evaluator and CLI
     ├── test_hardening.py
     ├── test_lexer.py
-    ├── test_lists.py           <- sort and sum, their rules and their guards
+    ├── test_lists.py           <- sort, sum and average, their rules and their guards
     ├── test_parser.py
     └── test_text.py            <- text helpers, case, search, edges and count, with guards
 ```
@@ -100,29 +100,29 @@ builtin. ADR-005 adds command-line script arguments accessible through the globa
 strings. The v5 increment (ADR-010) adds four text helpers: `split`, `join`, `trim` and `replace`;
 the v6 increment (ADR-011) adds `sort` for lists; the v7 increment (ADR-012) adds `upper`,
 `lower`, `contains` and `find`; the v8 increment (ADR-013) adds `starts_with`, `ends_with` and
-`count`; and the v9 increment (ADR-014) adds `sum` for lists of numbers. Everything else waits for a
-later task.
+`count`; the v9 increment (ADR-014) adds `sum` for lists of numbers; and the v11 increment
+(ADR-016) adds `average`. Everything else waits for a later task.
 
 Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-script-args`,
 `task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`,
 `task-pebble-v4-residual-guards`, `task-pebble-v5-text-helpers`, `task-pebble-v6-sort`,
-`task-pebble-v7-text-search`, `task-pebble-v8-text-predicates`, `task-pebble-v9-sum`, and
-`task-pebble-v10-crash-fuzz` are complete (238 tests): script arguments via `args`,
-`break`/`continue`, slices, `range` with a step, `float()`, the text helpers, `sort`, case folding,
-text search, the edge and count helpers and `sum` extend the frozen v1 surface as ADR-004,
-ADR-005, ADR-010, ADR-011, ADR-012, ADR-013 and ADR-014 record. ADR-006 makes every non-finite
-float result a positioned error, ADR-007 records that a loop reuses the enclosing scope, ADR-008
-computes a range's length before allocating it, ADR-009 caps string and list concatenation, and
-ADR-015 adds a seeded fuzz corpus that proves a program's failure is always a Pebble report. The
-plan and its checkpoints live in `.aikit/task_ledger.json`.
+`task-pebble-v7-text-search`, `task-pebble-v8-text-predicates`, `task-pebble-v9-sum`,
+`task-pebble-v10-crash-fuzz`, and `task-pebble-v11-average` are complete (245 tests): script
+arguments via `args`, `break`/`continue`, slices, `range` with a step, `float()`, the text helpers,
+`sort`, case folding, text search, the edge and count helpers, `sum` and `average` extend the frozen
+v1 surface as ADR-004, ADR-005, ADR-010, ADR-011, ADR-012, ADR-013, ADR-014 and ADR-016 record.
+ADR-006 makes every non-finite float result a positioned error, ADR-007 records that a loop reuses
+the enclosing scope, ADR-008 computes a range's length before allocating it, ADR-009 caps string and
+list concatenation, and ADR-015 adds a seeded fuzz corpus that proves a program's failure is always
+a Pebble report. The plan and its checkpoints live in `.aikit/task_ledger.json`.
 
 Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008, ADR-009, ADR-010,
 ADR-012 and ADR-014): calls nest at most 100 deep, integer exponents stop at 10,000, integers stay
 near 4,000 digits, and ranges, repeated sequences, joined sequences, split results, replaced text
-and case-folded text stop at 1,000,000 values or characters. Every float result, including a
-`sum` total, must stay finite, and an unexpected host failure still renders as a three-line Pebble
-report rather than a traceback. Loops add no scope: the loop variable and any `let` inside a loop
-body remain visible afterwards.
+and case-folded text stop at 1,000,000 values or characters. Every float result, including a `sum`
+total and an `average` mean, must stay finite, and an unexpected host failure still renders as a
+three-line Pebble report rather than a traceback. Loops add no scope: the loop variable and any
+`let` inside a loop body remain visible afterwards.
 
 ## 🚀 Running a program
 
