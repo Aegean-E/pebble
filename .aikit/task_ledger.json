@@ -3,24 +3,15 @@
   "active_task": {
     "task_id": "task-pebble-v10-crash-fuzz",
     "last_phase": "in_progress",
-    "active_phase": 4,
-    "status": "in_progress",
+    "active_phase": 5,
+    "status": "completed",
     "updated_at": 1793255521.7103426,
     "owner": "kilo:v10-crash-fuzz",
     "started_by": "kilo:v10-crash-fuzz",
-    "continuations": []
+    "continuations": [],
+    "completed_at": 1793255541.432253
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v5-text-helpers",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v5-text-helpers' completed successfully.",
-      "status": "completed",
-      "timestamp": 1793228774.4943736,
-      "timestamp_str": "2026-10-29 02:06:14",
-      "agent": "kilo:v5-text-helpers"
-    },
     {
       "task_id": "task-pebble-v6-sort",
       "phase": "in_progress",
@@ -254,6 +245,16 @@
       "status": "in_progress",
       "timestamp": 1793255521.7103426,
       "timestamp_str": "2026-10-29 09:32:01",
+      "agent": "kilo:v10-crash-fuzz"
+    },
+    {
+      "task_id": "task-pebble-v10-crash-fuzz",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'task-pebble-v10-crash-fuzz' completed successfully.",
+      "status": "completed",
+      "timestamp": 1793255541.4322546,
+      "timestamp_str": "2026-10-29 09:32:21",
       "agent": "kilo:v10-crash-fuzz"
     }
   ]
