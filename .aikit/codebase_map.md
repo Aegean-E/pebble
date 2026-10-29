@@ -7,10 +7,10 @@
 
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `20`
-- **Total Classes**: `46`
-- **Total Top-Level Functions**: `71`
-- **Total Class Methods**: `320`
-- **Total Source Lines**: `3940`
+- **Total Classes**: `47`
+- **Total Top-Level Functions**: `73`
+- **Total Class Methods**: `328`
+- **Total Source Lines**: `4036`
 
 ---
 
@@ -249,7 +249,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `506` lines (`22314` bytes)
+**Size**: `536` lines (`23683` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -273,6 +273,7 @@
 - `def _min(interpreter, call, args)` - *The smallest of the values.*
 - `def _max(interpreter, call, args)` - *The largest of the values.*
 - `def _sort(interpreter, call, args)` - *A new list of the values in ascending order, by the min/max ordering rules.*
+- `def _sum(interpreter, call, args)` - *The total of a list of numbers: an int for ints only, a float once one appears.*
 - `def _abs(interpreter, call, args)` - *The magnitude of a number.*
 - `def _string_arg(call, value, name, why, fix)` - *One argument as a string, or the builtin's positioned type error.*
 - `def _split(interpreter, call, args)` - *Text cut into fields: on whitespace runs, or at every exact separator.*
@@ -527,9 +528,9 @@
 ---
 
 ### [`tests/test_lists.py`](tests/test_lists.py)
-> *List helpers: sort, with the ordering rules min and max already share.*
+> *List helpers: sort and sum, with the numeric rules min, max and sum share.*
 
-**Size**: `78` lines (`3531` bytes)
+**Size**: `144` lines (`6624` bytes)
 
 **Classes:**
 - `class SortTests` - *One behaviour per test; the result is a new list and the input is untouched.*
@@ -543,9 +544,19 @@
   - Method `.test_sort_refuses_values_it_cannot_order()`
   - Method `.test_sort_refuses_mixed_kinds()`
   - Method `.test_sort_arity_is_one()`
+- `class SumTests` - *sum totals a list of numbers and keeps the int/float distinction.*
+  - Method `.eval_error(source)` - *The EvalError `source` raises.*
+  - Method `.test_sum_totals_ints_and_returns_an_int()`
+  - Method `.test_sum_promotes_to_a_float_when_any_value_is_a_float()`
+  - Method `.test_sum_needs_a_list()`
+  - Method `.test_sum_refuses_non_numbers_and_bools()`
+  - Method `.test_sum_refuses_an_int_result_over_the_digit_cap()`
+  - Method `.test_sum_refuses_a_non_finite_float_result()`
+  - Method `.test_sum_arity_is_one()`
 
 **Functions:**
 - `def evaluate(source)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
+- `def call_builtin(name, *args)` - *Call one builtin directly, for guards that plain source reaches only with big values.*
 
 ---
 

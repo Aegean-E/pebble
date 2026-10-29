@@ -1,0 +1,14 @@
+# Total a list: ints stay ints, one float promotes the result.
+let scores = [3, 1, 2]
+print(sum(scores))
+print(sum(sort(scores)))
+print(sum([1, 2.5]))
+print(sum([]))
+
+# Sum the numbers read from text fields.
+let fields = split("10 20 30")
+let numbers = []
+for field in fields {
+  numbers = numbers + [int(field)]
+}
+print(sum(numbers))

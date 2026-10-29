@@ -1,54 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v8-text-predicates",
+    "task_id": "task-pebble-v9-sum",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793254577.9447162,
-    "owner": "kilo:v8-text-predicates",
-    "started_by": "kilo:v8-text-predicates",
-    "continuations": [],
-    "completed_at": 1793254589.484752
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793254926.4387858,
+    "owner": "kilo:v9-sum",
+    "started_by": "kilo:v9-sum",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v4-residual-guards",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'task-pebble-v4-residual-guards' completed successfully.",
-      "status": "completed",
-      "timestamp": 1792648726.7179,
-      "timestamp_str": "2026-10-22 08:58:46"
-    },
-    {
-      "task_id": "task-pebble-v5-text-helpers",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/5] Plan: add four text builtins (split, join, trim, replace) under a new ADR-010, pinned by failing-first tests, then sync README, map and examples",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793227857.1860626,
-      "timestamp_str": "2026-10-29 01:50:57",
-      "agent": "kilo:v5-text-helpers",
-      "impact_assessment": {
-        "why": "Pebble can read script arguments but cannot shape text: no split, join, trim or replace, so every real text-processing script is impossible even though strings are a first-class value.",
-        "benefits": "Scripts can tokenize arguments and files, reassemble fields, clean whitespace and rewrite fragments with four small, guarded builtins instead of hand-written while-loop slicing.",
-        "risks": "contract: surface grows to 14 builtins and ADR-002's builtin contract list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "ADR-010 pins every arity, type rule, whitespace set and length cap before code; failing-first tests per builtin; reuse MAX_SEQUENCE_LENGTH; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v5-text-helpers",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/5] split is green: one-argument whitespace splitting and exact-separator splitting, type and empty-separator guards, list cap check, 5 new tests",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793228062.7043247,
-      "timestamp_str": "2026-10-29 01:54:22",
-      "agent": "kilo:v5-text-helpers"
-    },
     {
       "task_id": "task-pebble-v5-text-helpers",
       "phase": "in_progress",
@@ -249,6 +211,45 @@
       "timestamp": 1793254589.4847534,
       "timestamp_str": "2026-10-29 09:16:29",
       "agent": "kilo:v8-text-predicates"
+    },
+    {
+      "task_id": "task-pebble-v9-sum",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/4] Plan: add one numeric list builtin, sum(values), accepting ints and floats like min/max, returning int for an all-int list, refusing bools and non-numbers, and applying the existing int-digit and finite-float caps to the result; ADR-014 and failing-first tests first",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793254725.579777,
+      "timestamp_str": "2026-10-29 09:18:45",
+      "agent": "kilo:v9-sum",
+      "impact_assessment": {
+        "why": "Pebble can order a list and take its extremes but cannot total it, so every score, size or cost total is a hand-written accumulator loop, which is the one numeric list operation scripts still write by hand.",
+        "benefits": "Scripts total a list in one call and keep the int/float distinction the rest of the language already uses, with the same caps that protect int and float arithmetic.",
+        "risks": "contract: surface grows to 23 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
+        "mitigation": "ADR-014 pins the empty-list result, the int/float promotion, the bool refusal and the two result caps before code; failing-first tests including a patched-cap test; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v9-sum",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/4] sum is green: int totals stay int, a float value promotes the result, empty list is 0, bool/non-number elements are refused with their index, and both result caps apply (patched MAX_INT_BITS test and a finite-float test); 7 new tests, full suite 232 green",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793254814.4852412,
+      "timestamp_str": "2026-10-29 09:20:14",
+      "agent": "kilo:v9-sum"
+    },
+    {
+      "task_id": "task-pebble-v9-sum",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/4] Docs: ADR-014 records sum, its int/float promotion and both result caps; README lists twenty-three builtins and 232 tests plus examples/totals.peb; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793254926.4387858,
+      "timestamp_str": "2026-10-29 09:22:06",
+      "agent": "kilo:v9-sum"
     }
   ]
 }

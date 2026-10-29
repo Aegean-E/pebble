@@ -4,7 +4,8 @@ Each builtin is a `Builtin` record: a name, an implementation and the arity it a
 evaluator checks the arity before evaluating arguments and passes the call node, so every builtin
 failure is a positioned EvalError with a Why and a Fix. v2 added `float()` and the `range` step;
 v5 adds the text helpers `split`, `join`, `trim` and `replace`, v6 adds `sort`, v7 adds
-`upper`, `lower`, `contains` and `find`, and v8 adds `starts_with`, `ends_with` and `count`.
+`upper`, `lower`, `contains` and `find`, v8 adds `starts_with`, `ends_with` and `count`, and v9
+adds `sum`.
 """
 
 import math
@@ -13,7 +14,7 @@ from typing import NoReturn
 
 from .errors import EvalError
 from .formatting import format_value, is_number, type_name
-from .limits import MAX_INT_DIGITS, MAX_RANGE_LENGTH, MAX_SEQUENCE_LENGTH
+from .limits import MAX_INT_BITS, MAX_INT_DIGITS, MAX_RANGE_LENGTH, MAX_SEQUENCE_LENGTH
 
 
 class Builtin:
@@ -261,6 +262,33 @@ def _sort(interpreter, call, args) -> list:
     return sorted(values)
 
 
+def _sum(interpreter, call, args):
+    """The total of a list of numbers: an int for ints only, a float once one appears."""
+    values = args[0]
+    if not isinstance(values, list):
+        _fail(call, f"sum needs a list, got {type_name(values)}",
+              "sum totals a list of numbers",
+              'pass a list of numbers, for example sum([1, 2, 3])')
+    for index, value in enumerate(values):
+        if not is_number(value):
+            _fail(call, f"sum needs a list of numbers, found {type_name(value)} "
+                        f"at index {index}",
+                  "sum adds numbers; booleans are not numbers",
+                  "keep the list to int and float values")
+    total = sum(values)
+    if isinstance(total, float):
+        if not math.isfinite(total):
+            _fail(call, "the result is too large for a float",
+                  "summing these values produced a value beyond the largest float",
+                  "use smaller values, or scale them down first")
+        return total
+    if total.bit_length() > MAX_INT_BITS:
+        _fail(call, "integer result is too large",
+              "the result would exceed the v1 cap of about 4000 decimal digits",
+              "scale the values down, or use a float for an approximation")
+    return total
+
+
 def _abs(interpreter, call, args):
     """The magnitude of a number."""
     value = args[0]
@@ -492,6 +520,7 @@ BUILTINS = {
     "max": Builtin("max", _max, "at least 1 argument", 1),
     "abs": Builtin("abs", _abs, "1 argument", 1, 1),
     "sort": Builtin("sort", _sort, "1 argument", 1, 1),
+    "sum": Builtin("sum", _sum, "1 argument", 1, 1),
     "split": Builtin("split", _split, "1 to 2 arguments", 1, 2),
     "join": Builtin("join", _join, "2 arguments", 2, 2),
     "trim": Builtin("trim", _trim, "1 argument", 1, 1),
@@ -504,3 +533,4 @@ BUILTINS = {
     "ends_with": Builtin("ends_with", _ends_with, "2 arguments", 2, 2),
     "count": Builtin("count", _count, "2 arguments", 2, 2),
 }
+
