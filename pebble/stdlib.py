@@ -4,8 +4,9 @@ Each builtin is a `Builtin` record: a name, an implementation and the arity it a
 evaluator checks the arity before evaluating arguments and passes the call node, so every builtin
 failure is a positioned EvalError with a Why and a Fix. v2 added `float()` and the `range` step;
 v5 adds the text helpers `split`, `join`, `trim` and `replace`, v6 adds `sort`, v7 adds
-`upper`, `lower`, `contains` and `find`, v8 adds `starts_with`, `ends_with` and `count`, and v9
-adds `sum`.
+`upper`, `lower`, `contains` and `find`, v8 adds `starts_with`, `ends_with` and `count`, v9 adds
+`sum`, v11 adds `average`, v12 adds `round`, and v13 adds `index_of` and the list form of
+`contains`.
 """
 
 import math
@@ -14,7 +15,7 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 from typing import NoReturn
 
 from .errors import EvalError
-from .formatting import format_value, is_number, type_name
+from .formatting import format_value, is_number, type_name, values_equal
 from .limits import MAX_INT_BITS, MAX_INT_DIGITS, MAX_RANGE_LENGTH, MAX_SEQUENCE_LENGTH
 
 
@@ -584,10 +585,26 @@ def _count(interpreter, call, args) -> int:
 
 
 def _contains(interpreter, call, args) -> bool:
-    """Whether the search text occurs anywhere in the text."""
+    """Whether the search text occurs in the text, or the value appears in the list."""
+    if isinstance(args[0], list):
+        values = args[0]
+        return any(values_equal(value, args[1]) for value in values)
     text, search = _search_args(call, args, "contains", 'contains("abc", "b")',
                                 "an empty search would be found everywhere")
     return search in text
+
+
+def _index_of(interpreter, call, args):
+    """The index of the first equal value in a list, or none when no value matches."""
+    values = args[0]
+    if not isinstance(values, list):
+        _fail(call, f"index_of needs a list, got {type_name(values)}",
+              "index_of reports the position of a value inside a list",
+              'pass a list, for example index_of([10, 20], 20)')
+    for index, value in enumerate(values):
+        if values_equal(value, args[1]):
+            return index
+    return None
 
 
 def _find(interpreter, call, args):
@@ -621,10 +638,12 @@ BUILTINS = {
     "lower": Builtin("lower", _lower, "1 argument", 1, 1),
     "contains": Builtin("contains", _contains, "2 arguments", 2, 2),
     "find": Builtin("find", _find, "2 arguments", 2, 2),
+    "index_of": Builtin("index_of", _index_of, "2 arguments", 2, 2),
     "starts_with": Builtin("starts_with", _starts_with, "2 arguments", 2, 2),
     "ends_with": Builtin("ends_with", _ends_with, "2 arguments", 2, 2),
     "count": Builtin("count", _count, "2 arguments", 2, 2),
 }
+
 
 
 

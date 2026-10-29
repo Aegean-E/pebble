@@ -21,7 +21,7 @@ from typing import NoReturn
 
 from . import nodes
 from .errors import EvalError
-from .formatting import is_number, type_name
+from .formatting import is_number, type_name, values_equal
 from .limits import MAX_CALL_DEPTH, MAX_EXPONENT, MAX_INT_BITS, MAX_SEQUENCE_LENGTH
 from .stdlib import BUILTINS, Builtin
 
@@ -50,14 +50,9 @@ class PebbleFunction:
         self.params = params
         self.body = body
 
-
 def _equal(left, right) -> bool:
-    """Pebble equality: ints and floats mix, bools do not, everything else compares within its type."""
-    if is_number(left) and is_number(right):
-        return left == right
-    if type(left) is not type(right):
-        return False
-    return left == right
+    """Pebble equality, shared with the list builtins through `formatting.values_equal`."""
+    return values_equal(left, right)
 
 
 class Interpreter:

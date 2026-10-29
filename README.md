@@ -40,7 +40,7 @@ python -m pebble
 pebble/
 ├── .aikit/
 │   ├── codebase_map.md       <- generated symbol map, checked on every gate run
-│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v12 additions
+│   ├── decisions.md          <- ADRs: surface, builtins, limits, v2, v5 to v13 additions
 │   ├── guidelines.md         <- project rules (none yet)
 │   ├── media.json            <- social preview and artwork metadata
 │   ├── project.json
@@ -57,7 +57,7 @@ pebble/
 │   ├── greet.peb
 │   ├── fizzbuzz.peb
 │   ├── fibonacci.peb
-│   ├── sorted.peb            <- split, sort and a reverse slice
+│   ├── sorted.peb            <- split, sort, a reverse slice and list search
 │   ├── text.peb              <- split, join, trim and replace in one script
 │   └── totals.peb            <- sum a list and total parsed fields
 ├── pebble/
@@ -71,7 +71,7 @@ pebble/
 │   ├── limits.py             <- call, int, range and sequence caps
 │   ├── nodes.py              <- the AST: frozen nodes with source positions
 │   ├── parser.py             <- recursive-descent parser with positioned errors
-│   └── stdlib.py             <- the twenty-five builtins and their arity rules
+│   └── stdlib.py             <- the twenty-six builtins and their arity rules
 ├── pyproject.toml
 └── tests/
     ├── __init__.py
@@ -101,22 +101,24 @@ strings. The v5 increment (ADR-010) adds four text helpers: `split`, `join`, `tr
 the v6 increment (ADR-011) adds `sort` for lists; the v7 increment (ADR-012) adds `upper`,
 `lower`, `contains` and `find`; the v8 increment (ADR-013) adds `starts_with`, `ends_with` and
 `count`; the v9 increment (ADR-014) adds `sum` for lists of numbers; the v11 increment (ADR-016)
-adds `average`; and the v12 increment (ADR-017) adds `round`, which rounds ties away from zero
-rather than to even. Everything else waits for a later task.
+adds `average`; the v12 increment (ADR-017) adds `round`, which rounds ties away from zero rather
+than to even; and the v13 increment (ADR-018) adds `index_of` and lets `contains` search a list.
+Everything else waits for a later task.
 
 Status: `task-pebble-core-v1`, `task-pebble-v2-conveniences`, `task-pebble-v3-script-args`,
 `task-pebble-v4-finite-floats`, `task-pebble-v4-range-bounds`,
 `task-pebble-v4-residual-guards`, `task-pebble-v5-text-helpers`, `task-pebble-v6-sort`,
 `task-pebble-v7-text-search`, `task-pebble-v8-text-predicates`, `task-pebble-v9-sum`,
-`task-pebble-v10-crash-fuzz`, `task-pebble-v11-average`, and `task-pebble-v12-round` are complete
-(252 tests): script arguments via `args`, `break`/`continue`, slices, `range` with a step,
-`float()`, the text helpers, `sort`, case folding, text search, the edge and count helpers, `sum`,
-`average` and `round` extend the frozen v1 surface as ADR-004, ADR-005, ADR-010, ADR-011, ADR-012,
-ADR-013, ADR-014, ADR-016 and ADR-017 record.
-ADR-006 makes every non-finite float result a positioned error, ADR-007 records that a loop reuses
-the enclosing scope, ADR-008 computes a range's length before allocating it, ADR-009 caps string and
-list concatenation, and ADR-015 adds a seeded fuzz corpus that proves a program's failure is always
-a Pebble report. The plan and its checkpoints live in `.aikit/task_ledger.json`.
+`task-pebble-v10-crash-fuzz`, `task-pebble-v11-average`, `task-pebble-v12-round`, and
+`task-pebble-v13-list-search` are complete (263 tests): script arguments via `args`,
+`break`/`continue`, slices, `range` with a step, `float()`, the text helpers, `sort`, case folding,
+text search, the edge and count helpers, `sum`, `average`, `round` and list search extend the frozen
+v1 surface as ADR-004, ADR-005, ADR-010, ADR-011, ADR-012, ADR-013, ADR-014, ADR-016, ADR-017 and
+ADR-018 record. ADR-006 makes every non-finite float result a positioned error, ADR-007 records that
+a loop reuses the enclosing scope, ADR-008 computes a range's length before allocating it, ADR-009
+caps string and list concatenation, and ADR-015 adds a seeded fuzz corpus that proves a program's
+failure is always a Pebble report. The plan and its checkpoints live in
+`.aikit/task_ledger.json`.
 
 Pebble stays deliberately bounded (ADR-003, hardened by ADR-006, ADR-008, ADR-009, ADR-010,
 ADR-012 and ADR-014): calls nest at most 100 deep, integer exponents stop at 10,000, integers stay
@@ -138,6 +140,7 @@ python -m pebble -e "print(find(upper(\"abc\"), \"B\"))"  # case and search: 1
 python -m pebble -e "print(count(\"banana\", \"an\"))"     # occurrences: 2
 python -m pebble -e "print(round(2.5))"                   # ties away from zero: 3
 python -m pebble -e "print(round(2.675, 2))"              # decimal places: 2.68
+python -m pebble -e "print(index_of([10, 20], 20))"       # list position: 1
 python -m pebble                         # REPL on a terminal; piped input runs as a program
 ```
 

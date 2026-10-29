@@ -1,56 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v12-round",
+    "task_id": "task-pebble-v13-list-search",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793257655.712651,
-    "owner": "kilo:v12-round",
-    "started_by": "kilo:v12-round",
-    "continuations": [],
-    "completed_at": 1793257669.528754
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793258465.3286192,
+    "owner": "kilo:v13-list-search",
+    "started_by": "kilo:v13-list-search",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v8-text-predicates",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/4] Plan: add starts_with, ends_with and count under ADR-013, keeping one rule that every search argument must be non-empty, pinned by failing-first tests, then sync README, example and map",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793254371.781998,
-      "timestamp_str": "2026-10-29 09:12:51",
-      "agent": "kilo:v8-text-predicates",
-      "impact_assessment": {
-        "why": "Pebble can locate and rewrite a fragment but cannot ask whether text begins or ends with one, or how many times it occurs, so prefix checks and quick frequency counts still need index arithmetic by hand.",
-        "benefits": "Scripts can validate a prefix or suffix in one call and count occurrences without a loop, composing with find, split, sort and replace.",
-        "risks": "contract: surface grows to 22 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "ADR-013 pins the empty-argument rule, the non-overlapping count and the boolean results before code; failing-first tests per builtin; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v8-text-predicates",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/4] starts_with, ends_with and count are green: edge predicates, non-overlapping counts, character-based matching, one shared rule that the prefix, suffix or search must be non-empty, type and arity guards; 7 new tests, full suite 225 green",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793254455.255354,
-      "timestamp_str": "2026-10-29 09:14:15",
-      "agent": "kilo:v8-text-predicates"
-    },
-    {
-      "task_id": "task-pebble-v8-text-predicates",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[3/4] Docs: ADR-013 records starts_with, ends_with and count with the shared non-empty rule and the non-overlapping count; README lists twenty-two builtins and 225 tests; examples/text.peb shows edges and counting; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793254577.9447162,
-      "timestamp_str": "2026-10-29 09:16:17",
-      "agent": "kilo:v8-text-predicates"
-    },
     {
       "task_id": "task-pebble-v8-text-predicates",
       "phase": "completed",
@@ -256,6 +216,45 @@
       "timestamp": 1793257669.5287552,
       "timestamp_str": "2026-10-29 10:07:49",
       "agent": "kilo:v12-round"
+    },
+    {
+      "task_id": "task-pebble-v13-list-search",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/5] Plan: add index_of(list, value) and extend contains to lists under ADR-018, moving Pebble equality into formatting.py so the evaluator and the builtins share one rule; failing-first tests first, including cross-type and nested-list cases",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258258.1033683,
+      "timestamp_str": "2026-10-29 10:17:38",
+      "agent": "kilo:v13-list-search",
+      "impact_assessment": {
+        "why": "Pebble can search text and order a list but cannot ask whether a list holds a value or where, so every membership check is a hand-written for loop with a found flag and a position variable.",
+        "benefits": "Scripts check and locate list members in one call, and equality is stated once for ==, contains and index_of instead of a second definition growing in the stdlib.",
+        "risks": "contract: surface grows to 26 builtins, contains gains a list form that amends ADR-012, and equality moves modules; dependency: none, standard library only; concurrency: none; state: no files or schema changes.",
+        "mitigation": "ADR-018 pins that both builtins use the same equality as ==, that index_of returns none for a miss, and that a non-list first argument to the list form is a positioned error; failing-first tests; fuzz corpus extended; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v13-list-search",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/5] index_of and the list form of contains are green: both compare with formatting.values_equal, so == and the builtins share one rule (numbers mix, bools do not, nested lists deep, other kinds never); index_of returns none on a miss; 11 new tests, 263 total",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258341.385186,
+      "timestamp_str": "2026-10-29 10:19:01",
+      "agent": "kilo:v13-list-search"
+    },
+    {
+      "task_id": "task-pebble-v13-list-search",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/5] Docs: ADR-018 records index_of, the list form of contains and the move of Pebble equality to formatting.values_equal; README lists twenty-six builtins and 263 tests, examples/sorted.peb searches a list; the fuzz corpus generates index_of and list contains; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258465.3286192,
+      "timestamp_str": "2026-10-29 10:21:05",
+      "agent": "kilo:v13-list-search"
     }
   ]
 }

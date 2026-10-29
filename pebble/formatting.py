@@ -51,3 +51,15 @@ def _format_element(value) -> str:
     if isinstance(value, str):
         return '"' + "".join(_ESCAPES.get(ch, ch) for ch in value) + '"'
     return format_value(value)
+
+
+def values_equal(left, right) -> bool:
+    """Pebble equality: ints and floats mix, bools do not, everything else compares within its type.
+
+    Lives here so the evaluator's `==` and the list builtins cannot drift apart (ADR-018).
+    """
+    if is_number(left) and is_number(right):
+        return left == right
+    if type(left) is not type(right):
+        return False
+    return left == right

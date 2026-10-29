@@ -196,3 +196,78 @@ class AverageTests(unittest.TestCase):
                       self.eval_error("average()").message)
         self.assertIn("average expects 1 argument, got 2",
                       self.eval_error("average([1], [2])").message)
+
+
+class ListSearchTests(unittest.TestCase):
+    """index_of and the list form of contains both use Pebble's own equality."""
+
+    def eval_error(self, source: str) -> EvalError:
+        """The EvalError `source` raises."""
+        with self.assertRaises(EvalError) as caught:
+            evaluate(source)
+        return caught.exception
+
+    # index_of
+
+    def test_index_of_returns_the_first_matching_index(self) -> None:
+        self.assertEqual(evaluate("index_of([10, 20, 30], 20)"), 1)
+        self.assertEqual(evaluate("index_of([1, 2, 1], 1)"), 0)
+        self.assertEqual(evaluate('index_of(["a", "b"], "b")'), 1)
+        self.assertIs(type(evaluate("index_of([1], 1)")), int)
+
+    def test_index_of_returns_none_for_a_miss(self) -> None:
+        self.assertIsNone(evaluate("index_of([1, 2], 3)"))
+        self.assertIsNone(evaluate("index_of([], 1)"))
+
+    def test_index_of_uses_pebble_equality_across_number_types(self) -> None:
+        self.assertEqual(evaluate("index_of([1.0, 2], 1)"), 0)
+        self.assertEqual(evaluate("index_of([1, 2], 1.0)"), 0)
+
+    def test_index_of_does_not_mix_bools_and_numbers(self) -> None:
+        self.assertIsNone(evaluate("index_of([1, 2], true)"))
+        self.assertIsNone(evaluate("index_of([true], 1)"))
+        self.assertEqual(evaluate("index_of([true, false], true)"), 0)
+
+    def test_index_of_matches_a_nested_list_deeply(self) -> None:
+        self.assertEqual(evaluate("index_of([[1], [2, 3]], [2, 3])"), 1)
+        self.assertIsNone(evaluate("index_of([[1], [2]], [3])"))
+
+    def test_index_of_does_not_mix_kinds(self) -> None:
+        self.assertIsNone(evaluate('index_of([1, 2], "1")'))
+        self.assertIsNone(evaluate("index_of([none], 0)"))
+        self.assertEqual(evaluate("index_of([none, 0], none)"), 0)
+
+    def test_index_of_needs_a_list(self) -> None:
+        error = self.eval_error('index_of("abc", "a")')
+        self.assertIn("index_of needs a list, got string", error.message)
+        self.assertIn("position", error.why)
+        self.assertEqual((error.line, error.col), (1, 9))
+        self.assertIn("index_of needs a list, got int",
+                      self.eval_error("index_of(5, 1)").message)
+
+    def test_index_of_arity_is_two(self) -> None:
+        self.assertIn("index_of expects 2 arguments, got 1",
+                      self.eval_error("index_of([1])").message)
+        self.assertIn("index_of expects 2 arguments, got 3",
+                      self.eval_error("index_of([1], 1, 2)").message)
+
+    # contains on a list
+
+    def test_contains_accepts_a_list_and_uses_the_same_equality(self) -> None:
+        self.assertIs(evaluate("contains([1, 2, 3], 2)"), True)
+        self.assertIs(evaluate("contains([1, 2, 3], 4)"), False)
+        self.assertIs(evaluate("contains([], 1)"), False)
+        self.assertIs(evaluate("contains([1.0], 1)"), True)
+        self.assertIs(evaluate("contains([[1]], [1])"), True)
+        self.assertIs(evaluate("contains([1], true)"), False)
+
+    def test_contains_still_searches_text_and_refuses_an_empty_string_search(self) -> None:
+        self.assertIs(evaluate('contains("abc", "b")'), True)
+        error = self.eval_error('contains("abc", "")')
+        self.assertIn("contains search text cannot be empty", error.message)
+
+    def test_contains_refuses_other_first_arguments(self) -> None:
+        self.assertIn("contains needs a string, got int",
+                      self.eval_error("contains(5, 1)").message)
+        self.assertIn("contains needs a string, got none",
+                      self.eval_error("contains(none, 1)").message)

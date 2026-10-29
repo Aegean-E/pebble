@@ -7,10 +7,10 @@
 
 ## 📊 Codebase Metrics
 - **Total Python Modules**: `21`
-- **Total Classes**: `49`
-- **Total Top-Level Functions**: `89`
-- **Total Class Methods**: `349`
-- **Total Source Lines**: `4505`
+- **Total Classes**: `50`
+- **Total Top-Level Functions**: `91`
+- **Total Class Methods**: `361`
+- **Total Source Lines**: `4610`
 
 ---
 
@@ -75,7 +75,7 @@
 ### [`pebble/evaluator.py`](pebble/evaluator.py)
 > *Tree-walking evaluator: the runtime semantics of Pebble.*
 
-**Size**: `545` lines (`27479` bytes)
+**Size**: `540` lines (`27359` bytes)
 
 **Classes:**
 - `class _Return` - *Internal signal carrying a `return` value out of nested blocks; never escapes run().*
@@ -121,20 +121,21 @@
   - Method `._fail(node, message, why, fix)` - *Raise the positioned EvalError; every runtime failure goes through here.*
 
 **Functions:**
-- `def _equal(left, right)` - *Pebble equality: ints and floats mix, bools do not, everything else compares within its type.*
+- `def _equal(left, right)` - *Pebble equality, shared with the list builtins through `formatting.values_equal`.*
 
 ---
 
 ### [`pebble/formatting.py`](pebble/formatting.py)
 > *How Pebble names and displays values in messages and in print.*
 
-**Size**: `53` lines (`1819` bytes)
+**Size**: `65` lines (`2219` bytes)
 
 **Functions:**
 - `def is_number(value)` - *True for int and float, but not for bool: Pebble keeps booleans out of arithmetic.*
 - `def type_name(value)` - *The name Pebble uses for this value's type: int, string, list, none, function.*
 - `def format_value(value)` - *The text a value shows as: strings bare at the top, quoted inside a list.*
 - `def _format_element(value)` - *An element inside a list: strings are quoted so their boundaries stay visible.*
+- `def values_equal(left, right)` - *Pebble equality: ints and floats mix, bools do not, everything else compares within its type.*
 
 ---
 
@@ -249,7 +250,7 @@
 ### [`pebble/stdlib.py`](pebble/stdlib.py)
 > *Pebble's builtins and their shared argument rules.*
 
-**Size**: `630` lines (`27845` bytes)
+**Size**: `649` lines (`28693` bytes)
 
 **Classes:**
 - `class Builtin` - *A callable provided by the language itself; stateless and safe to share.*
@@ -294,7 +295,8 @@
 - `def _starts_with(interpreter, call, args)` - *Whether the text begins with the prefix.*
 - `def _ends_with(interpreter, call, args)` - *Whether the text ends with the suffix.*
 - `def _count(interpreter, call, args)` - *How many non-overlapping times the search text occurs, counted left to right.*
-- `def _contains(interpreter, call, args)` - *Whether the search text occurs anywhere in the text.*
+- `def _contains(interpreter, call, args)` - *Whether the search text occurs in the text, or the value appears in the list.*
+- `def _index_of(interpreter, call, args)` - *The index of the first equal value in a list, or none when no value matches.*
 - `def _find(interpreter, call, args)` - *The index of the first occurrence, or none when the search text is absent.*
 
 ---
@@ -467,7 +469,7 @@
 ### [`tests/test_fuzz.py`](tests/test_fuzz.py)
 > *Deterministic crash fuzz: random and mutated source is a Pebble error, never a host crash.*
 
-**Size**: `258` lines (`10104` bytes)
+**Size**: `262` lines (`10298` bytes)
 
 **Classes:**
 - `class FuzzTests` - *Every corpus is seeded, so a failure names a sample that always reproduces.*
@@ -571,7 +573,7 @@
 ### [`tests/test_lists.py`](tests/test_lists.py)
 > *List helpers: sort and sum, with the numeric rules min, max and sum share.*
 
-**Size**: `198` lines (`9287` bytes)
+**Size**: `273` lines (`12858` bytes)
 
 **Classes:**
 - `class SortTests` - *One behaviour per test; the result is a new list and the input is untouched.*
@@ -603,6 +605,19 @@
   - Method `.test_average_refuses_a_non_finite_result()`
   - Method `.test_average_of_a_huge_int_is_a_pebble_error_not_a_host_overflow()`
   - Method `.test_average_arity_is_one()`
+- `class ListSearchTests` - *index_of and the list form of contains both use Pebble's own equality.*
+  - Method `.eval_error(source)` - *The EvalError `source` raises.*
+  - Method `.test_index_of_returns_the_first_matching_index()`
+  - Method `.test_index_of_returns_none_for_a_miss()`
+  - Method `.test_index_of_uses_pebble_equality_across_number_types()`
+  - Method `.test_index_of_does_not_mix_bools_and_numbers()`
+  - Method `.test_index_of_matches_a_nested_list_deeply()`
+  - Method `.test_index_of_does_not_mix_kinds()`
+  - Method `.test_index_of_needs_a_list()`
+  - Method `.test_index_of_arity_is_two()`
+  - Method `.test_contains_accepts_a_list_and_uses_the_same_equality()`
+  - Method `.test_contains_still_searches_text_and_refuses_an_empty_string_search()`
+  - Method `.test_contains_refuses_other_first_arguments()`
 
 **Functions:**
 - `def evaluate(source)` - *Evaluate `source` with a fresh interpreter; the last statement's value comes back.*
