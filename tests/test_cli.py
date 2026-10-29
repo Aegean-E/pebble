@@ -1,10 +1,12 @@
 """CLI and REPL tests: argument handling, file and stdin runners, exit codes and error reports."""
 
+import re
 import tempfile
 import unittest
 from io import StringIO
 from pathlib import Path
 
+from pebble import __version__
 from pebble.cli import main, run_repl
 
 
@@ -113,7 +115,15 @@ class CliTests(unittest.TestCase):
         self.assertIn("exit codes: 0 success, 1 program error, 2 usage or file error", out)
         code, out, _ = run_cli(["--version"])
         self.assertEqual(code, 0)
-        self.assertIn("pebble 0.1.0", out)
+        self.assertEqual(out, f"pebble {__version__}\n")
+
+    def test_the_reported_version_matches_the_packaging_metadata(self) -> None:
+        manifest = Path(__file__).resolve().parent.parent / "pyproject.toml"
+        declared = re.search(r'^version\s*=\s*"([^"]+)"', manifest.read_text(encoding="utf-8"),
+                             re.MULTILINE)
+        self.assertIsNotNone(declared, "pyproject.toml declares no project version")
+        self.assertEqual(declared.group(1), __version__,
+                         "pebble.__version__ and pyproject.toml disagree")
 
     def test_a_terminal_stdin_starts_the_repl(self) -> None:
         stdout, stderr = StringIO(), StringIO()

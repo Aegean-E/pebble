@@ -1,56 +1,16 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "task-pebble-v13-list-search",
+    "task_id": "task-pebble-v14-version",
     "last_phase": "in_progress",
-    "active_phase": 5,
-    "status": "completed",
-    "updated_at": 1793258465.3286192,
-    "owner": "kilo:v13-list-search",
-    "started_by": "kilo:v13-list-search",
-    "continuations": [],
-    "completed_at": 1793258476.9347427
+    "active_phase": 4,
+    "status": "in_progress",
+    "updated_at": 1793258613.503099,
+    "owner": "kilo:v14-version",
+    "started_by": "kilo:v14-version",
+    "continuations": []
   },
   "checkpoints": [
-    {
-      "task_id": "task-pebble-v9-sum",
-      "phase": "in_progress",
-      "phase_num": 2,
-      "description": "[1/4] Plan: add one numeric list builtin, sum(values), accepting ints and floats like min/max, returning int for an all-int list, refusing bools and non-numbers, and applying the existing int-digit and finite-float caps to the result; ADR-014 and failing-first tests first",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793254725.579777,
-      "timestamp_str": "2026-10-29 09:18:45",
-      "agent": "kilo:v9-sum",
-      "impact_assessment": {
-        "why": "Pebble can order a list and take its extremes but cannot total it, so every score, size or cost total is a hand-written accumulator loop, which is the one numeric list operation scripts still write by hand.",
-        "benefits": "Scripts total a list in one call and keep the int/float distinction the rest of the language already uses, with the same caps that protect int and float arithmetic.",
-        "risks": "contract: surface grows to 23 builtins and ADR-002's list is amended; dependency: none, standard library only; concurrency: none, single-threaded interpreter; state: no files or schemas change.",
-        "mitigation": "ADR-014 pins the empty-list result, the int/float promotion, the bool refusal and the two result caps before code; failing-first tests including a patched-cap test; full aikit check pebble gate."
-      }
-    },
-    {
-      "task_id": "task-pebble-v9-sum",
-      "phase": "in_progress",
-      "phase_num": 3,
-      "description": "[2/4] sum is green: int totals stay int, a float value promotes the result, empty list is 0, bool/non-number elements are refused with their index, and both result caps apply (patched MAX_INT_BITS test and a finite-float test); 7 new tests, full suite 232 green",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793254814.4852412,
-      "timestamp_str": "2026-10-29 09:20:14",
-      "agent": "kilo:v9-sum"
-    },
-    {
-      "task_id": "task-pebble-v9-sum",
-      "phase": "in_progress",
-      "phase_num": 4,
-      "description": "[3/4] Docs: ADR-014 records sum, its int/float promotion and both result caps; README lists twenty-three builtins and 232 tests plus examples/totals.peb; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1793254926.4387858,
-      "timestamp_str": "2026-10-29 09:22:06",
-      "agent": "kilo:v9-sum"
-    },
     {
       "task_id": "task-pebble-v9-sum",
       "phase": "completed",
@@ -256,6 +216,45 @@
       "timestamp": 1793258476.9347446,
       "timestamp_str": "2026-10-29 10:21:16",
       "agent": "kilo:v13-list-search"
+    },
+    {
+      "task_id": "task-pebble-v14-version",
+      "phase": "in_progress",
+      "phase_num": 2,
+      "description": "[1/4] Plan: make the reported version agree with pyproject and keep it that way, under ADR-019: bump __version__ to the packaging version and add a test that reads pyproject and fails on drift, so --version can never under-report again",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258538.0534422,
+      "timestamp_str": "2026-10-29 10:22:18",
+      "agent": "kilo:v14-version",
+      "impact_assessment": {
+        "why": "pebble/__init__.py carries 0.1.0 while pyproject.toml carries 0.2.0, so python -m pebble --version reports a version the package was never released at, and nothing in the suite compares the two numbers.",
+        "benefits": "The version a user sees matches the version the package declares, and a future packaging bump cannot silently leave the runtime behind.",
+        "risks": "contract: python -m pebble --version prints 0.2.0 instead of 0.1.0; dependency: none, the test reads pyproject with the standard library only; concurrency: none; state: no schema change, one literal changes.",
+        "mitigation": "ADR-019 pins pyproject as the declared version and the test as the guard; the test parses pyproject with a plain read rather than tomllib so Python 3.10, which the project supports, still runs it; full aikit check pebble gate."
+      }
+    },
+    {
+      "task_id": "task-pebble-v14-version",
+      "phase": "in_progress",
+      "phase_num": 3,
+      "description": "[2/4] Version drift is fixed and guarded: __version__ is 0.2.0 to match pyproject, the CLI test derives its expectation from __version__ instead of a stale literal, and a new test reads pyproject.toml and fails when the two disagree (it failed first with 0.2.0 vs 0.1.0); 264 tests green",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258609.0394702,
+      "timestamp_str": "2026-10-29 10:23:29",
+      "agent": "kilo:v14-version"
+    },
+    {
+      "task_id": "task-pebble-v14-version",
+      "phase": "in_progress",
+      "phase_num": 4,
+      "description": "[3/4] Docs: ADR-019 records pyproject as the declared version and the guard test; README notes the v14 increment at 264 tests; codebase map regenerated; aikit check pebble 4/4 gates green; checklists: passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1793258613.503099,
+      "timestamp_str": "2026-10-29 10:23:33",
+      "agent": "kilo:v14-version"
     }
   ]
 }

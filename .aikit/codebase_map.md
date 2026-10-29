@@ -9,8 +9,8 @@
 - **Total Python Modules**: `21`
 - **Total Classes**: `50`
 - **Total Top-Level Functions**: `91`
-- **Total Class Methods**: `361`
-- **Total Source Lines**: `4610`
+- **Total Class Methods**: `362`
+- **Total Source Lines**: `4620`
 
 ---
 
@@ -364,7 +364,7 @@
 ### [`tests/test_cli.py`](tests/test_cli.py)
 > *CLI and REPL tests: argument handling, file and stdin runners, exit codes and error reports.*
 
-**Size**: `159` lines (`6884` bytes)
+**Size**: `169` lines (`7453` bytes)
 
 **Classes:**
 - `class TtyInput` - *A stdin stand-in that claims to be a terminal, so main() starts the REPL.*
@@ -383,6 +383,7 @@
   - Method `.test_piped_stdin_receives_script_arguments()`
   - Method `.test_double_dash_terminates_options()`
   - Method `.test_help_and_version_exit_0()`
+  - Method `.test_the_reported_version_matches_the_packaging_metadata()`
   - Method `.test_a_terminal_stdin_starts_the_repl()`
 - `class ReplTests` - *The REPL keeps one interpreter alive, echoes expression values and survives errors.*
   - Method `.repl(source)` - *Run a non-prompting REPL session over `source`; returns (code, stdout, stderr).*
